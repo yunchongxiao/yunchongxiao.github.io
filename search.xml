@@ -746,6 +746,255 @@
 ]]></content>
   </entry>
   <entry>
+    <title>第六章-Spring基础</title>
+    <url>/post/9657.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="spring概述"><a class="markdownIt-Anchor" href="#spring概述"></a> Spring概述</h1>
+<h2 id="spring简介"><a class="markdownIt-Anchor" href="#spring简介"></a> Spring简介</h2>
+<ul>
+<li>Spring是一个分层的Java SE/EE应用的一站式轻量级开源框架</li>
+<li>Spring的核心理念：IOC（控制反转）和AOP（面向切面编程）</li>
+<li>IOC是Spring的基础，它支撑着Spring对JavaBean的管理功能</li>
+</ul>
+<h2 id="spring的优势"><a class="markdownIt-Anchor" href="#spring的优势"></a> Spring的优势</h2>
+<ol>
+<li>
+<p>降低耦合度，方便开发</p>
+<p>通过IOC容器，Spring可以管理对象的生命周期，控制对象之间的依赖关系，降低程序之间的耦合度</p>
+</li>
+<li>
+<p>支持AOP编程</p>
+<p>通过AOP，Spring可以对程序进行权限拦截，安全监控等操作，这可以减少传统OOP方法带来的代码冗余和繁杂</p>
+</li>
+<li>
+<p>支持声明式事务</p>
+<p>在Spring中，可以直接通过Spring配置文件管理数据库事务，省去了手动编程的繁琐，提高了开发效率。</p>
+</li>
+<li>
+<p>方便程序测试</p>
+<p>Spring中集成了Junit，开发人员可以空过Junit进行单元测试</p>
+</li>
+<li>
+<p>方便集成各种优秀框架</p>
+<p>Spring提供了一个广阔的基础平台，它不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如MyBatis）的直接支持。</p>
+</li>
+<li>
+<p>降低Java EE API的使用难度</p>
+<p>Spring封装了Java EE中使用难度较大的API，经过封装，这些API更容易被开发人员理解和调用。</p>
+</li>
+</ol>
+<h2 id="spring功能体系"><a class="markdownIt-Anchor" href="#spring功能体系"></a> Spring功能体系</h2>
+<p>Spring框架采用分层和模块的架构方式，由核心容器、数据访问及集成、Web、AOP等功能构成。</p>
+<h3 id="核心容器core-container"><a class="markdownIt-Anchor" href="#核心容器core-container"></a> 核心容器（Core Container）</h3>
+<p>核心容器在Spring的功能体系中起支撑性的作用，是其他模块实现功能的基石</p>
+<p>核心容器包括Beans、Core、Context、SpEL四个模块，具体如下：</p>
+<ol>
+<li>
+<p>Beans和Core模块</p>
+<p>Beans和Core模块规定了创建、配置和管理Bean的方式，提供了IOC和DI功能，BeanFactory类是Beans和Core模块的关键。</p>
+</li>
+<li>
+<p>Context模块</p>
+<p>Context模块在Beans和Core模块的基础上扩展了功能，通过ApplicationContext接口提供上下文信息。</p>
+</li>
+<li>
+<p>SpEL模块</p>
+<p>SpEL模块提供了一个强大的表达式语言，该语言用于在Spring运行时查询和操纵对象。</p>
+</li>
+</ol>
+<h3 id="数据访问及集成data-accessintegration"><a class="markdownIt-Anchor" href="#数据访问及集成data-accessintegration"></a> 数据访问及集成（Data Access/Integration）</h3>
+<p>数据访问及集成主要用于操作和访问数据库中的数据，它主要包含JDBC、ORM、OXM、JMS和Transaction模块。</p>
+<ol>
+<li>
+<p>JDBC模块</p>
+<p>JDBC模块提供了JDBC抽象层，它消除了冗长的JDBC编码并解析数据库供应商特有的代码错误。</p>
+</li>
+<li>
+<p>ORM模块</p>
+<p>ORM模块为主流的对象关系映射API提供了集成层，这些主流的对象关系映射主要包含MyBatis、HiBernate和JDO等，该模块可将对象关系映射框架与Spring提供的特性组合使用。</p>
+</li>
+<li>
+<p>OXM模块</p>
+<p>OXM模块提供了对OXM实现的支持，例如XML、Beans、JAXB、Castor、JiBX和XStream等。</p>
+</li>
+<li>
+<p>JMS模块</p>
+<p>JMS模块包含生产（produce）和消费（consume）消息的功能，从4.1版本开始，Spring集成了spring-messaging模块。</p>
+</li>
+<li>
+<p>Transactions模块</p>
+<p>Transaction模块的主要功能是事务管理，Spring支持手写beginTransaction()、commit()、rollback()的编程式事务，同时，它也支持通过注解或配置后由Spring自动处理的声明式事务。</p>
+</li>
+</ol>
+<h3 id="web"><a class="markdownIt-Anchor" href="#web"></a> Web</h3>
+<p>Web功能的实现基于ApplicationContext基础之上，它提供了Web应用的各种工具类，包括Web、servlet、WebSocket和Protlet模块。</p>
+<ol>
+<li>
+<p>Web模块</p>
+<p>Web模块提供了基本的面向Web的集成功能，如大部分文件上传功能，使用Servlet侦听器的IoC容器的初始化以及面向Web的应用程序上下文。它还包含一个HTTP客户端和Spring远程处理支持的Web相关部分。</p>
+</li>
+<li>
+<p>Servlet模块</p>
+<p>Servlet模块包含Spring的模型、视图、控制器以及Web应用程序的REST Web服务实现。</p>
+</li>
+<li>
+<p>WebSocket模块</p>
+<p>WebSocket模块是Spring4版本加入的一个模块，该模块用于适配不同的WebSocket引擎，并能够全面支持WebSocket，它与Java WebSocket API标准保持一致，同时提供了额外的服务。</p>
+</li>
+<li>
+<p>Protlet模块</p>
+<p>Protlet模块提供了一个在Protlet环境中使用的MVC实现，相当于镜像了Servlet模块的功能。</p>
+</li>
+</ol>
+<h3 id="aop-aspects和instrumentation"><a class="markdownIt-Anchor" href="#aop-aspects和instrumentation"></a> AOP、Aspects和Instrumentation</h3>
+<p>AOP提供了面向切面的编程实现，允许定义方法拦截器和切入点对代码解耦，Aspects主要用于集成AspectJ，AspectJ是一个功能强大且成熟的AOP框架，为面向切面编程提供多种实现方法，Instrumentation提供了类instrumentation的支持和类加载器的实现，通常在特定的服务器使用。</p>
+<h3 id="test"><a class="markdownIt-Anchor" href="#test"></a> TEST</h3>
+<p>TEST模块支持使用JUnit或TestNG对Spring组件进行单元测试和集成测试，他提供了一直加载ApplicationContext和这些ApplicationContext的缓存。除此之外，它还提供了可用于独立测试代码的模拟对象。</p>
+<h3 id="message"><a class="markdownIt-Anchor" href="#message"></a> MESSAGE</h3>
+<p>MESSAGE在Spring4版本时开始引入Spring的功能体系中，主要用于为Spring框架集成一些基础的消息传送应用。</p>
+<h1 id="spring的容器机制"><a class="markdownIt-Anchor" href="#spring的容器机制"></a> Spring的容器机制</h1>
+<p>容器是Spring框架实现功能的基础，Spring容器类似一家超级工厂，当Spring启动时，所有被配置过的类都会被纳入Spring容器的管理之中。</p>
+<p>Spring把他管理的类称为Bean，Spring可以通过XML文件或者注解获取配置信息，进而通过容器对象来管理Bean。</p>
+<p>在Spring的容器API中，开发人员接触的最多的是BeanFactory和ApplicationContext接口，其中后者是前者的子接口。</p>
+<h2 id="beanfactory接口"><a class="markdownIt-Anchor" href="#beanfactory接口"></a> BeanFactory接口</h2>
+<p>BeanFactory接口时IOC最基本的容器接口，它定义了创建和管理Bean的方法，为其他容器提供了最基本的规范。</p>
+<p>BeanFactory接口提供了一系列操作Bean的方法：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法名称</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">getBean(String name)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">getBean(String name, Class<T> type)</T></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"><T>T getBean(Class<T> requiredType)</T></T></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Object getBean(String name, Object… args)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">isSingleton(String name)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">isPrototype(String name)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="applicationcontext接口"><a class="markdownIt-Anchor" href="#applicationcontext接口"></a> ApplicationContext接口</h2>
+<p>ApplicationContext接口的常用实现类</p>
+<table>
+<thead>
+<tr>
+<th>类名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClassPathXmlApplicationContext</td>
+<td>从类路径加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>FileSystemApplicationContext</td>
+<td>从文件系统加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>AnnotationConfigApplicationContext</td>
+<td>从注解中加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>WebApplicationContext</td>
+<td>在Web应用中使用，从相对于Web根目录的路径中加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>ConfigurableWebApplicationContext</td>
+<td>允许通过配置的方式实例化WebApplicationContext</td>
+</tr>
+</tbody>
+</table>
+<h2 id="容器的启动过程"><a class="markdownIt-Anchor" href="#容器的启动过程"></a> 容器的启动过程</h2>
+<ol>
+<li>
+<p>BeanDifinition的Resource定位</p>
+<p>Spring容器通过XML文件或者注解定位到Resource。</p>
+</li>
+<li>
+<p>BeanDifinition的载入与解析</p>
+<p>读取配置，将<code>&lt;bean&gt;</code>配置信息转换为Spring容器内部的数据接口，这个数据接口就是BeanDifinition，通过BeanDifinition，Spring能够方便的对Bean进行管理。</p>
+</li>
+<li>
+<p>BeanDifinition的注册</p>
+<p>在完成BD的载入后，BD会注册到Spring的容器中。Spring容器通过一个HashMap对象持有BeanDifinition数据。</p>
+</li>
+</ol>
+<h1 id="spring的简单应用"><a class="markdownIt-Anchor" href="#spring的简单应用"></a> Spring的简单应用</h1>
+<h2 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h2>
+<p>创建一个Maven对象，在pom.xml中导入依赖</p>
+<h3 id="pomxml"><a class="markdownIt-Anchor" href="#pomxml"></a> pom.xml</h3>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modules</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">module</span>&gt;</span>chapter06<span class="tag">&lt;/<span class="name">module</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">modules</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-expression<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建bean"><a class="markdownIt-Anchor" href="#创建bean"></a> 创建Bean</h2>
+<p>所谓的创建Bean我的理解是创建一个待Spring管理的Java类</p>
+<h3 id="studentjava"><a class="markdownIt-Anchor" href="#studentjava"></a> student.java</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Student对象创建了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">study</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;学生正在学习&quot;</span> + msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="teaccherjava"><a class="markdownIt-Anchor" href="#teaccherjava"></a> teaccher.java</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Teacher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Teacher对象创建了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">teach</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;老师讲解&quot;</span> + msg + <span class="string">&quot;知识&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="创建配置文件"><a class="markdownIt-Anchor" href="#创建配置文件"></a> 创建配置文件</h2>
+<p>spring通过该配置文件获取Bean的配置信息。</p>
+<h3 id="applicationcontextxml"><a class="markdownIt-Anchor" href="#applicationcontextxml"></a> applicationContext.xml</h3>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;student&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.Student&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>Spring<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;teacher&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.Teacher&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>C++<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="编写测试类"><a class="markdownIt-Anchor" href="#编写测试类"></a> 编写测试类</h2>
+<p>测试一下Spring是否能根据配置文件自动创建Student对象</p>
+<h3 id="testspringjava"><a class="markdownIt-Anchor" href="#testspringjava"></a> TestSpring.java</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSpring</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testStudent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        Student student = applicationContext.getBean(<span class="string">&quot;student&quot;</span>, Student.class);</span><br><span class="line">        student.study();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTeacher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        Teacher teacher = applicationContext.getBean(<span class="string">&quot;teacher&quot;</span>, Teacher.class);</span><br><span class="line">        teacher.teach();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="运行结果"><a class="markdownIt-Anchor" href="#运行结果"></a> 运行结果</h2>
+<p>运行testTeacher()函数，可以得到如下结果：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">Student对象创建了</span><br><span class="line">Teacher对象创建了</span><br><span class="line">老师讲解C++知识</span><br></pre></td></tr></table></figure>
+<p>可以看出，虽然没有调用Student对象，但是Student和Teacher都被创建了。</p>
+<p>这是因为在Spring容器启动时，Spring会自动创建所有他所管理的Bean对象，而不是在第一次调用时才实例化</p>
+<p>若想要等到第一次调用时才实例化对象，可以在bean中使用lazy-init属性：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;teacher&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.teacher&quot;</span> <span class="attr">lazy-init</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">value</span>&gt;</span>C++<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>JavaEE（ssm）企业应用实战</category>
+      </categories>
+      <tags>
+        <tag>Java开发</tag>
+        <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第八章-Spring的AOP</title>
     <url>/post/22d8.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="aop基础"><a class="markdownIt-Anchor" href="#aop基础"></a> AOP基础</h1>
@@ -1012,255 +1261,6 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.demo03;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageAspect</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(* io.gitee.yunchongxiao.demo03.Service02*.*(..))&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exceptionMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Around(&quot;exceptionMsg()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">msgMethod</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        String className = joinPoint.getTarget().getClass().getName();</span><br><span class="line">        String methodName = joinPoint.getSignature().getName();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> joinPoint.proceed();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (MyException myException) &#123;</span><br><span class="line">            Message msg = <span class="keyword">new</span> Message();</span><br><span class="line">            msg.setClassName(className);</span><br><span class="line">            msg.setMethodName(methodName);</span><br><span class="line">            msg.setRecordTime(<span class="keyword">new</span> Date());</span><br><span class="line">            msg.setExceptionMsg(myException.getMsg());</span><br><span class="line">            System.out.println(msg);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h3 id="运行结果-8"><a class="markdownIt-Anchor" href="#运行结果-8"></a> 运行结果</h3>
 <figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">执行service()方法</span><br><span class="line">Message&#123;</span><br><span class="line">	className=&#x27;io.gitee.yunchongxiao.demo03.Service02&#x27;, </span><br><span class="line">	methodName=&#x27;service&#x27;, </span><br><span class="line">	recordTime=Mon Nov 30 16:25:00 CST 2020, </span><br><span class="line">	exceptionMsg=&#x27;您输入的不正确，请输入0~100之间的数字&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>JavaEE（ssm）企业应用实战</category>
-      </categories>
-      <tags>
-        <tag>Java开发</tag>
-        <tag>Spring</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第六章-Spring基础</title>
-    <url>/post/9657.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="spring概述"><a class="markdownIt-Anchor" href="#spring概述"></a> Spring概述</h1>
-<h2 id="spring简介"><a class="markdownIt-Anchor" href="#spring简介"></a> Spring简介</h2>
-<ul>
-<li>Spring是一个分层的Java SE/EE应用的一站式轻量级开源框架</li>
-<li>Spring的核心理念：IOC（控制反转）和AOP（面向切面编程）</li>
-<li>IOC是Spring的基础，它支撑着Spring对JavaBean的管理功能</li>
-</ul>
-<h2 id="spring的优势"><a class="markdownIt-Anchor" href="#spring的优势"></a> Spring的优势</h2>
-<ol>
-<li>
-<p>降低耦合度，方便开发</p>
-<p>通过IOC容器，Spring可以管理对象的生命周期，控制对象之间的依赖关系，降低程序之间的耦合度</p>
-</li>
-<li>
-<p>支持AOP编程</p>
-<p>通过AOP，Spring可以对程序进行权限拦截，安全监控等操作，这可以减少传统OOP方法带来的代码冗余和繁杂</p>
-</li>
-<li>
-<p>支持声明式事务</p>
-<p>在Spring中，可以直接通过Spring配置文件管理数据库事务，省去了手动编程的繁琐，提高了开发效率。</p>
-</li>
-<li>
-<p>方便程序测试</p>
-<p>Spring中集成了Junit，开发人员可以空过Junit进行单元测试</p>
-</li>
-<li>
-<p>方便集成各种优秀框架</p>
-<p>Spring提供了一个广阔的基础平台，它不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如MyBatis）的直接支持。</p>
-</li>
-<li>
-<p>降低Java EE API的使用难度</p>
-<p>Spring封装了Java EE中使用难度较大的API，经过封装，这些API更容易被开发人员理解和调用。</p>
-</li>
-</ol>
-<h2 id="spring功能体系"><a class="markdownIt-Anchor" href="#spring功能体系"></a> Spring功能体系</h2>
-<p>Spring框架采用分层和模块的架构方式，由核心容器、数据访问及集成、Web、AOP等功能构成。</p>
-<h3 id="核心容器core-container"><a class="markdownIt-Anchor" href="#核心容器core-container"></a> 核心容器（Core Container）</h3>
-<p>核心容器在Spring的功能体系中起支撑性的作用，是其他模块实现功能的基石</p>
-<p>核心容器包括Beans、Core、Context、SpEL四个模块，具体如下：</p>
-<ol>
-<li>
-<p>Beans和Core模块</p>
-<p>Beans和Core模块规定了创建、配置和管理Bean的方式，提供了IOC和DI功能，BeanFactory类是Beans和Core模块的关键。</p>
-</li>
-<li>
-<p>Context模块</p>
-<p>Context模块在Beans和Core模块的基础上扩展了功能，通过ApplicationContext接口提供上下文信息。</p>
-</li>
-<li>
-<p>SpEL模块</p>
-<p>SpEL模块提供了一个强大的表达式语言，该语言用于在Spring运行时查询和操纵对象。</p>
-</li>
-</ol>
-<h3 id="数据访问及集成data-accessintegration"><a class="markdownIt-Anchor" href="#数据访问及集成data-accessintegration"></a> 数据访问及集成（Data Access/Integration）</h3>
-<p>数据访问及集成主要用于操作和访问数据库中的数据，它主要包含JDBC、ORM、OXM、JMS和Transaction模块。</p>
-<ol>
-<li>
-<p>JDBC模块</p>
-<p>JDBC模块提供了JDBC抽象层，它消除了冗长的JDBC编码并解析数据库供应商特有的代码错误。</p>
-</li>
-<li>
-<p>ORM模块</p>
-<p>ORM模块为主流的对象关系映射API提供了集成层，这些主流的对象关系映射主要包含MyBatis、HiBernate和JDO等，该模块可将对象关系映射框架与Spring提供的特性组合使用。</p>
-</li>
-<li>
-<p>OXM模块</p>
-<p>OXM模块提供了对OXM实现的支持，例如XML、Beans、JAXB、Castor、JiBX和XStream等。</p>
-</li>
-<li>
-<p>JMS模块</p>
-<p>JMS模块包含生产（produce）和消费（consume）消息的功能，从4.1版本开始，Spring集成了spring-messaging模块。</p>
-</li>
-<li>
-<p>Transactions模块</p>
-<p>Transaction模块的主要功能是事务管理，Spring支持手写beginTransaction()、commit()、rollback()的编程式事务，同时，它也支持通过注解或配置后由Spring自动处理的声明式事务。</p>
-</li>
-</ol>
-<h3 id="web"><a class="markdownIt-Anchor" href="#web"></a> Web</h3>
-<p>Web功能的实现基于ApplicationContext基础之上，它提供了Web应用的各种工具类，包括Web、servlet、WebSocket和Protlet模块。</p>
-<ol>
-<li>
-<p>Web模块</p>
-<p>Web模块提供了基本的面向Web的集成功能，如大部分文件上传功能，使用Servlet侦听器的IoC容器的初始化以及面向Web的应用程序上下文。它还包含一个HTTP客户端和Spring远程处理支持的Web相关部分。</p>
-</li>
-<li>
-<p>Servlet模块</p>
-<p>Servlet模块包含Spring的模型、视图、控制器以及Web应用程序的REST Web服务实现。</p>
-</li>
-<li>
-<p>WebSocket模块</p>
-<p>WebSocket模块是Spring4版本加入的一个模块，该模块用于适配不同的WebSocket引擎，并能够全面支持WebSocket，它与Java WebSocket API标准保持一致，同时提供了额外的服务。</p>
-</li>
-<li>
-<p>Protlet模块</p>
-<p>Protlet模块提供了一个在Protlet环境中使用的MVC实现，相当于镜像了Servlet模块的功能。</p>
-</li>
-</ol>
-<h3 id="aop-aspects和instrumentation"><a class="markdownIt-Anchor" href="#aop-aspects和instrumentation"></a> AOP、Aspects和Instrumentation</h3>
-<p>AOP提供了面向切面的编程实现，允许定义方法拦截器和切入点对代码解耦，Aspects主要用于集成AspectJ，AspectJ是一个功能强大且成熟的AOP框架，为面向切面编程提供多种实现方法，Instrumentation提供了类instrumentation的支持和类加载器的实现，通常在特定的服务器使用。</p>
-<h3 id="test"><a class="markdownIt-Anchor" href="#test"></a> TEST</h3>
-<p>TEST模块支持使用JUnit或TestNG对Spring组件进行单元测试和集成测试，他提供了一直加载ApplicationContext和这些ApplicationContext的缓存。除此之外，它还提供了可用于独立测试代码的模拟对象。</p>
-<h3 id="message"><a class="markdownIt-Anchor" href="#message"></a> MESSAGE</h3>
-<p>MESSAGE在Spring4版本时开始引入Spring的功能体系中，主要用于为Spring框架集成一些基础的消息传送应用。</p>
-<h1 id="spring的容器机制"><a class="markdownIt-Anchor" href="#spring的容器机制"></a> Spring的容器机制</h1>
-<p>容器是Spring框架实现功能的基础，Spring容器类似一家超级工厂，当Spring启动时，所有被配置过的类都会被纳入Spring容器的管理之中。</p>
-<p>Spring把他管理的类称为Bean，Spring可以通过XML文件或者注解获取配置信息，进而通过容器对象来管理Bean。</p>
-<p>在Spring的容器API中，开发人员接触的最多的是BeanFactory和ApplicationContext接口，其中后者是前者的子接口。</p>
-<h2 id="beanfactory接口"><a class="markdownIt-Anchor" href="#beanfactory接口"></a> BeanFactory接口</h2>
-<p>BeanFactory接口时IOC最基本的容器接口，它定义了创建和管理Bean的方法，为其他容器提供了最基本的规范。</p>
-<p>BeanFactory接口提供了一系列操作Bean的方法：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">方法名称</th>
-<th style="text-align:center">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">getBean(String name)</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">getBean(String name, Class<T> type)</T></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"><T>T getBean(Class<T> requiredType)</T></T></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">Object getBean(String name, Object… args)</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">isSingleton(String name)</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center">isPrototype(String name)</td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-</tr>
-</tbody>
-</table>
-<h2 id="applicationcontext接口"><a class="markdownIt-Anchor" href="#applicationcontext接口"></a> ApplicationContext接口</h2>
-<p>ApplicationContext接口的常用实现类</p>
-<table>
-<thead>
-<tr>
-<th>类名称</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ClassPathXmlApplicationContext</td>
-<td>从类路径加载配置文件，创建ApplicationContext实例</td>
-</tr>
-<tr>
-<td>FileSystemApplicationContext</td>
-<td>从文件系统加载配置文件，创建ApplicationContext实例</td>
-</tr>
-<tr>
-<td>AnnotationConfigApplicationContext</td>
-<td>从注解中加载配置文件，创建ApplicationContext实例</td>
-</tr>
-<tr>
-<td>WebApplicationContext</td>
-<td>在Web应用中使用，从相对于Web根目录的路径中加载配置文件，创建ApplicationContext实例</td>
-</tr>
-<tr>
-<td>ConfigurableWebApplicationContext</td>
-<td>允许通过配置的方式实例化WebApplicationContext</td>
-</tr>
-</tbody>
-</table>
-<h2 id="容器的启动过程"><a class="markdownIt-Anchor" href="#容器的启动过程"></a> 容器的启动过程</h2>
-<ol>
-<li>
-<p>BeanDifinition的Resource定位</p>
-<p>Spring容器通过XML文件或者注解定位到Resource。</p>
-</li>
-<li>
-<p>BeanDifinition的载入与解析</p>
-<p>读取配置，将<code>&lt;bean&gt;</code>配置信息转换为Spring容器内部的数据接口，这个数据接口就是BeanDifinition，通过BeanDifinition，Spring能够方便的对Bean进行管理。</p>
-</li>
-<li>
-<p>BeanDifinition的注册</p>
-<p>在完成BD的载入后，BD会注册到Spring的容器中。Spring容器通过一个HashMap对象持有BeanDifinition数据。</p>
-</li>
-</ol>
-<h1 id="spring的简单应用"><a class="markdownIt-Anchor" href="#spring的简单应用"></a> Spring的简单应用</h1>
-<h2 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h2>
-<p>创建一个Maven对象，在pom.xml中导入依赖</p>
-<h3 id="pomxml"><a class="markdownIt-Anchor" href="#pomxml"></a> pom.xml</h3>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modules</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">module</span>&gt;</span>chapter06<span class="tag">&lt;/<span class="name">module</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">modules</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-expression<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="创建bean"><a class="markdownIt-Anchor" href="#创建bean"></a> 创建Bean</h2>
-<p>所谓的创建Bean我的理解是创建一个待Spring管理的Java类</p>
-<h3 id="studentjava"><a class="markdownIt-Anchor" href="#studentjava"></a> student.java</h3>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Student对象创建了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">study</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;学生正在学习&quot;</span> + msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="teaccherjava"><a class="markdownIt-Anchor" href="#teaccherjava"></a> teaccher.java</h3>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Teacher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Teacher对象创建了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">teach</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;老师讲解&quot;</span> + msg + <span class="string">&quot;知识&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="创建配置文件"><a class="markdownIt-Anchor" href="#创建配置文件"></a> 创建配置文件</h2>
-<p>spring通过该配置文件获取Bean的配置信息。</p>
-<h3 id="applicationcontextxml"><a class="markdownIt-Anchor" href="#applicationcontextxml"></a> applicationContext.xml</h3>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;student&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.Student&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>Spring<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;teacher&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.Teacher&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>C++<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="编写测试类"><a class="markdownIt-Anchor" href="#编写测试类"></a> 编写测试类</h2>
-<p>测试一下Spring是否能根据配置文件自动创建Student对象</p>
-<h3 id="testspringjava"><a class="markdownIt-Anchor" href="#testspringjava"></a> TestSpring.java</h3>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSpring</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testStudent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        Student student = applicationContext.getBean(<span class="string">&quot;student&quot;</span>, Student.class);</span><br><span class="line">        student.study();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTeacher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        Teacher teacher = applicationContext.getBean(<span class="string">&quot;teacher&quot;</span>, Teacher.class);</span><br><span class="line">        teacher.teach();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="运行结果"><a class="markdownIt-Anchor" href="#运行结果"></a> 运行结果</h2>
-<p>运行testTeacher()函数，可以得到如下结果：</p>
-<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">Student对象创建了</span><br><span class="line">Teacher对象创建了</span><br><span class="line">老师讲解C++知识</span><br></pre></td></tr></table></figure>
-<p>可以看出，虽然没有调用Student对象，但是Student和Teacher都被创建了。</p>
-<p>这是因为在Spring容器启动时，Spring会自动创建所有他所管理的Bean对象，而不是在第一次调用时才实例化</p>
-<p>若想要等到第一次调用时才实例化对象，可以在bean中使用lazy-init属性：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;teacher&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.teacher&quot;</span> <span class="attr">lazy-init</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">value</span>&gt;</span>C++<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>JavaEE（ssm）企业应用实战</category>
@@ -2765,36 +2765,6 @@ AA-->BB-->CC-->DD-->EE</pre>
       </tags>
   </entry>
   <entry>
-    <title>第8章 集成Log4j日志</title>
-    <url>/post/d292.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="log4j介绍"><a class="markdownIt-Anchor" href="#log4j介绍"></a> Log4j介绍</h1>
-<p>Log4j是Apache下的一个开源项目，通过使用Log4j可以将日志信息打印到控制台、文件等。我们也可以控制每一条日志的输出格式，通过定义每一条日志信息的级别能够更加细致地控制日志的生成过程。</p>
-<p>在应用程序中添加日志记录的目的有三个：</p>
-<ol>
-<li>监视代码中变量的变化情况，周期性地记录到文件中，供其他应用进行统计分析工作。</li>
-<li>跟踪代码运行时的轨迹，作为日后审计的依据。</li>
-<li>担当集成开发环境中调试器的作用，向文件或控制台打印代码的调试信息。</li>
-</ol>
-<p>Log4j有三个主要的组件：Loggers（记录器）：日志类别；Appenders（输出源）：日志要输出的地方；Layouts（布局）：日志以哪种形式输出。Log4j的工作原理如图所示：</p>
-<div class="mermaid">graph TB
-	LRL(LoggerRepository Logger的容器)-----LR(Logger日志记录器)--1:1---LL(Level)
-	LR--1:n---A(Appender日志输出端)--1:1---Lt(Layout布局)-----PL(PatternLayout)
-	A-----AS(Appender Skeleton)-----WA(WriterAppender)-----FA(FileAppender)-----RFA(RollingFileAppender)
-	WA-----CA(ConsoleAppender)</div>
-<ul>
-<li>Loggers（记录器）：Loggers组件被分为7个级别：all、debug、info、warn、error、fatal、off。优先级为：all &lt; debug &lt; info &lt; warn &lt; error &lt; fatal &lt; off，分别用来指定这条日志信息的重要程度，而Log4j只输出级别不低于设定级别的日志信息。</li>
-<li>Appenders（输出源）：Log4j日志系统允许把日志输出到不同的地方，如控制台（Console）、文件（File）等，可以根据天数或者文件大小产生新的文件，可以以流的形式发送到其他地方等。</li>
-<li>Layout（布局）：Layout的作用是控制log信息的输出方式，也就是格式化输出的信息。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>一步一步学SpringBoot2微服务项目实战</category>
-      </categories>
-      <tags>
-        <tag>Spring Boot</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第6章 使用过滤器和监听器</title>
     <url>/post/1da3.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="过滤器filter"><a class="markdownIt-Anchor" href="#过滤器filter"></a> 过滤器Filter</h1>
@@ -2826,10 +2796,27 @@ AA-->BB-->CC-->DD-->EE</pre>
       </tags>
   </entry>
   <entry>
-    <title>第7章 集成Redis缓存</title>
-    <url>/post/f553.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="redis缓存介绍"><a class="markdownIt-Anchor" href="#redis缓存介绍"></a> Redis缓存介绍</h1>
-<p>Redis是一个基于内存的单线程高性能key-value型数据库，读写性能优异。支持丰富的数据类型，包括string（字符串）、list（链表）、set（集合）、zset（sorted set有序集合）和hash（哈希类型）。因此，Redis在企业中被广泛使用。</p>
+    <title>第8章 集成Log4j日志</title>
+    <url>/post/d292.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="log4j介绍"><a class="markdownIt-Anchor" href="#log4j介绍"></a> Log4j介绍</h1>
+<p>Log4j是Apache下的一个开源项目，通过使用Log4j可以将日志信息打印到控制台、文件等。我们也可以控制每一条日志的输出格式，通过定义每一条日志信息的级别能够更加细致地控制日志的生成过程。</p>
+<p>在应用程序中添加日志记录的目的有三个：</p>
+<ol>
+<li>监视代码中变量的变化情况，周期性地记录到文件中，供其他应用进行统计分析工作。</li>
+<li>跟踪代码运行时的轨迹，作为日后审计的依据。</li>
+<li>担当集成开发环境中调试器的作用，向文件或控制台打印代码的调试信息。</li>
+</ol>
+<p>Log4j有三个主要的组件：Loggers（记录器）：日志类别；Appenders（输出源）：日志要输出的地方；Layouts（布局）：日志以哪种形式输出。Log4j的工作原理如图所示：</p>
+<div class="mermaid">graph TB
+	LRL(LoggerRepository Logger的容器)-----LR(Logger日志记录器)--1:1---LL(Level)
+	LR--1:n---A(Appender日志输出端)--1:1---Lt(Layout布局)-----PL(PatternLayout)
+	A-----AS(Appender Skeleton)-----WA(WriterAppender)-----FA(FileAppender)-----RFA(RollingFileAppender)
+	WA-----CA(ConsoleAppender)</div>
+<ul>
+<li>Loggers（记录器）：Loggers组件被分为7个级别：all、debug、info、warn、error、fatal、off。优先级为：all &lt; debug &lt; info &lt; warn &lt; error &lt; fatal &lt; off，分别用来指定这条日志信息的重要程度，而Log4j只输出级别不低于设定级别的日志信息。</li>
+<li>Appenders（输出源）：Log4j日志系统允许把日志输出到不同的地方，如控制台（Console）、文件（File）等，可以根据天数或者文件大小产生新的文件，可以以流的形式发送到其他地方等。</li>
+<li>Layout（布局）：Layout的作用是控制log信息的输出方式，也就是格式化输出的信息。</li>
+</ul>
 ]]></content>
       <categories>
         <category>一步一步学SpringBoot2微服务项目实战</category>
@@ -2842,6 +2829,19 @@ AA-->BB-->CC-->DD-->EE</pre>
     <title>第9章 Quartz定时器和发送Email</title>
     <url>/post/e345.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+      <categories>
+        <category>一步一步学SpringBoot2微服务项目实战</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第7章 集成Redis缓存</title>
+    <url>/post/f553.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="redis缓存介绍"><a class="markdownIt-Anchor" href="#redis缓存介绍"></a> Redis缓存介绍</h1>
+<p>Redis是一个基于内存的单线程高性能key-value型数据库，读写性能优异。支持丰富的数据类型，包括string（字符串）、list（链表）、set（集合）、zset（sorted set有序集合）和hash（哈希类型）。因此，Redis在企业中被广泛使用。</p>
+]]></content>
       <categories>
         <category>一步一步学SpringBoot2微服务项目实战</category>
       </categories>
