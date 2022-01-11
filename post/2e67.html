@@ -1,0 +1,360 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>React main concepts（五） | Good Good Study, Day Day Up!</title><meta name="keywords" content="react"><meta name="author" content="冲酱"><meta name="copyright" content="冲酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="State and Lifecycle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React main concepts（五）">
+<meta property="og:url" content="http://yunchongxiao.gitee.io/post/2e67.html">
+<meta property="og:site_name" content="Good Good Study, Day Day Up!">
+<meta property="og:description" content="State and Lifecycle">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yunchongxiao.gitee.io/pictures/covers/react.jpg">
+<meta property="article:published_time" content="2021-12-16T07:16:06.351Z">
+<meta property="article:modified_time" content="2021-12-20T06:20:03.006Z">
+<meta property="article:author" content="冲酱">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yunchongxiao.gitee.io/pictures/covers/react.jpg"><link rel="shortcut icon" href="/imgs/favicon.jpg"><link rel="canonical" href="http://yunchongxiao.gitee.io/post/2e67"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'React main concepts（五）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-20 14:20:03'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/universe.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Good Good Study, Day Day Up!" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/avatar1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/pictures/covers/react.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Good Good Study, Day Day Up!</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">React main concepts（五）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-16T07:16:06.351Z" title="发表于 2021-12-16 15:16:06">2021-12-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-20T06:20:03.006Z" title="更新于 2021-12-20 14:20:03">2021-12-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/react-guide-to-main-concepts/">react guide to main concepts.</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="React main concepts（五）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/2e67.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/post/2e67.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>建议配合官网文档 <a target="_blank" rel="noopener" href="https://reactjs.org/docs/state-and-lifecycle.html">State and Lifecycle</a> 进行阅读。</p>
+</blockquote>
+<h1 id="state-and-lifecycle"><a class="markdownIt-Anchor" href="#state-and-lifecycle"></a> State and Lifecycle</h1>
+<p>这一节将会介绍state, lifecycle的概念，你可以在<a target="_blank" rel="noopener" href="https://reactjs.org/docs/react-component.html">detailed component API reference</a>找到更详细的讲解。</p>
+<p>在之前的章节中，我们有一个有一个可以显示时间的元素，当时我们的更新方式为重新创建一个新元素，并调用<code>ReactDOM.render()</code>函数：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tick</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> element = (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h1&gt;Hello, world&lt;/h1&gt;</span><br><span class="line">      &lt;h2&gt;It is &#123;<span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleTimeString()&#125;.&lt;/h2&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    )</span><br><span class="line">    ReactDOM.render(element, <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">setInterval</span>(tick, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<p>在这一节，我们将学习如何时将这个时间元素变得可重用，并且封装它。我们的封装如下所示：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 时钟函数组件</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Clock</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;h1&gt;Hello, world&lt;/h1&gt;</span><br><span class="line">      &lt;h2&gt;It is &#123;props.date.toLocaleTimeString()&#125;.&lt;/h2&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tick</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  ReactDOM.render(</span><br><span class="line">    &lt;Clock date=&#123;<span class="keyword">new</span> <span class="built_in">Date</span>()&#125; /&gt;</span><br><span class="line">    <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>)</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">setInterval</span>(tick, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<p>这种封装方式有一个至关重要的问题，即时钟的更新时间<code>setInterval()</code>应该属于<code>Clock</code>组件的内部细节，但上述代码并没有将其放在<code>Clock</code>内部，为了实现该功能，我们向<code>Clock</code>中引入<code>state</code>。<br>
+state 和 props 十分类似，但 state 是私有的，并且完全由组件控制，即可以类可以修改自己的 state.</p>
+<h2 id="converting-a-function-to-a-class"><a class="markdownIt-Anchor" href="#converting-a-function-to-a-class"></a> Converting a Function to a Class</h2>
+<p>在需要使用 state 时，一般的做法是使用类组件，因此我们先将函数组件改写为类组件：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Clock</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello, world!&lt;/h1&gt;</span><br><span class="line">        &lt;h2&gt;It is &#123;<span class="built_in">this</span>.props.date.toLocaleTimeString()&#125;.&lt;/h2&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>我们知道，无论是类组件还是上面封装的函数组件，对于 React 来说都是等价的，在这种情况下，每次更新时 React 都会自动的调用<code>render()</code>函数，但只会渲染在同一个 DOM 上，并不会像之前的章节那样每次都创建一个新实例。</p>
+<p>下面，我们使用类组件中的 state 进行更好的封装。</p>
+<h2 id="adding-local-state-to-a-class"><a class="markdownIt-Anchor" href="#adding-local-state-to-a-class"></a> Adding Local State to a Class</h2>
+<p>对于一个可复用的时钟来说，刷新的时间间隔最好自己的属性，而不是参数，因此我们通过如下方式将 props 变成 state：</p>
+<ol>
+<li>在类中添加构造函数，初始化其<code>state</code>: <figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Clock</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="built_in">super</span>(props);</span><br><span class="line">    <span class="built_in">this</span>.state = &#123;<span class="attr">date</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/* render函数 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>构造函数<code>constructor()</code>中<code>super(props)</code>不能省略，该语句表示初始化父类。</p>
+</blockquote>
+</li>
+<li>将<code>this.props.date</code>变成<code>this.state.date</code> <figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Clock</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello, world!&lt;/h1&gt;</span><br><span class="line">        &lt;h2&gt;It is &#123;<span class="built_in">this</span>.state.date.toLocaleTimeString()&#125;.&lt;/h2&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li>将传递给<code>Clock</code>的 props 删除，我们可以得到如下代码： <figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Clock</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="comment">/* 构造函数，用来初始化 satate */</span></span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="built_in">super</span>(props);</span><br><span class="line">    <span class="built_in">this</span>.state = &#123;<span class="attr">date</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/* render函数，用来返回希望显示的 UI 描述 */</span></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello, world!&lt;/h1&gt;</span><br><span class="line">        &lt;h2&gt;It is &#123;<span class="built_in">this</span>.state.date.toLocaleTimeString()&#125;.&lt;<span class="regexp">/h2&gt;      &lt;/</span>div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 将组件渲染到根节点上 */</span></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  <span class="comment">/* 这里的 Clock 不再接收 date=&quot;new Date()&quot; */</span></span><br><span class="line">  &lt;Clock /&gt;,  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>最后，我们将计时器添加到组件本身。</p>
+<h2 id="adding-lifecycle-methods-to-a-class"><a class="markdownIt-Anchor" href="#adding-lifecycle-methods-to-a-class"></a> Adding Lifecycle Methods to a Class</h2>
+<p>对于组件来说，当被销毁时，释放资源是十分重要的。<br>
+我们希望当<code>Clock</code>被创建时，开启一个计时器，这在 React 中被称为挂载 <code>mounting</code><br>
+我们也希望当<code>Clock</code>被销毁时，能结束这个定时器，这咋 React 中被称为卸载 <code>unmounting</code><br>
+我们可以在类组件中编写特定的函数，去规定当组件在挂载和卸载的时候需要执行的代码：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Clock</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="built_in">super</span>(props);</span><br><span class="line">    <span class="built_in">this</span>.state = &#123;<span class="attr">date</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">/* 组件完成挂载后需要执行的代码 */</span></span><br><span class="line">  componentDidMount() &#123;  &#125;</span><br><span class="line">  <span class="comment">/* 组件完成卸载前需要执行的代码 */</span></span><br><span class="line">  componentWillUnmount() &#123;  &#125;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello, world!&lt;/h1&gt;</span><br><span class="line">        &lt;h2&gt;It is &#123;<span class="built_in">this</span>.state.date.toLocaleTimeString()&#125;.&lt;/h2&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的<code>componentDidMount()</code>, <code>componentWillUnmount()</code>就被称作生命周期方法<code>lifecycle methods</code>.<br>
+<code>componentDidMount()</code>会在组件完成 DOM 渲染后执行，因此在这里开启定时器时合理的：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">componentDidMount() &#123;</span><br><span class="line">  <span class="built_in">this</span>.timerID = <span class="built_in">setInterval</span>(</span><br><span class="line">    () =&gt; <span class="built_in">this</span>.tick(),</span><br><span class="line">    <span class="number">1000</span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里我们将定时器变量保存在<code>this.timerID</code>中，相较与 React 内置的 <code>this.props</code>, <code>this.state</code>，只要是不参加数据流动的变量，我们都可以自由的添加在类组件中，就如<code>this.timerID</code>一样。</p>
+</blockquote>
+<p>我们将会在<code>componentWillUnmount()</code>中销毁启动的定时器：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">componentWillUnmount() &#123;</span><br><span class="line">  <span class="built_in">clearInterval</span>(<span class="built_in">this</span>.timerID);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，我们会实现在定时器中回调的<code>tick()</code>的函数：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">tick() &#123;</span><br><span class="line">  <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">    date: <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最终，<code>Clock</code>被封装成：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Clock 类组件</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Clock</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 构造函数</span></span><br><span class="line">  <span class="keyword">constructor</span>(props) &#123;</span><br><span class="line">    <span class="built_in">super</span>(props);</span><br><span class="line">    <span class="built_in">this</span>.state = &#123;<span class="attr">date</span>: <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 挂在完成后开启定时器</span></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    <span class="built_in">this</span>.timerID = <span class="built_in">setInterval</span>(</span><br><span class="line">      () =&gt; <span class="built_in">this</span>.tick(),</span><br><span class="line">      <span class="number">1000</span></span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 卸载开始前清除定时器</span></span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    <span class="built_in">clearInterval</span>(<span class="built_in">this</span>.timerID);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 定时器中的回调函数，用来更新 state 中的 date</span></span><br><span class="line">  tick() &#123;</span><br><span class="line">    <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">      date: <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 渲染函数，用来输出希望在 UI 中呈现的内容</span></span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;h1&gt;Hello, world!&lt;/h1&gt;</span><br><span class="line">        &lt;h2&gt;It is &#123;<span class="built_in">this</span>.state.date.toLocaleTimeString()&#125;.&lt;/h2&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将 Clock 渲染到根节点上</span></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;Clock /&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>现在，让我们从头梳理一下函数的调用顺序：</p>
+<ol>
+<li>当 <code>&lt;Clock /&gt;</code>被传递到<code>ReactDOM.render()</code>中， React 调用 <code>Clock</code>的构造函数新建一个<code>Clock</code>实例，在构造函数<code>constructor()</code>中初始化<code>Clock</code>中的<code>state</code>。</li>
+<li>React 调用<code>Clock</code>中的<code>render()</code>函数，通过其输出（返回的元素），React 更新 DOM 以匹配我们预期的结果。</li>
+<li>当<code>Clock</code>确实插入到 DOM 中，React 调用<code>componentDidMount()</code>生命周期函数，在该函数里，我们开启了定时器，并将其命名为<code>timerID</code>绑定在实例中，该定时器会以1000毫秒为间隔重复调用<code>tick()</code>函数。</li>
+<li>每次<code>tick()</code>函数被调用时，<code>Clock</code>会根据<code>setState()</code>函数对<code>state</code>的更新，更新 UI，由于 <code>setState()</code>函数的调用，React 可以知道何时<code>state</code>被修改了，因此 React 在<code>state</code>被修改时会自动重新调用<code>render()</code>函数。</li>
+<li>如果<code>Clock</code>组件从 DOM 中移除，则在移除前会调用<code>componentWillUnmount()</code>生命周期函数，在该函数里，定时器将被清除。</li>
+</ol>
+<h2 id="using-state-correctly"><a class="markdownIt-Anchor" href="#using-state-correctly"></a> Using State Correctly</h2>
+<p>在使用<code>state</code>时，需要注意以下三点：</p>
+<h3 id="do-not-modify-state-directly"><a class="markdownIt-Anchor" href="#do-not-modify-state-directly"></a> Do Not Modify State Directly</h3>
+<p>由于React 是通过<code>setState()</code>来感知何时<code>state</code>被修改了，因此直接修改<code>state</code>可能不会使得组件被重新渲染：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Wrong, 没有通过 setState() 修改state，组件将不会重新渲染</span></span><br><span class="line"><span class="built_in">this</span>.state.comment = <span class="string">&#x27;Hello&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<p>因此正确的做法是使用<code>setState()</code>进行 <code>state</code>的修改：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Correct</span></span><br><span class="line"><span class="built_in">this</span>.setState(&#123;<span class="attr">comment</span>: <span class="string">&#x27;Hello&#x27;</span>&#125;);</span><br></pre></td></tr></table></figure>
+<p><code>this.state =</code>的语法只能用在构造函数<code>constructor()</code>中以初始化<code>state</code>.</p>
+<h3 id="state-updates-may-be-asynchronous"><a class="markdownIt-Anchor" href="#state-updates-may-be-asynchronous"></a> State Updates May Be Asynchronous</h3>
+<p>React 可能将多个<code>setState</code>函数批量调用以提升性能，因此<code>setState()</code>的更新可能是异步的，因此通过当前的<code>state</code>来计算下一<code>state</code>是不可靠的：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Wrong</span></span><br><span class="line"><span class="built_in">this</span>.setState(&#123;</span><br><span class="line">  counter: <span class="built_in">this</span>.state.counter + <span class="built_in">this</span>.props.increment,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>为了避免这个问题，当新的<code>state</code>需要依赖当前<code>state</code>时，不使用对象而采用函数的方式可以避免这个问题：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="built_in">this</span>.setState(</span><br><span class="line">  <span class="comment">// 这是仅存在返回语句的箭头函数的简写</span></span><br><span class="line">  <span class="comment">// 等价于 function(state, props) &#123; return &#123;counter: state.counter + props.increment&#125;&#125;</span></span><br><span class="line">  <span class="comment">// 实际上 setState 接收到的还是一个对象</span></span><br><span class="line">  (state, props)=&gt; (&#123;</span><br><span class="line">    counter: state.counter + props.increment</span><br><span class="line">  &#125;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="state-updates-are-merged"><a class="markdownIt-Anchor" href="#state-updates-are-merged"></a> State Updates are Merged</h3>
+<p>当<code>setState()</code>被调用时，React 会将你提供的对象与当前的<code>state</code>对象进行合并，也就是说，只有你提供的k-v会被修改，未提供的不会发生改变：</p>
+<h2 id="the-data-flows-down"><a class="markdownIt-Anchor" href="#the-data-flows-down"></a> The Data Flows Down</h2>
+<p>对于任意一个组件，其父组件和子组件以及其余任何组件都无法获取它的<code>state</code>，因此<code>state</code>是局部的、封装的。</p>
+<p>但是一个组件可以选择向其子组件（向下）传递它的<code>state</code>，即作为子组件的<code>props</code>：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line">&lt;FormattedDate date=&#123;<span class="built_in">this</span>.state.date&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<p><code>FormattedDate</code>组件接收<code>date</code>作为它的<code>props</code>，它并不关心<code>props</code>中的数据是否来自父组件的<code>state</code>，它只需要通过<code>props</code>使用即可：</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">FormattedDate</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>It is &#123;props.date.toLocaleTimeString()&#125;.<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种数据流通常被称为单向数据流或数据向下流动。</p>
+<p>每个组件都是独立的，如果我们创建三个<code>Clock</code>组件，它们对拥有各自的计时器，并独立的进行更新，互不影响。</p>
+<figure class="highlight jsx"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">App</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">      &lt;Clock /&gt;</span><br><span class="line">      &lt;Clock /&gt;</span><br><span class="line">      &lt;Clock /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;App /&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">冲酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yunchongxiao.gitee.io/post/2e67.html">http://yunchongxiao.gitee.io/post/2e67.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yunchongxiao.gitee.io" target="_blank">Good Good Study, Day Day Up!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/react/">react</a></div><div class="post_share"><div class="social-share" data-image="/pictures/covers/react.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/pictures/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/pictures/reward/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/667e.html"><img class="prev-cover" src="/pictures/covers/react.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">React main concepts（六）</div></div></a></div><div class="next-post pull-right"><a href="/post/ecd9.html"><img class="next-cover" src="/pictures/covers/react.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">React main concepts（四）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/3797.html" title="React main concepts（十）"><img class="cover" src="/pictures/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-18</div><div class="title">React main concepts（十）</div></div></a></div><div><a href="/post/b220.html" title="React main concepts（九）"><img class="cover" src="/pictures/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-17</div><div class="title">React main concepts（九）</div></div></a></div><div><a href="/post/ee7e.html" title="React main concepts（八）"><img class="cover" src="/pictures/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-17</div><div class="title">React main concepts（八）</div></div></a></div><div><a href="/post/5a1b.html" title="React main concepts（七）"><img class="cover" src="/pictures/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-17</div><div class="title">React main concepts（七）</div></div></a></div><div><a href="/post/667e.html" title="React main concepts（六）"><img class="cover" src="/pictures/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-17</div><div class="title">React main concepts（六）</div></div></a></div><div><a href="/post/ecd9.html" title="React main concepts（四）"><img class="cover" src="/pictures/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-16</div><div class="title">React main concepts（四）</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/avatar1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">冲酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/yunchongxiao"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/yunchongxiao" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:444049406@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的小破站~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#state-and-lifecycle"><span class="toc-number">1.</span> <span class="toc-text"> State and Lifecycle</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#converting-a-function-to-a-class"><span class="toc-number">1.1.</span> <span class="toc-text"> Converting a Function to a Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#adding-local-state-to-a-class"><span class="toc-number">1.2.</span> <span class="toc-text"> Adding Local State to a Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#adding-lifecycle-methods-to-a-class"><span class="toc-number">1.3.</span> <span class="toc-text"> Adding Lifecycle Methods to a Class</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#using-state-correctly"><span class="toc-number">1.4.</span> <span class="toc-text"> Using State Correctly</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#do-not-modify-state-directly"><span class="toc-number">1.4.1.</span> <span class="toc-text"> Do Not Modify State Directly</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#state-updates-may-be-asynchronous"><span class="toc-number">1.4.2.</span> <span class="toc-text"> State Updates May Be Asynchronous</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#state-updates-are-merged"><span class="toc-number">1.4.3.</span> <span class="toc-text"> State Updates are Merged</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#the-data-flows-down"><span class="toc-number">1.5.</span> <span class="toc-text"> The Data Flows Down</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/ed09.html" title="第四章-动态SQL和注解"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第四章-动态SQL和注解"/></a><div class="content"><a class="title" href="/post/ed09.html" title="第四章-动态SQL和注解">第四章-动态SQL和注解</a><time datetime="2022-01-05T14:40:20.098Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/84b4.html" title="第十章-Spring管理数据库事务"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第十章-Spring管理数据库事务"/></a><div class="content"><a class="title" href="/post/84b4.html" title="第十章-Spring管理数据库事务">第十章-Spring管理数据库事务</a><time datetime="2022-01-05T14:40:20.098Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/2970.html" title="第十一章-Spring基础"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第十一章-Spring基础"/></a><div class="content"><a class="title" href="/post/2970.html" title="第十一章-Spring基础">第十一章-Spring基础</a><time datetime="2022-01-05T14:40:20.097Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/22d8.html" title="第八章-Spring的AOP"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第八章-Spring的AOP"/></a><div class="content"><a class="title" href="/post/22d8.html" title="第八章-Spring的AOP">第八章-Spring的AOP</a><time datetime="2022-01-05T14:40:20.096Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/9657.html" title="第六章-Spring基础"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第六章-Spring基础"/></a><div class="content"><a class="title" href="/post/9657.html" title="第六章-Spring基础">第六章-Spring基础</a><time datetime="2022-01-05T14:40:20.096Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/pictures/covers/react.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 冲酱</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'VzaybaUM1tC9Jx76YTBf50nT-MdYXbMMI',
+      appKey: 'JFGs27pMegRQqKCAITeefKgs',
+      placeholder: '随便说点啥吧~',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I" data-fontsize="15px" data-random="false" async="async"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/958a88a8.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '958a88a8',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-clock/clock/images/weather/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>

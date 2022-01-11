@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>归并排序 | Good Good Study, Day Day Up!</title><meta name="keywords" content="排序,递归,分治"><meta name="author" content="冲酱"><meta name="copyright" content="冲酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="分治，递归，超难的排序出现了！！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="归并排序">
+<meta property="og:url" content="http://yunchongxiao.gitee.io/post/f8df.html">
+<meta property="og:site_name" content="Good Good Study, Day Day Up!">
+<meta property="og:description" content="分治，递归，超难的排序出现了！！">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yunchongxiao.gitee.io/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg">
+<meta property="article:published_time" content="2020-08-03T11:16:55.000Z">
+<meta property="article:modified_time" content="2022-01-05T14:41:42.335Z">
+<meta property="article:author" content="冲酱">
+<meta property="article:tag" content="排序">
+<meta property="article:tag" content="递归">
+<meta property="article:tag" content="分治">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yunchongxiao.gitee.io/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg"><link rel="shortcut icon" href="/imgs/favicon.jpg"><link rel="canonical" href="http://yunchongxiao.gitee.io/post/f8df"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '归并排序',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-01-05 22:41:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/universe.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Good Good Study, Day Day Up!" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/avatar1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Good Good Study, Day Day Up!</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">归并排序</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-08-03T11:16:55.000Z" title="发表于 2020-08-03 19:16:55">2020-08-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-05T14:41:42.335Z" title="更新于 2022-01-05 22:41:42">2022-01-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">排序算法</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="归并排序"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/f8df.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/post/f8df.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="算法简介"><a class="markdownIt-Anchor" href="#算法简介"></a> 算法简介</h2>
+<p>归并算法是分治法的一个典型应用，先将数组分成两个部分，分别排序，再将两个有序的部分合并起来，对于左右两个部分的小数组，同样采取的思想，这就是分治法的大致思路<br>
+我自己对于递归的理解是，递归函数就是一个黑盒函数，不管内部如何实现，传入正确的参数就能实现正确的功能<br>
+因此在内部实现的过程中，不用考虑压栈之类的想法，内部进行递归调用时直接让递归函数实现功能即可</p>
+<h2 id="算法思想"><a class="markdownIt-Anchor" href="#算法思想"></a> 算法思想</h2>
+<p>首先将数组平均分成两个部分，对左半部分、右半部分分别递归调用merge_sort()<br>
+这样左右两部分的数组就已经排好序了，接下来对这两个数组进行合并；（这里就是函数直接实现其功能）<br>
+为左右两个数组分别复制到一个新空间，原来的数组空间用来存放合并后的序列；<br>
+为merge()函数传入三个参数，分为是做数组的其实位置、右数组的起始位置，右数组的截止位置<br>
+两个数组从起始位置的元素开始比较，选择相对小的元素放入到合并空间，<br>
+重复上条步骤直到所有元素均放到合并空间；<br>
+这样就完成了两个有序数组的合并，递归排序就完成了；</p>
+<h2 id="动图演示"><a class="markdownIt-Anchor" href="#动图演示"></a> 动图演示</h2>
+<p><img src="/post/f8df/divide_conquer.png" alt><br>
+<img src="/post/f8df/mergeSort.gif" alt></p>
+<h2 id="代码实现"><a class="markdownIt-Anchor" href="#代码实现"></a> 代码实现</h2>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * @Author: 冲酱 </span></span><br><span class="line"><span class="comment"> * @Date: 2020-08-03 19:28:23 </span></span><br><span class="line"><span class="comment"> * @Last Modified by: 冲酱</span></span><br><span class="line"><span class="comment"> * @Last Modified time: 2020-08-03 20:01:17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;my_sort.hpp&quot;</span>  </span></span><br><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment">    自定义的一些有关数组操作的头文件，包括：</span></span><br><span class="line"><span class="comment">    初始化数组函数init_rray(int *, int);</span></span><br><span class="line"><span class="comment">    元素交换函数swap(int &amp;, int &amp;);</span></span><br><span class="line"><span class="comment">    打印数组函数display(int *, int);</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并子数组</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> *num_array, <span class="keyword">int</span> p, <span class="keyword">int</span> q, <span class="keyword">int</span> r)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并排序</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge_sort</span><span class="params">(<span class="keyword">int</span> *num_array, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并实现，p为左边界（可取到），p为右边界（可取到），r为左右数组分界点</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span> *num_array, <span class="keyword">int</span> p, <span class="keyword">int</span> q, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// 计算左右两个子数组的长度</span></span><br><span class="line">    <span class="keyword">int</span> n1 = q - p + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> n2 = r - (q + <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 开辟两个新空间，存放左右两个子数组，拓宽一位，将末尾当作哨兵值，</span></span><br><span class="line">    <span class="keyword">int</span> *left = <span class="keyword">new</span> <span class="keyword">int</span>[n1 + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> *right = <span class="keyword">new</span> <span class="keyword">int</span>[n2 + <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* </span></span><br><span class="line"><span class="comment">        将num_array的左右数组分开存放，将最后一位哨兵值存为正无穷</span></span><br><span class="line"><span class="comment">        这里是重点，合并两个小数组进行元素比较时，将较小的元素存入数组</span></span><br><span class="line"><span class="comment">        这样便不用担心小数组越界，因为不可能有数据比正无穷大</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n1; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        left[i] = num_array[p + i];</span><br><span class="line">    &#125;</span><br><span class="line">    left[n1] = INT_MAX; <span class="comment">// 哨兵值，为最大整型</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n2; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        right[i] = num_array[q + <span class="number">1</span> + i];</span><br><span class="line">    &#125;</span><br><span class="line">    right[n2] = INT_MAX; <span class="comment">// 哨兵值，为最大整型</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> l_index = <span class="number">0</span>, r_index = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; r - p + <span class="number">1</span>; i++) <span class="comment">// 这里的遍历下界位p, 上界r - q + 1需要小心，否则可能在else中存入哨兵值</span></span><br><span class="line">    &#123;                                   <span class="comment">// 从左、右子数组选择最小的值插入原数组，由于哨兵值是最大值，比任何值都大，因此不可能被存入数组</span></span><br><span class="line">        <span class="keyword">if</span> (left[l_index] &lt; right[r_index])</span><br><span class="line">        &#123;</span><br><span class="line">            num_array[i + p] = left[l_index++];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">            当两个数组的所有元素都被合并时，应该进行了r - p次存储，</span></span><br><span class="line"><span class="comment">            若for循环遍历次数多于r - p，则一定会存入哨兵值，要注意</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            num_array[i + p] = right[r_index++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span>[] left; <span class="comment">// 释放内存，做一个优秀的程序员</span></span><br><span class="line">    <span class="keyword">delete</span>[] right;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// l为待排数组左边界（可取到）,r为待排数组右边界（可取到）</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge_sort</span><span class="params">(<span class="keyword">int</span> *num_array, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &lt; r)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> m = (l + r) / <span class="number">2</span>;</span><br><span class="line">        merge_sort(num_array, l, m);</span><br><span class="line">        merge_sort(num_array, m + <span class="number">1</span>, r);</span><br><span class="line">        merge(num_array, l, m, r);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num_array[SIZE];</span><br><span class="line">    init_array(num_array, SIZE);</span><br><span class="line">    <span class="built_in">display</span>(num_array, SIZE);</span><br><span class="line">    <span class="comment">// 注意这里需要传入SIZE - 1，此时的意义为数组中最后一位数据的下标，而并非数组长度。</span></span><br><span class="line">    merge_sort(num_array, <span class="number">0</span>, SIZE - <span class="number">1</span>);</span><br><span class="line">    <span class="built_in">display</span>(num_array, SIZE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="算法评估"><a class="markdownIt-Anchor" href="#算法评估"></a> 算法评估</h2>
+<h3 id="时间复杂度"><a class="markdownIt-Anchor" href="#时间复杂度"></a> 时间复杂度</h3>
+<p>归并排序的算法复杂度是O(nlogn)<br>
+这里在借用一下上面的图，可以发现分的过程中整个数组被分成了logn层，每一层都含有n个元素<br>
+而治的过程，根据代码，在每层合并时会比较n次，因此时间复杂度为O(nlogn)<br>
+<img src="/post/f8df/divide_conquer.png" alt></p>
+<h3 id="空间复杂度"><a class="markdownIt-Anchor" href="#空间复杂度"></a> 空间复杂度</h3>
+<p>归并排序的空间复杂度为O(n)<br>
+由于在merge()函数归并过程中，我们给左右两个部分均开辟了一个新空间用于存放数据，因此空间复杂度为O(n)</p>
+<h3 id="稳定性"><a class="markdownIt-Anchor" href="#稳定性"></a> 稳定性</h3>
+<p>归并排序是稳定的<br>
+通过上图可以发现只有在治的时候才会发现顺序的交换，因此如果遇到相等元素时，只需要让左边数组的数据先排序即可满足稳定性</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">冲酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yunchongxiao.gitee.io/post/f8df.html">http://yunchongxiao.gitee.io/post/f8df.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yunchongxiao.gitee.io" target="_blank">Good Good Study, Day Day Up!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8E%92%E5%BA%8F/">排序</a><a class="post-meta__tags" href="/tags/%E9%80%92%E5%BD%92/">递归</a><a class="post-meta__tags" href="/tags/%E5%88%86%E6%B2%BB/">分治</a></div><div class="post_share"><div class="social-share" data-image="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/pictures/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/pictures/reward/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/2c2a.html"><img class="prev-cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">快速排序</div></div></a></div><div class="next-post pull-right"><a href="/post/c40e.html"><img class="next-cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">插入排序</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/2c2a.html" title="快速排序"><img class="cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-08</div><div class="title">快速排序</div></div></a></div><div><a href="/post/b66a.html" title="堆排序"><img class="cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-09</div><div class="title">堆排序</div></div></a></div><div><a href="/post/c40e.html" title="插入排序"><img class="cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-02</div><div class="title">插入排序</div></div></a></div><div><a href="/post/52f6.html" title="冒泡排序"><img class="cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-01</div><div class="title">冒泡排序</div></div></a></div><div><a href="/post/c803.html" title="选择排序"><img class="cover" src="/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-01</div><div class="title">选择排序</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/avatar1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">冲酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/yunchongxiao"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/yunchongxiao" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:444049406@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的小破站~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text"> 算法简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3"><span class="toc-number">2.</span> <span class="toc-text"> 算法思想</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E5%9B%BE%E6%BC%94%E7%A4%BA"><span class="toc-number">3.</span> <span class="toc-text"> 动图演示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text"> 代码实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E8%AF%84%E4%BC%B0"><span class="toc-number">5.</span> <span class="toc-text"> 算法评估</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">5.1.</span> <span class="toc-text"> 时间复杂度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6"><span class="toc-number">5.2.</span> <span class="toc-text"> 空间复杂度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%B3%E5%AE%9A%E6%80%A7"><span class="toc-number">5.3.</span> <span class="toc-text"> 稳定性</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/ed09.html" title="第四章-动态SQL和注解"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第四章-动态SQL和注解"/></a><div class="content"><a class="title" href="/post/ed09.html" title="第四章-动态SQL和注解">第四章-动态SQL和注解</a><time datetime="2022-01-05T14:40:20.098Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/84b4.html" title="第十章-Spring管理数据库事务"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第十章-Spring管理数据库事务"/></a><div class="content"><a class="title" href="/post/84b4.html" title="第十章-Spring管理数据库事务">第十章-Spring管理数据库事务</a><time datetime="2022-01-05T14:40:20.098Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/2970.html" title="第十一章-Spring基础"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第十一章-Spring基础"/></a><div class="content"><a class="title" href="/post/2970.html" title="第十一章-Spring基础">第十一章-Spring基础</a><time datetime="2022-01-05T14:40:20.097Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/22d8.html" title="第八章-Spring的AOP"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第八章-Spring的AOP"/></a><div class="content"><a class="title" href="/post/22d8.html" title="第八章-Spring的AOP">第八章-Spring的AOP</a><time datetime="2022-01-05T14:40:20.096Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/9657.html" title="第六章-Spring基础"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第六章-Spring基础"/></a><div class="content"><a class="title" href="/post/9657.html" title="第六章-Spring基础">第六章-Spring基础</a><time datetime="2022-01-05T14:40:20.096Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/pictures/covers/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 冲酱</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'VzaybaUM1tC9Jx76YTBf50nT-MdYXbMMI',
+      appKey: 'JFGs27pMegRQqKCAITeefKgs',
+      placeholder: '随便说点啥吧~',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I" data-fontsize="15px" data-random="false" async="async"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/958a88a8.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '958a88a8',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-clock/clock/images/weather/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>

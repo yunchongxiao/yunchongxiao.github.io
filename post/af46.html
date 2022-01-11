@@ -1,0 +1,456 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第3章 全注解下的Spring IoC | Good Good Study, Day Day Up!</title><meta name="keywords" content="Spring Boot"><meta name="author" content="冲酱"><meta name="copyright" content="冲酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本章探讨IoC的各种概念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第3章 全注解下的Spring IoC">
+<meta property="og:url" content="http://yunchongxiao.gitee.io/post/af46.html">
+<meta property="og:site_name" content="Good Good Study, Day Day Up!">
+<meta property="og:description" content="本章探讨IoC的各种概念。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yunchongxiao.gitee.io/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg">
+<meta property="article:published_time" content="2022-01-05T14:40:20.094Z">
+<meta property="article:modified_time" content="2022-01-05T14:41:42.388Z">
+<meta property="article:author" content="冲酱">
+<meta property="article:tag" content="Spring Boot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yunchongxiao.gitee.io/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg"><link rel="shortcut icon" href="/imgs/favicon.jpg"><link rel="canonical" href="http://yunchongxiao.gitee.io/post/af46"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第3章 全注解下的Spring IoC',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-01-05 22:41:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/universe.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Good Good Study, Day Day Up!" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/avatar1.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Good Good Study, Day Day Up!</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第3章 全注解下的Spring IoC</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-01-05T14:40:20.094Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-05T14:41:42.388Z" title="更新于 2022-01-05 22:41:42">2022-01-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring-Boot-2-x/">深入浅出Spring Boot 2.x</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第3章 全注解下的Spring IoC"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/af46.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/post/af46.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="spring理念简介"><a class="markdownIt-Anchor" href="#spring理念简介"></a> Spring理念简介</h1>
+<p>Spring最成功的是其提出的理念，而不是技术本身，Spring所依赖的核心理念有两个：</p>
+<ol>
+<li>控制反转（Inversion of Control，IoC）；</li>
+<li>面向切面编程（Aspect Oriented Programing，AOP）。</li>
+</ol>
+<p>本章首先介绍IoC思想。</p>
+<h1 id="基于注解的ioc"><a class="markdownIt-Anchor" href="#基于注解的ioc"></a> 基于注解的IoC</h1>
+<p>由于Spring Boot是基于注解的开发，因此下文仅介绍全注解的方式讲述Spring IoC技术。</p>
+<p>IoC：Inversion of Control，控制反转，是一种通过描述来生成或获取对象的技术，这个技术不是Spring或Java独有的，而是一种理念。对于Java来说，我们常用new关键字来创建对象，而在Spring中则通过描述（XML文件或注解）来创建或者获取对象。</p>
+<p>一个系统可以生成各种对象，并且这些对象都需要进行管理。由于对象间很可能存在各种依赖关系（一对多，如班级和学生；多对多，如学生和老师；等），为此Spring还提供了依赖注入的功能，是我们能够通过描述来管理各个对象之间的关系。</p>
+<p>为了管理各种对象，我们需要一个容器，在Spring中把每一个需要管理的对象称为Spring Bean（简称Bean），该容器被称为Spring IoC容器（简称为IoC容器）。</p>
+<p>IoC容器需要具备两个基本的功能：</p>
+<ol>
+<li>通过描述管理Bean，包括发布和获取Bean；</li>
+<li>通过描述完成Bean之间的依赖关系。</li>
+</ol>
+<h1 id="ioc容器简介"><a class="markdownIt-Anchor" href="#ioc容器简介"></a> IoC容器简介</h1>
+<p>Spring IoC容器是一个管理Bean的容器，在Spring的定义中，它要求所有的IoC容器都需要实现接口BeanFactory ，它是一个顶级容器接口。我们可以查看该接口的源码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Source code recreated from a .class file by IntelliJ IDEA</span></span><br><span class="line"><span class="comment">// (powered by FernFlower decompiler)</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> org.springframework.beans.factory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.ResolvableType;</span><br><span class="line"><span class="keyword">import</span> org.springframework.lang.Nullable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BeanFactory</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 前缀</span></span><br><span class="line">    String FACTORY_BEAN_PREFIX = <span class="string">&quot;&amp;&quot;</span>;</span><br><span class="line">	<span class="comment">// 多个getBean方法</span></span><br><span class="line">    <span class="function">Object <span class="title">getBean</span><span class="params">(String var1)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">T <span class="title">getBean</span><span class="params">(String var1, Class&lt;T&gt; var2)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Object <span class="title">getBean</span><span class="params">(String var1, Object... var2)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">T <span class="title">getBean</span><span class="params">(Class&lt;T&gt; var1)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">T <span class="title">getBean</span><span class="params">(Class&lt;T&gt; var1, Object... var2)</span> <span class="keyword">throws</span> BeansException</span>;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">ObjectProvider&lt;T&gt; <span class="title">getBeanProvider</span><span class="params">(Class&lt;T&gt; var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">ObjectProvider&lt;T&gt; <span class="title">getBeanProvider</span><span class="params">(ResolvableType var1)</span></span>;</span><br><span class="line">	<span class="comment">// 是否包含Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">containsBean</span><span class="params">(String var1)</span></span>;</span><br><span class="line">	<span class="comment">// 是否是单例</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isSingleton</span><span class="params">(String var1)</span> <span class="keyword">throws</span> NoSuchBeanDefinitionException</span>;</span><br><span class="line">	<span class="comment">// 是否是原型</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isPrototype</span><span class="params">(String var1)</span> <span class="keyword">throws</span> NoSuchBeanDefinitionException</span>;</span><br><span class="line">	<span class="comment">// 是否类型匹配</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isTypeMatch</span><span class="params">(String var1, ResolvableType var2)</span> <span class="keyword">throws</span> NoSuchBeanDefinitionException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isTypeMatch</span><span class="params">(String var1, Class&lt;?&gt; var2)</span> <span class="keyword">throws</span> NoSuchBeanDefinitionException</span>;</span><br><span class="line">	<span class="comment">// 获取Bean的类型</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    Class&lt;?&gt; getType(String var1) <span class="keyword">throws</span> NoSuchBeanDefinitionException;</span><br><span class="line">	<span class="comment">// 获取Bean的别名</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    Class&lt;?&gt; getType(String var1, <span class="keyword">boolean</span> var2) <span class="keyword">throws</span> NoSuchBeanDefinitionException;</span><br><span class="line"></span><br><span class="line">    String[] getAliases(String var1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>通过观察源码，我们能看到该接口含有多个getBean方法，这些方法是IoC容器最重要的方法，他允许我们通过类型或者名称获取Bean，这对后面讲讲到的Spring的依赖注入（Dependency Injection，DI）是十分重要的。</p>
+<p>在默认情况下，Bean都是以单例形式存在的，也就是使用getBean返回的都是同一个对象。与单例相反，若一个Bean对象的isPrototype方法返回值为True，则不是单例模式，每次使用getBean时，容器会创建一个新的Bean返回给调用者，这与后面讨论的Bean的作用域相关。</p>
+<p>由于BeanFactory的功能还不够强大，因此Spring在BeanFactory的基础上，还设计了更高级的ApplicationContext，它是BeanFactory的子接口之一，在Spring体系中，BeanFactory和ApplicationContext是最重要的两个接口设计，实际使用中大部分IoC容器都是ApplicationContext的接口实现类。它们的关系如下图所示：</p>
+<pre class="mermaid">graph BT
+CLBF(ConfigurableListableBeanFactory)-->ACBF(AutowireCapableBeanFactory)-->BF(BeanFactory)
+CLBF-->CBF(ConfigurableBeanFactory)-->HBF(HierarchicalBeanFactory)-->BF
+CLBF-->LBF(ListableBeanFactory)-->BF
+WAC(WebApplicationContext)-->AC(ApplicationContext)-->AEP(ApplicationEventPublisher)
+CAC(ConfigurableApplicationContext)-->AC-->EC(EnvironmentCapable)
+AC-->MS(MessageSource)
+AC-->HBF
+AC-->RPR(ResourcePatternResolver)</pre>
+<h1 id="如何装配bean"><a class="markdownIt-Anchor" href="#如何装配bean"></a> 如何装配Bean</h1>
+<p>装配Bean的方式有两种：</p>
+<ol>
+<li>基于配置类的方式</li>
+<li>基于注解的装配方式</li>
+</ol>
+<p>常用的方式是基于注解的装配方式，下面会分别介绍这两种方式的做法。</p>
+<h1 id="基于配置类的装配方式"><a class="markdownIt-Anchor" href="#基于配置类的装配方式"></a> 基于配置类的装配方式</h1>
+<p>基于设置类的装配方式主要分为三部分：</p>
+<ol>
+<li>创建POJO类</li>
+<li>在配置类中创建装配方法</li>
+<li>创建ApplicationContext对象获取Bean对象</li>
+</ol>
+<h2 id="创建pojo类"><a class="markdownIt-Anchor" href="#创建pojo类"></a> 创建POJO类</h2>
+<p>对于项目中的Java类，我们称之为POJO类（Plain Ordinary Java Object，简单Java对象），因此我们先定义一个这些POJO类。注意这里需要getter和setter方法。</p>
+<p>在根目录下创建一个pojo包，专门放置POJO实体类，本例创建User类。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line">    <span class="keyword">private</span> String note;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Long <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(Long id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUserName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserName</span><span class="params">(String userName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userName = userName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;User&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;id=&quot;</span> + id +</span><br><span class="line">                <span class="string">&quot;, userName=&#x27;&quot;</span> + userName + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, note=&#x27;&quot;</span> + note + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getNote</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> note;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setNote</span><span class="params">(String note)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.note = note;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="在配置类中创建装配方法"><a class="markdownIt-Anchor" href="#在配置类中创建装配方法"></a> 在配置类中创建装配方法</h2>
+<p>首先需要编写一个配置类，在根目录下创建config包，在改包下创建AppConfig.java文件，该文件就是配置类，在类名上用@Configuration将该类注解为配置类。</p>
+<p>为配置类编写装配方法，每一个方法对应一个Bean的注册，在方法上用@Configuration将该方法对应为一个Bean。Spring根据该装配类生成IoC，并根据类中的方法装配Bean。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.pojo.User;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(name = &quot;user&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">initUser</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        User user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setId(<span class="number">1L</span>);</span><br><span class="line">        user.setUserName(<span class="string">&quot;Green&quot;</span>);</span><br><span class="line">        user.setNote(<span class="string">&quot;Where is the Alice&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>@Configuration：该注解代表这是一个Java配置文件，Spring容器会根据它来生成IoC容器，并装配Bean</li>
+<li>@Bean：该注解代表讲initUser方法返回的POJO装配到IoC容器中，而其属性name定义这个Bean的名称，若没有配置它，则讲方法名称“initUser”作为Bean的名称保存到Spring IoC容器中。</li>
+</ul>
+<h2 id="通过applicationcontext对象获取bean"><a class="markdownIt-Anchor" href="#通过applicationcontext对象获取bean"></a> 通过ApplicationContext对象获取Bean</h2>
+<p>我们在测试类中对该Bean进行获取测试，将AppConfig.class传入AnnotationConfigApplicationContext对象中，生成ApplicationContext对象。</p>
+<p>通过ApplicationContext.getBean方法可以获取Bean对象，可以通过类型进行获取，可以通过名称进行获取（默认为方法名，本例中设置为了”user“）。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.config.AppConfig;</span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.pojo.User;</span><br><span class="line"><span class="keyword">import</span> org.junit.jupiter.api.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoApplicationTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">IoCTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext appContext = <span class="keyword">new</span> AnnotationConfigApplicationContext(AppConfig.class);</span><br><span class="line">        User user = appContext.getBean(User.class);</span><br><span class="line">        <span class="comment">// User user = appContext.getBean(&quot;user&quot;);</span></span><br><span class="line">        System.out.println(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="/post/af46/image-20210216125148271.png" alt="测试结果"></p>
+<h1 id="基于注解的装配"><a class="markdownIt-Anchor" href="#基于注解的装配"></a> 基于注解的装配</h1>
+<p>如果使用一个个@Bean注解进行装配，那将是一件很麻烦的事情，由于Spring Boot是基于注解的方式，因此下面主要介绍基于注解的方式来介绍Bean的装配。</p>
+<p>基于注解的装配有两个要点：</p>
+<ol>
+<li>通过@ComponentScan注解设置扫描包路径</li>
+<li>通过@Value注解初始化对象</li>
+</ol>
+<h2 id="设置扫描包路径"><a class="markdownIt-Anchor" href="#设置扫描包路径"></a> 设置扫描包路径</h2>
+<p>我们在Appconfig.java这个配置类中通过@ComponentScan设置扫描的对象包路径，这里是pojo包。</p>
+<p>@ComponentScan中有两种设置方式：</p>
+<ol>
+<li>正则匹配，如：@ComponentScan(“io.gitee.yunchongxiao.chapter03.*”)</li>
+<li>指定基础包，如：@ComponentScan(basePackages = {“io.gitee.yunchongxiao.chapter03.pojo”})</li>
+<li>什么都不指定，即@ComponentScan，则扫描该类所在的包及其子包。</li>
+</ol>
+<p>个人比较喜欢第二种指定基础包的形式，仁仁智智吧</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.pojo.User;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(basePackages = &#123;&quot;io.gitee.yunchongxiao.chapter03.pojo&quot;&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(name = &quot;user&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">initUser</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        User user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setId(<span class="number">1L</span>);</span><br><span class="line">        user.setUserName(<span class="string">&quot;Green&quot;</span>);</span><br><span class="line">        user.setNote(<span class="string">&quot;Where is the Alice&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="创建pojo类-2"><a class="markdownIt-Anchor" href="#创建pojo类-2"></a> 创建POJO类</h2>
+<p>注意，这里的POJO类为了能够被扫描到，需要添加＠Component注解，这样一来，所有pojo包下的@Component注解的对象都会注册到IoC容器中，对象通过@Value注解进行赋值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component(&quot;player&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Player</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;0&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="meta">@Value(&quot;Alice&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Value(&quot;444049406&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Long <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(Long id)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPassword</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> password;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPassword</span><span class="params">(String password)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.password = password;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Player&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;id=&quot;</span> + id +</span><br><span class="line">                <span class="string">&quot;, name=&#x27;&quot;</span> + name + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, password=&#x27;&quot;</span> + password + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>设置完毕后，对象就可以通过名称或类型来获取，但是建议通过类名.class进行获取，这样不需要进行类型的强制转换。（两种方式的代码对比如下图红框所示）。</p>
+<p><img src="/post/af46/image-20210216181308850.png" alt="测试结果"></p>
+<h2 id="componentscan源代码"><a class="markdownIt-Anchor" href="#componentscan源代码"></a> ComponentScan源代码</h2>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// Source code recreated from a .class file by IntelliJ IDEA</span></span><br><span class="line"><span class="comment">// (powered by FernFlower decompiler)</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> org.springframework.context.annotation;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Documented;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.ElementType;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Repeatable;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.RetentionPolicy;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Target;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.support.BeanNameGenerator;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.annotation.AliasFor;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Repeatable(ComponentScans.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ComponentScan &#123;</span><br><span class="line">    <span class="comment">// 定义扫描的包</span></span><br><span class="line">    <span class="meta">@AliasFor(&quot;basePackages&quot;)</span></span><br><span class="line">    String[] value() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">	<span class="comment">// 定义扫描的包</span></span><br><span class="line">    <span class="meta">@AliasFor(&quot;value&quot;)</span></span><br><span class="line">    String[] basePackages() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">	<span class="comment">// 定义扫描的类</span></span><br><span class="line">    Class&lt;?&gt;[] basePackageClasses() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">	<span class="comment">// Bean name生成器</span></span><br><span class="line">    Class&lt;? extends BeanNameGenerator&gt; nameGenerator() <span class="keyword">default</span> BeanNameGenerator.class;</span><br><span class="line">	<span class="comment">// 作用域解析器</span></span><br><span class="line">    Class&lt;? extends ScopeMetadataResolver&gt; scopeResolver() <span class="keyword">default</span> AnnotationScopeMetadataResolver.class;</span><br><span class="line">	<span class="comment">// 作用于代理模式</span></span><br><span class="line">    <span class="function">ScopedProxyMode <span class="title">scopedProxy</span><span class="params">()</span> <span class="keyword">default</span> ScopedProxyMode.DEFAULT</span>;</span><br><span class="line">	<span class="comment">// 资源匹配模式</span></span><br><span class="line">    <span class="function">String <span class="title">resourcePattern</span><span class="params">()</span> <span class="keyword">default</span> &quot;**<span class="comment">/*.class&quot;;</span></span></span><br><span class="line"><span class="function"><span class="comment">	// 是否使用默认的过滤器</span></span></span><br><span class="line"><span class="function"><span class="comment">    boolean useDefaultFilters() default true;</span></span></span><br><span class="line"><span class="function"><span class="comment">	// 当满足过滤条件时扫描</span></span></span><br><span class="line"><span class="function"><span class="comment">    ComponentScan.Filter[] includeFilters() default &#123;&#125;;</span></span></span><br><span class="line"><span class="function"><span class="comment">	// 当不满足过滤条件时扫描</span></span></span><br><span class="line"><span class="function"><span class="comment">    ComponentScan.Filter[] excludeFilters() default &#123;&#125;;</span></span></span><br><span class="line"><span class="function"><span class="comment">	// 是否延迟初始化</span></span></span><br><span class="line"><span class="function"><span class="comment">    boolean lazyInit() default false;</span></span></span><br><span class="line"><span class="function"><span class="comment">	定义过滤器</span></span></span><br><span class="line"><span class="function"><span class="comment">    @Retention(RetentionPolicy.RUNTIME)</span></span></span><br><span class="line"><span class="function"><span class="comment">    @Target(&#123;&#125;)</span></span></span><br><span class="line"><span class="function"><span class="comment">    public @interface Filter &#123;</span></span></span><br><span class="line"><span class="function"><span class="comment">        // 过滤器类型，可以按注解类型或者正则式等过滤</span></span></span><br><span class="line"><span class="function"><span class="comment">        FilterType type() default FilterType.ANNOTATION;</span></span></span><br><span class="line"><span class="function"><span class="comment">		// 定义过滤的类</span></span></span><br><span class="line"><span class="function"><span class="comment">        @AliasFor(&quot;classes&quot;)</span></span></span><br><span class="line"><span class="function"><span class="comment">        Class&lt;?&gt;[] value() default &#123;&#125;;</span></span></span><br><span class="line"><span class="function"><span class="comment">		// 定义过滤的类</span></span></span><br><span class="line"><span class="function"><span class="comment">        @AliasFor(&quot;value&quot;)</span></span></span><br><span class="line"><span class="function"><span class="comment">        Class&lt;?&gt;[] classes() default &#123;&#125;;</span></span></span><br><span class="line"><span class="function"><span class="comment">		// 匹配方式</span></span></span><br><span class="line"><span class="function"><span class="comment">        String[] pattern() default &#123;&#125;;</span></span></span><br><span class="line"><span class="function"><span class="comment">    &#125;</span></span></span><br><span class="line"><span class="function"><span class="comment">&#125;</span></span></span><br><span class="line"><span class="function"><span class="comment"></span></span></span><br></pre></td></tr></table></figure>
+<h1 id="依赖注入"><a class="markdownIt-Anchor" href="#依赖注入"></a> 依赖注入</h1>
+<p>依赖注入是指，对象之间存在嵌套关系，如：Person类中含有Animal类，对于这样的Person类，就无法使用上述方法进行Bean注入，这时候我们就需要依赖注入方法了。</p>
+<p>例如，人类（Person）有时候利用动物（Animal）完成一些事情，如让狗（Dog）看家，或者让猫（Cat）变身，下面我们就让Person类拥有一个Cat。</p>
+<p>这里采取扫描包路径的方式，即上述的第二种方式进行Bean注入。</p>
+<h2 id="创建animal接口类"><a class="markdownIt-Anchor" href="#创建animal接口类"></a> 创建Animal接口类</h2>
+<p>这里为什么不直接创建一个Cat类呢，因为我们有可能会遇到这种存在继承关系的对象，这时候在依赖注入时会有一点问题，这里就直接使Cat类和Dog类直接继承Animal类，方便后续的讲解。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.definition;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">active</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里仅定义了方法，属性在实现类中再定义（其实是不知道在抽象类中定义的属性如何进行初始化赋值）。</p>
+<h2 id="创建cat实体类"><a class="markdownIt-Anchor" href="#创建cat实体类"></a> 创建Cat实体类</h2>
+<p>Cat类继承了Animal类，同时为自己设置了一个name属性，这里用@Value注解进行初始化即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.definition.Animal;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;Chocolate&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">active</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;🐱：喵~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="创建person类"><a class="markdownIt-Anchor" href="#创建person类"></a> 创建Person类</h2>
+<p>这里的Animal由于只有Cat类一个Bean，因此直接使用@Autowired注解进行自动的依赖注入即可。</p>
+<p>注意，这里的@Autowired既可以在属性上使用，也可以在set方法上使用（个人比较喜欢这种方法）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.definition.Animal;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;Iris&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Animal animal = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Animal <span class="title">getAnimal</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> animal;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">// @Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAnimal</span><span class="params">(Animal animal)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.animal = animal;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">service</span><span class="params">()</span></span>&#123;</span><br><span class="line">        animal.active();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在之前的IoCTest中继续获取Person对象即可测试，结果如下：</p>
+<p><img src="/post/af46/image-20210216214351689.png" alt="测试结果"></p>
+<h1 id="二义性问题"><a class="markdownIt-Anchor" href="#二义性问题"></a> 二义性问题</h1>
+<p>我们创建一个Dog类，这里的Dog类同样继承了Animal类，并且添加了name属性。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.definition.Animal;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Dog</span> <span class="keyword">implements</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;Vanilla&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">active</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;汪！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这时候就出现问题了，Person中的Animal究竟注入Cat还是Dog呢？</p>
+<p>我们再运行一次测试程序，可以发现报错了：</p>
+<p><img src="/post/af46/image-20210216215112855.png" alt="二义性问题"></p>
+<p>这里把Caused by拿出来：<code>No qualifying bean of type 'io.gitee.yunchongxiao.chapter03.definition.Animal' available: expected single matching bean but found 2: cat,dog</code></p>
+<p>可以发现对Animal进行注入时，cat和dog都可以注入，且没有优先级，为了避免这种二义性，有下面的两种解决方法。</p>
+<ol>
+<li>根据名称匹配</li>
+<li>设定优先级</li>
+</ol>
+<h2 id="名称匹配"><a class="markdownIt-Anchor" href="#名称匹配"></a> 名称匹配</h2>
+<p>只需要在Person类的Animal类使用对应的实体类名称作为变量名即可，这么说可能比较抽象，直接看下面的代码即可。</p>
+<p><img src="/post/af46/image-20210216215939031.png" alt="名称匹配"></p>
+<p>注意和上面的代码进行对比，可以看到这样Dog就成功注入了。</p>
+<h2 id="设定优先级"><a class="markdownIt-Anchor" href="#设定优先级"></a> 设定优先级</h2>
+<p>在装配Person类时，对于Animal属性进行自动装配后，再通过@Qualifier(“cat”)设定优先级，同样，直接看代码吧</p>
+<p><img src="/post/af46/image-20210216220724766.png" alt="设定优先级"></p>
+<h1 id="有参构造函数的注入"><a class="markdownIt-Anchor" href="#有参构造函数的注入"></a> 有参构造函数的注入</h1>
+<p>上述的方法中，注入方式都是基于无参构造的，对于含有有参构造函数的对象，则使用下面的方法即可。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(<span class="meta">@Autowired</span> <span class="meta">@Qualifier(&quot;cat&quot;)</span> Animal animal)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.animal = animal;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="生命周期"><a class="markdownIt-Anchor" href="#生命周期"></a> 生命周期</h1>
+<p>Bean的生命周期，通常分为Bean定义、Bean初始化、Bean的生存期和Bean的销毁四部分组成。</p>
+<p>Spring通过我们的配置，如@ComponentScan定义的扫描路径扫描带有@Component的类，对这些类进行信息的解析，并将定义的信息保存下来，存放到IoC容器中，这就是Bean的定义（注意这里并没有对Bean进行初始化）。通常的，在Bean的定义完成后，IoC容器会接着进行Bean的初始化，即对IoC中的Bean进行初始化、依赖注入等操作。</p>
+<p>具体步骤如下：</p>
+<pre class="mermaid">graph  LR
+A(["例如@ComponentScan所定义的扫描包"]) 
+B([将Bean的定义保存到BeanDefinition的实例中])
+C([IoC容器装在Bean定义])
+D([创建Bean实例对象])
+E(["例如@Autowired注入各类资源"])
+AA([资源定位])
+BB([Bean定义])
+CC([发布Bean定义])
+DD([实例化])
+EE([依赖注入])
+AA-.-A
+B-.-BB
+C-.-CC
+D-.-DD
+E-.-EE
+AA-->BB-->CC-->DD-->EE</pre>
+<p>接下来让我们看一下整个Bean的声明周期都会经历什么过程：（注意，没有特殊声明的接口仅对单个Bean生效，特殊声明的接口对全体Bean均生效）</p>
+<pre class="mermaid">graph TB
+	A(初始化)-->B(依赖注入)-->C(setBeanName方法)-->D(setBeanFactory方法)-->
+	E(setApplicationContext方法)-->F(postProcessBeforeInitialization方法)-->
+	G(自定义初始化方法)-->H(afterPropertiesSet方法)-->I(postProcessAfterInitialization方法)-->
+	J[生存期]-->K[自定义销毁方法]-->L(destroy方法)
+	AA(接口BeanNameAware)-.-C
+	BB(接口BeanFactoryAware)-.-D
+	CC("接口ApplicationContextAware（需要容器实现applicationContext）")-.-E
+	DD("BeanPostProcessor的预初始化方法（注意，它是针对全部Bean生效）")-.-F
+	EE("@PostConstruct标注方法")-.-G
+	FF(接口InitializingBean)-.-H
+	GG("BeanPostProcessor的后初始化方法（注意，它是针对全部Bean生效）")-.-I
+	HH("@PreDestory标注方法")-.-K
+	II(接口DisposableBean)-.-L</pre>
+<ul>
+<li>即使定义了ApplicationContextAware 接口，有时候也不会调用，这要根据定义的IoC 容器来决定。 Spring IoC 容器最低的要求是实现BeanFactory接口，而不是实现ApplicationContext 接口。对于那些没有实现ApplicationContext接口的容器，在生命周期对应的ApplicationContextAware 定义的方法也是不会被调用的，只有实现了ApplicationContext接口的容器，才会在生命周期调用pplicationContextAware 所定义的setApplicationContext方法。</li>
+<li>我们所编写的IoC容器大多都实现了ApplicationContext，所以不存在这个问题。</li>
+</ul>
+<p>实现上述的所有接口，测试一下各个接口的实现顺序是否符合预期</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.chapter03.definition.Animal;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.*;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Qualifier;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContextAware;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.annotation.PostConstruct;</span><br><span class="line"><span class="keyword">import</span> javax.annotation.PreDestroy;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Neet</span> <span class="keyword">implements</span> <span class="title">BeanNameAware</span>, <span class="title">BeanFactoryAware</span>, <span class="title">ApplicationContextAware</span>, <span class="title">InitializingBean</span>, <span class="title">DisposableBean</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Animal animal;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">use</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        animal.active();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Animal <span class="title">getAnimal</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> animal;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="meta">@Qualifier(&quot;cat&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAnimal</span><span class="params">(Animal animal)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】进行了依赖注入&quot;</span>);</span><br><span class="line">        <span class="keyword">this</span>.animal = animal;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBeanName</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】调用BeanNameAware的setBeanName&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBeanFactory</span><span class="params">(BeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】调用BeanFactoryAware的setBeanFactory&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】调用ApplicationContextAware的setApplicationContext &quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPropertiesSet</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】调用InitializingBean的afterPropertiesSet方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】调用DisposableBean方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】注解@PostConstruct定义的自定义初始化方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PreDestroy</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">destruct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;【&quot;</span> + <span class="keyword">this</span>.getClass().getSimpleName() + <span class="string">&quot;】注解@PreDestroy定义的自定义销毁方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/post/af46/image-20210218111249949.png" alt="测试结果"></p>
+<p>可以发现，仅创建IoC容器后，Bean就会进行这么多的操作（在这里，我们仅对Neet类进行了接口的实现，并没有对Animal类进行这些接口的实现，所以依赖注入虽然在第一位，但是Animal类的这些操作是隐含在这步之前的）</p>
+<p>细心的大佬可能已经发现了，我们并没有实现BeanPostProcessor，因为它是针对所有Bean都生效的接口，所以不能在某个特定的Bean中实现该功能，而应该单另一个类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.chapter03.life;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.config.BeanPostProcessor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BeanPostProcessExample</span> <span class="keyword">implements</span> <span class="title">BeanPostProcessor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;BeanPostProcessor调用&quot;</span></span><br><span class="line">                + <span class="string">&quot;postProcessBeforeInitialization方法，参数【&quot;</span></span><br><span class="line">                + bean.getClass().getSimpleName() + <span class="string">&quot;】【&quot;</span> + beanName + <span class="string">&quot;】&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;BeanPostProcessor调用&quot;</span></span><br><span class="line">                + <span class="string">&quot;postProcessAfterInitialization方法，参数【&quot;</span></span><br><span class="line">                + bean.getClass().getSimpleName() + <span class="string">&quot;】【&quot;</span> + beanName + <span class="string">&quot;】&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="/post/af46/image-20210219121440459.png" alt="运行结果"></p>
+<p>可以看到，该类对所有的Bean都生效了。</p>
+<h1 id="条件装配"><a class="markdownIt-Anchor" href="#条件装配"></a> 条件装配</h1>
+<p>有些时候，由于某些客观原因，一些Bean不能实现初始化，例如在数据库连接池的配置中漏掉一些配置导致连接失败，这时候就需要条件装配进行解决。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">冲酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yunchongxiao.gitee.io/post/af46.html">http://yunchongxiao.gitee.io/post/af46.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yunchongxiao.gitee.io" target="_blank">Good Good Study, Day Day Up!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring-Boot/">Spring Boot</a></div><div class="post_share"><div class="social-share" data-image="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/pictures/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/pictures/reward/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/6821.html"><img class="prev-cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第五章-MyBatis缓存处理（选学）</div></div></a></div><div class="next-post pull-right"><a href="/post/ef92.html"><img class="next-cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第九章-Spring的JDBC</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/d292.html" title="第8章 集成Log4j日志"><img class="cover" src="/pictures/covers/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%AD%A6SpringBoot2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-05</div><div class="title">第8章 集成Log4j日志</div></div></a></div><div><a href="/post/1da3.html" title="第6章 使用过滤器和监听器"><img class="cover" src="/pictures/covers/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%AD%A6SpringBoot2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-05</div><div class="title">第6章 使用过滤器和监听器</div></div></a></div><div><a href="/post/f553.html" title="第7章 集成Redis缓存"><img class="cover" src="/pictures/covers/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%AD%A6SpringBoot2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-05</div><div class="title">第7章 集成Redis缓存</div></div></a></div><div><a href="/post/e345.html" title="第9章 Quartz定时器和发送Email"><img class="cover" src="/pictures/covers/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%AD%A6SpringBoot2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-05</div><div class="title">第9章 Quartz定时器和发送Email</div></div></a></div><div><a href="/post/ba1d.html" title="第4章-使用Thymeleaf模板引擎"><img class="cover" src="/pictures/covers/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%AD%A6SpringBoot2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-05</div><div class="title">第4章-使用Thymeleaf模板引擎</div></div></a></div><div><a href="/post/adad.html" title="第5章 Spring Boot事务支持"><img class="cover" src="/pictures/covers/%E4%B8%80%E6%AD%A5%E4%B8%80%E6%AD%A5%E5%AD%A6SpringBoot2%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-05</div><div class="title">第5章 Spring Boot事务支持</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/avatar1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">冲酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/yunchongxiao"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/yunchongxiao" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:444049406@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的小破站~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#spring%E7%90%86%E5%BF%B5%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text"> Spring理念简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E7%9A%84ioc"><span class="toc-number">2.</span> <span class="toc-text"> 基于注解的IoC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ioc%E5%AE%B9%E5%99%A8%E7%AE%80%E4%BB%8B"><span class="toc-number">3.</span> <span class="toc-text"> IoC容器简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A3%85%E9%85%8Dbean"><span class="toc-number">4.</span> <span class="toc-text"> 如何装配Bean</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E9%85%8D%E7%BD%AE%E7%B1%BB%E7%9A%84%E8%A3%85%E9%85%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">5.</span> <span class="toc-text"> 基于配置类的装配方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BApojo%E7%B1%BB"><span class="toc-number">5.1.</span> <span class="toc-text"> 创建POJO类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E9%85%8D%E7%BD%AE%E7%B1%BB%E4%B8%AD%E5%88%9B%E5%BB%BA%E8%A3%85%E9%85%8D%E6%96%B9%E6%B3%95"><span class="toc-number">5.2.</span> <span class="toc-text"> 在配置类中创建装配方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%BF%87applicationcontext%E5%AF%B9%E8%B1%A1%E8%8E%B7%E5%8F%96bean"><span class="toc-number">5.3.</span> <span class="toc-text"> 通过ApplicationContext对象获取Bean</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E8%A3%85%E9%85%8D"><span class="toc-number">6.</span> <span class="toc-text"> 基于注解的装配</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%89%AB%E6%8F%8F%E5%8C%85%E8%B7%AF%E5%BE%84"><span class="toc-number">6.1.</span> <span class="toc-text"> 设置扫描包路径</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BApojo%E7%B1%BB-2"><span class="toc-number">6.2.</span> <span class="toc-text"> 创建POJO类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#componentscan%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="toc-number">6.3.</span> <span class="toc-text"> ComponentScan源代码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5"><span class="toc-number">7.</span> <span class="toc-text"> 依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAanimal%E6%8E%A5%E5%8F%A3%E7%B1%BB"><span class="toc-number">7.1.</span> <span class="toc-text"> 创建Animal接口类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAcat%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="toc-number">7.2.</span> <span class="toc-text"> 创建Cat实体类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAperson%E7%B1%BB"><span class="toc-number">7.3.</span> <span class="toc-text"> 创建Person类</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E4%B9%89%E6%80%A7%E9%97%AE%E9%A2%98"><span class="toc-number">8.</span> <span class="toc-text"> 二义性问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8D%E7%A7%B0%E5%8C%B9%E9%85%8D"><span class="toc-number">8.1.</span> <span class="toc-text"> 名称匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E5%AE%9A%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">8.2.</span> <span class="toc-text"> 设定优先级</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%89%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E6%B3%A8%E5%85%A5"><span class="toc-number">9.</span> <span class="toc-text"> 有参构造函数的注入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">10.</span> <span class="toc-text"> 生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E8%A3%85%E9%85%8D"><span class="toc-number">11.</span> <span class="toc-text"> 条件装配</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/ed09.html" title="第四章-动态SQL和注解"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第四章-动态SQL和注解"/></a><div class="content"><a class="title" href="/post/ed09.html" title="第四章-动态SQL和注解">第四章-动态SQL和注解</a><time datetime="2022-01-05T14:40:20.098Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/84b4.html" title="第十章-Spring管理数据库事务"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第十章-Spring管理数据库事务"/></a><div class="content"><a class="title" href="/post/84b4.html" title="第十章-Spring管理数据库事务">第十章-Spring管理数据库事务</a><time datetime="2022-01-05T14:40:20.098Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/2970.html" title="第十一章-Spring基础"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第十一章-Spring基础"/></a><div class="content"><a class="title" href="/post/2970.html" title="第十一章-Spring基础">第十一章-Spring基础</a><time datetime="2022-01-05T14:40:20.097Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/22d8.html" title="第八章-Spring的AOP"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第八章-Spring的AOP"/></a><div class="content"><a class="title" href="/post/22d8.html" title="第八章-Spring的AOP">第八章-Spring的AOP</a><time datetime="2022-01-05T14:40:20.096Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/9657.html" title="第六章-Spring基础"><img src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第六章-Spring基础"/></a><div class="content"><a class="title" href="/post/9657.html" title="第六章-Spring基础">第六章-Spring基础</a><time datetime="2022-01-05T14:40:20.096Z" title="发表于 2022-01-05 22:40:20">2022-01-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 冲酱</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'VzaybaUM1tC9Jx76YTBf50nT-MdYXbMMI',
+      appKey: 'JFGs27pMegRQqKCAITeefKgs',
+      placeholder: '随便说点啥吧~',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I" data-fontsize="15px" data-random="false" async="async"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/958a88a8.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '958a88a8',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-clock/clock/images/weather/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
