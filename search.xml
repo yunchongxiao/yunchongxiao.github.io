@@ -1,6 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>第十章-Spring管理数据库事务</title>
+    <url>/post/84b4.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="spring与事务管理"><a class="markdownIt-Anchor" href="#spring与事务管理"></a> Spring与事务管理</h1>
+<h2 id="spring对事物管理的支持"><a class="markdownIt-Anchor" href="#spring对事物管理的支持"></a> Spring对事物管理的支持</h2>
+<p>事务，指数据库中的一个操作序列，它由一系列的SQL指令组成。</p>
+<p>Spring在高层次建立事务抽象，然后在此基础上提供一个统一的编程模型，这意味着Spring具有在多种环境中配置和使用事务的能力。</p>
+<p>基于SpringIOC和AOP，Spring提供声明式事务管理的方式，他匀速开发人员直接在Spring容器中定义事务的边界和属性。</p>
+<p>Spring还实现了事务管理和数据访问的分离，开发人员只需关注对当先事务的界定，其余工作将由Spring框架自动完成。</p>
+<h2 id="事务管理的核心接口"><a class="markdownIt-Anchor" href="#事务管理的核心接口"></a> 事务管理的核心接口</h2>
+<p>Spring主要通过三个接口实现事务抽象：TransactionDefinition、TransactionStatus、PlatformManager</p>
+<p>它们都位于org.springframework.transaction包中。</p>
+<h3 id="transactiondefinition接口"><a class="markdownIt-Anchor" href="#transactiondefinition接口"></a> TransactionDefinition接口</h3>
+<p>该接口主要定义事务的属性，这些属性包括事务的隔离级别，事务的传播行为，事务的超时时间，是否为只读事务等。</p>
+<h4 id="事务的隔离级别"><a class="markdownIt-Anchor" href="#事务的隔离级别"></a> 事务的隔离级别</h4>
+<p>事务的隔离级别主要是指事务之间的交叉作用，这里首先要了解以下事务的几种隔离级别：</p>
+<ol>
+<li>
+<p>脏读</p>
+<p>A事务执行过程中，B事务读取了A事务修改后的数据。但是由于某些原因，A事务可能没有完成提交，发生RollBack了操作，则B事务所读取的数据就会是不正确的。这个未提交数据就是脏读（Dirty Read）。</p>
+</li>
+<li>
+<p>不可重复读</p>
+<p>B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。B事务这种读取的结果，即为不可重复读（Nonrepeatable Read）。</p>
+</li>
+<li>
+<p>幻读</p>
+<p>B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。这个流程看起来和不可重复读差不多，但幻读强调的集合的增减，而不是单独一条数据的修改。</p>
+</li>
+</ol>
+<p>TransactionDefinition针对于此定义了五种隔离级别，具体如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">隔离级别</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ISOLATION_DEFAULT</td>
+<td style="text-align:center">采用当前数据库默认的隔离级别</td>
+</tr>
+<tr>
+<td style="text-align:center">ISOLATION_READ_UNCOMMITTED</td>
+<td style="text-align:center">允许读取尚未提交的数据变更，可能会导致脏读、幻读和不可重复读</td>
+</tr>
+<tr>
+<td style="text-align:center">ISOLATION_READ_COMMITTED</td>
+<td style="text-align:center">允许读取已经提交的数据变更，可以避免脏读，无法避免幻读和不可重复读</td>
+</tr>
+<tr>
+<td style="text-align:center">ISOLATION_REPEATABLE_READ</td>
+<td style="text-align:center">允许数据重复读，可以避免脏读，不可重复读，不能避免幻读，资源消耗上升</td>
+</tr>
+<tr>
+<td style="text-align:center">ISOLATION_SERIALIZABLE</td>
+<td style="text-align:center">事务串行执行，可以避免脏读、幻读、不可重复读，资源消耗最大</td>
+</tr>
+</tbody>
+</table>
+<h4 id="事务的传播行为"><a class="markdownIt-Anchor" href="#事务的传播行为"></a> 事务的传播行为</h4>
+<p>事务的传播行为是指事务处理过程中所跨越的对象将以什么样的方式参与事务</p>
+<p>TransactionDefinition定义了其中事务传播行为，具体如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>传播行为</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PROPAGATION_REQUIRED</td>
+<td>默认的事务传播行为，如果当前存在一个事务，则加入该事务，如果当前没有事务，则创建一个新事物</td>
+</tr>
+<tr>
+<td>PROPAGATION_SUPPORTS</td>
+<td>如果当前存在一个事务，则加入该事务，如果当前没有事务，则直接执行</td>
+</tr>
+<tr>
+<td>PROPAGATION_MANDATORY</td>
+<td>当前必须存在一个事务，如果没有，就抛出异常</td>
+</tr>
+<tr>
+<td>PROPAGATION_REQUIRED_NEW</td>
+<td>创建一个新事物，如果当前已存在一个事务，则将已存在的事务挂起</td>
+</tr>
+<tr>
+<td>PROPAGATION_NOT_SUPPORTED</td>
+<td>不支持事务，在没有事务的情况下执行，如果当前已存在一个事务，则将已存在的事务挂起</td>
+</tr>
+<tr>
+<td>PROPAGATION_NEVER</td>
+<td>永远不支持当前事务，如果当前已存在一个事务，则抛出异常</td>
+</tr>
+<tr>
+<td>PROAGATION_NESTED</td>
+<td>如果存在当前事务，则在当前事务中的一个子事务中执行</td>
+</tr>
+</tbody>
+</table>
+<p>Spring中声明式事务对传播行为以来较大，开发人员可根据实际需要选择使用</p>
+<h4 id="事务的超时时间和是否只读"><a class="markdownIt-Anchor" href="#事务的超时时间和是否只读"></a> 事务的超时时间和是否只读</h4>
+<p>事务的超时时间指事物执行的时间界限，超过这个时间界限，事务将会回滚。TransactionDefinition接口提供了TIMEOUT_DEFALUT的常量定义，用来指定事物的超时时间。</p>
+<p>当事物的属性为只读时，该事务不修改任何数据，只读事务有助于提升性能，如果在只读事务中修改数据，可能会引发异常。</p>
+<h3 id="transactiondefinition接口-2"><a class="markdownIt-Anchor" href="#transactiondefinition接口-2"></a> TransactionDefinition接口</h3>
+<p>TransactionDefinition接口提供了一系列方法来获取事物的属性，具体如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IntgetPropagationBehavior()</td>
+<td>返回事务的传播行为</td>
+</tr>
+<tr>
+<td>int getIsolationLevel()</td>
+<td>返回事务的隔离层次</td>
+</tr>
+<tr>
+<td>boolean isReadOnly()</td>
+<td>判断事务是否为只读</td>
+</tr>
+<tr>
+<td>String getName()</td>
+<td>返回定义的事务名称</td>
+</tr>
+<tr>
+<td>int getTimeout()</td>
+<td>返回事务的超时属性</td>
+</tr>
+</tbody>
+</table>
+<p>上表列举了TransactionDefinition接口提供的方法，程序可通过TransactionDefinition接口的这些方法获取当前事务的属性。</p>
+<h3 id="transactionstatus接口"><a class="markdownIt-Anchor" href="#transactionstatus接口"></a> TransactionStatus接口</h3>
+<p>TransactionStatus接口主要用于界定事务的状态，通常情况下，编程式事务中使用该接口较多。</p>
+<p>TransactionStatus接口中提供了一系列返回事务状态信息的方法，具体如表所示：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean isNewTransaction()</td>
+<td>判断当前事务是否为新事务</td>
+</tr>
+<tr>
+<td>boolean hasSavepoint()</td>
+<td>判断当前事务是否创造了一个保存点</td>
+</tr>
+<tr>
+<td>boolean isRollbackOnly()0</td>
+<td>判断当前事务是否被标记为roolback-only</td>
+</tr>
+<tr>
+<td>void setRollbackOnly()</td>
+<td>将当前事务标记为rollback-only</td>
+</tr>
+<tr>
+<td>boolean isCompleted()</td>
+<td>判断当前事务是否已经完成（提交或回滚）</td>
+</tr>
+<tr>
+<td>void flush()</td>
+<td>刷新底层的修改到数据库</td>
+</tr>
+</tbody>
+</table>
+<p>上表列举了TransactionStatus接口提供的方法，事务管理器可以通过该接口 提供的方法获取事务运行的状态信息，也可以使用setRollbackOnly()方法间接回滚事务。</p>
+<h3 id="platformtransactionmanager接口"><a class="markdownIt-Anchor" href="#platformtransactionmanager接口"></a> PlatformTransactionManager接口</h3>
+<p>PlatformTransactionManager接口是Sprin事务管理的中心接口，它真正执行了事务管理的职能，并针对不同的持久化技术封装了对应的实现类，具体如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>TransactionStatus getTransaction(Transaction Definition definition)</th>
+<th>根据事务定义获取一个已存在的事务或创建一个新的事务，并返回这个事务的状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void commit(TransactionStatus status)</td>
+<td>根据事务的状态提交事务</td>
+</tr>
+<tr>
+<td>void rollback(TransactionStatus status)</td>
+<td>根据事务的状态回滚事务</td>
+</tr>
+</tbody>
+</table>
+<h1 id="编程式事务管理"><a class="markdownIt-Anchor" href="#编程式事务管理"></a> 编程式事务管理</h1>
+<p>编程式事务管理使用一个模板类TransactionTemplate，该类位于org.springframework.transaction.support包中，TransactionTemplate类封装了与PlatformTransactionManager相关的事物界定操作，开发人员可以通过对应的callback()接口实现具体内容的界定。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void serTransactionManager(PlatformTransactionManager transactionManager)</td>
+<td>设置事务管理器</td>
+</tr>
+<tr>
+<td>Platform TransactionManager getTransactionManager()</td>
+<td>返回事务管理器</td>
+</tr>
+<tr>
+<td><code>T execute(TransactionCallback&lt;T&gt;action</code>)</td>
+<td>在TransactionCallback接口中定义需要以事务方式组织的数据访问逻辑</td>
+</tr>
+<tr>
+<td>void rollbackOnException(TransactionStatus status, Throwable ex)</td>
+<td>处理事务遇到异常时调用的方法</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      <categories>
+        <category>JavaEE（ssm）企业应用实战</category>
+      </categories>
+      <tags>
+        <tag>Java开发</tag>
+        <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第四章-动态SQL和注解</title>
     <url>/post/ed09.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="动态sql"><a class="markdownIt-Anchor" href="#动态sql"></a> 动态SQL</h1>
@@ -299,242 +533,8 @@
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
+        <tag>Java开发</tag>
         <tag>MyBatis</tag>
-        <tag>Java开发</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第十章-Spring管理数据库事务</title>
-    <url>/post/84b4.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="spring与事务管理"><a class="markdownIt-Anchor" href="#spring与事务管理"></a> Spring与事务管理</h1>
-<h2 id="spring对事物管理的支持"><a class="markdownIt-Anchor" href="#spring对事物管理的支持"></a> Spring对事物管理的支持</h2>
-<p>事务，指数据库中的一个操作序列，它由一系列的SQL指令组成。</p>
-<p>Spring在高层次建立事务抽象，然后在此基础上提供一个统一的编程模型，这意味着Spring具有在多种环境中配置和使用事务的能力。</p>
-<p>基于SpringIOC和AOP，Spring提供声明式事务管理的方式，他匀速开发人员直接在Spring容器中定义事务的边界和属性。</p>
-<p>Spring还实现了事务管理和数据访问的分离，开发人员只需关注对当先事务的界定，其余工作将由Spring框架自动完成。</p>
-<h2 id="事务管理的核心接口"><a class="markdownIt-Anchor" href="#事务管理的核心接口"></a> 事务管理的核心接口</h2>
-<p>Spring主要通过三个接口实现事务抽象：TransactionDefinition、TransactionStatus、PlatformManager</p>
-<p>它们都位于org.springframework.transaction包中。</p>
-<h3 id="transactiondefinition接口"><a class="markdownIt-Anchor" href="#transactiondefinition接口"></a> TransactionDefinition接口</h3>
-<p>该接口主要定义事务的属性，这些属性包括事务的隔离级别，事务的传播行为，事务的超时时间，是否为只读事务等。</p>
-<h4 id="事务的隔离级别"><a class="markdownIt-Anchor" href="#事务的隔离级别"></a> 事务的隔离级别</h4>
-<p>事务的隔离级别主要是指事务之间的交叉作用，这里首先要了解以下事务的几种隔离级别：</p>
-<ol>
-<li>
-<p>脏读</p>
-<p>A事务执行过程中，B事务读取了A事务修改后的数据。但是由于某些原因，A事务可能没有完成提交，发生RollBack了操作，则B事务所读取的数据就会是不正确的。这个未提交数据就是脏读（Dirty Read）。</p>
-</li>
-<li>
-<p>不可重复读</p>
-<p>B事务读取了两次数据，在这两次的读取过程中A事务修改了数据，B事务的这两次读取出来的数据不一样。B事务这种读取的结果，即为不可重复读（Nonrepeatable Read）。</p>
-</li>
-<li>
-<p>幻读</p>
-<p>B事务读取了两次数据，在这两次的读取过程中A事务添加了数据，B事务的这两次读取出来的集合不一样。这个流程看起来和不可重复读差不多，但幻读强调的集合的增减，而不是单独一条数据的修改。</p>
-</li>
-</ol>
-<p>TransactionDefinition针对于此定义了五种隔离级别，具体如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">隔离级别</th>
-<th style="text-align:center">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">ISOLATION_DEFAULT</td>
-<td style="text-align:center">采用当前数据库默认的隔离级别</td>
-</tr>
-<tr>
-<td style="text-align:center">ISOLATION_READ_UNCOMMITTED</td>
-<td style="text-align:center">允许读取尚未提交的数据变更，可能会导致脏读、幻读和不可重复读</td>
-</tr>
-<tr>
-<td style="text-align:center">ISOLATION_READ_COMMITTED</td>
-<td style="text-align:center">允许读取已经提交的数据变更，可以避免脏读，无法避免幻读和不可重复读</td>
-</tr>
-<tr>
-<td style="text-align:center">ISOLATION_REPEATABLE_READ</td>
-<td style="text-align:center">允许数据重复读，可以避免脏读，不可重复读，不能避免幻读，资源消耗上升</td>
-</tr>
-<tr>
-<td style="text-align:center">ISOLATION_SERIALIZABLE</td>
-<td style="text-align:center">事务串行执行，可以避免脏读、幻读、不可重复读，资源消耗最大</td>
-</tr>
-</tbody>
-</table>
-<h4 id="事务的传播行为"><a class="markdownIt-Anchor" href="#事务的传播行为"></a> 事务的传播行为</h4>
-<p>事务的传播行为是指事务处理过程中所跨越的对象将以什么样的方式参与事务</p>
-<p>TransactionDefinition定义了其中事务传播行为，具体如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th>传播行为</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>PROPAGATION_REQUIRED</td>
-<td>默认的事务传播行为，如果当前存在一个事务，则加入该事务，如果当前没有事务，则创建一个新事物</td>
-</tr>
-<tr>
-<td>PROPAGATION_SUPPORTS</td>
-<td>如果当前存在一个事务，则加入该事务，如果当前没有事务，则直接执行</td>
-</tr>
-<tr>
-<td>PROPAGATION_MANDATORY</td>
-<td>当前必须存在一个事务，如果没有，就抛出异常</td>
-</tr>
-<tr>
-<td>PROPAGATION_REQUIRED_NEW</td>
-<td>创建一个新事物，如果当前已存在一个事务，则将已存在的事务挂起</td>
-</tr>
-<tr>
-<td>PROPAGATION_NOT_SUPPORTED</td>
-<td>不支持事务，在没有事务的情况下执行，如果当前已存在一个事务，则将已存在的事务挂起</td>
-</tr>
-<tr>
-<td>PROPAGATION_NEVER</td>
-<td>永远不支持当前事务，如果当前已存在一个事务，则抛出异常</td>
-</tr>
-<tr>
-<td>PROAGATION_NESTED</td>
-<td>如果存在当前事务，则在当前事务中的一个子事务中执行</td>
-</tr>
-</tbody>
-</table>
-<p>Spring中声明式事务对传播行为以来较大，开发人员可根据实际需要选择使用</p>
-<h4 id="事务的超时时间和是否只读"><a class="markdownIt-Anchor" href="#事务的超时时间和是否只读"></a> 事务的超时时间和是否只读</h4>
-<p>事务的超时时间指事物执行的时间界限，超过这个时间界限，事务将会回滚。TransactionDefinition接口提供了TIMEOUT_DEFALUT的常量定义，用来指定事物的超时时间。</p>
-<p>当事物的属性为只读时，该事务不修改任何数据，只读事务有助于提升性能，如果在只读事务中修改数据，可能会引发异常。</p>
-<h3 id="transactiondefinition接口-2"><a class="markdownIt-Anchor" href="#transactiondefinition接口-2"></a> TransactionDefinition接口</h3>
-<p>TransactionDefinition接口提供了一系列方法来获取事物的属性，具体如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>IntgetPropagationBehavior()</td>
-<td>返回事务的传播行为</td>
-</tr>
-<tr>
-<td>int getIsolationLevel()</td>
-<td>返回事务的隔离层次</td>
-</tr>
-<tr>
-<td>boolean isReadOnly()</td>
-<td>判断事务是否为只读</td>
-</tr>
-<tr>
-<td>String getName()</td>
-<td>返回定义的事务名称</td>
-</tr>
-<tr>
-<td>int getTimeout()</td>
-<td>返回事务的超时属性</td>
-</tr>
-</tbody>
-</table>
-<p>上表列举了TransactionDefinition接口提供的方法，程序可通过TransactionDefinition接口的这些方法获取当前事务的属性。</p>
-<h3 id="transactionstatus接口"><a class="markdownIt-Anchor" href="#transactionstatus接口"></a> TransactionStatus接口</h3>
-<p>TransactionStatus接口主要用于界定事务的状态，通常情况下，编程式事务中使用该接口较多。</p>
-<p>TransactionStatus接口中提供了一系列返回事务状态信息的方法，具体如表所示：</p>
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>boolean isNewTransaction()</td>
-<td>判断当前事务是否为新事务</td>
-</tr>
-<tr>
-<td>boolean hasSavepoint()</td>
-<td>判断当前事务是否创造了一个保存点</td>
-</tr>
-<tr>
-<td>boolean isRollbackOnly()0</td>
-<td>判断当前事务是否被标记为roolback-only</td>
-</tr>
-<tr>
-<td>void setRollbackOnly()</td>
-<td>将当前事务标记为rollback-only</td>
-</tr>
-<tr>
-<td>boolean isCompleted()</td>
-<td>判断当前事务是否已经完成（提交或回滚）</td>
-</tr>
-<tr>
-<td>void flush()</td>
-<td>刷新底层的修改到数据库</td>
-</tr>
-</tbody>
-</table>
-<p>上表列举了TransactionStatus接口提供的方法，事务管理器可以通过该接口 提供的方法获取事务运行的状态信息，也可以使用setRollbackOnly()方法间接回滚事务。</p>
-<h3 id="platformtransactionmanager接口"><a class="markdownIt-Anchor" href="#platformtransactionmanager接口"></a> PlatformTransactionManager接口</h3>
-<p>PlatformTransactionManager接口是Sprin事务管理的中心接口，它真正执行了事务管理的职能，并针对不同的持久化技术封装了对应的实现类，具体如下表所示：</p>
-<table>
-<thead>
-<tr>
-<th>TransactionStatus getTransaction(Transaction Definition definition)</th>
-<th>根据事务定义获取一个已存在的事务或创建一个新的事务，并返回这个事务的状态</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>void commit(TransactionStatus status)</td>
-<td>根据事务的状态提交事务</td>
-</tr>
-<tr>
-<td>void rollback(TransactionStatus status)</td>
-<td>根据事务的状态回滚事务</td>
-</tr>
-</tbody>
-</table>
-<h1 id="编程式事务管理"><a class="markdownIt-Anchor" href="#编程式事务管理"></a> 编程式事务管理</h1>
-<p>编程式事务管理使用一个模板类TransactionTemplate，该类位于org.springframework.transaction.support包中，TransactionTemplate类封装了与PlatformTransactionManager相关的事物界定操作，开发人员可以通过对应的callback()接口实现具体内容的界定。</p>
-<table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>void serTransactionManager(PlatformTransactionManager transactionManager)</td>
-<td>设置事务管理器</td>
-</tr>
-<tr>
-<td>Platform TransactionManager getTransactionManager()</td>
-<td>返回事务管理器</td>
-</tr>
-<tr>
-<td><code>T execute(TransactionCallback&lt;T&gt;action</code>)</td>
-<td>在TransactionCallback接口中定义需要以事务方式组织的数据访问逻辑</td>
-</tr>
-<tr>
-<td>void rollbackOnException(TransactionStatus status, Throwable ex)</td>
-<td>处理事务遇到异常时调用的方法</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-      <categories>
-        <category>JavaEE（ssm）企业应用实战</category>
-      </categories>
-      <tags>
-        <tag>Java开发</tag>
-        <tag>Spring</tag>
       </tags>
   </entry>
   <entry>
@@ -1419,8 +1419,8 @@
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -1733,8 +1733,8 @@
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -2388,137 +2388,8 @@ AA-->BB-->CC-->DD-->EE</pre>
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>第一章-MyBatis概述</title>
-    <url>/post/db99.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="传统jdbc的劣势"><a class="markdownIt-Anchor" href="#传统jdbc的劣势"></a> 传统JDBC的劣势</h1>
-<ul>
-<li>JDBC是Java程序实现数据访问的基础，它提供了一套操作数据库的API，
-<ul>
-<li>加载驱动</li>
-<li>获取链接</li>
-<li>获取执行对象</li>
-<li>发送SQL语句</li>
-</ul>
-</li>
-<li>但存在以下的局限性：
-<ul>
-<li>代码繁琐</li>
-<li>表关系维护复杂</li>
-<li>硬编码</li>
-<li>性能问题</li>
-</ul>
-</li>
-<li>所以企业通常使用ORM来完成数据库的操作</li>
-</ul>
-<h1 id="orm简介"><a class="markdownIt-Anchor" href="#orm简介"></a> ORM简介</h1>
-<p>ORM是Object Relational Mapping，即关系对象映射，是一种规范。</p>
-<p>ORM将简单Java对象（POJO，Plain Ordinary Java Object）和数据库表记录进行映射。</p>
-<p>这样开发人员就可以通过操作Java对象来对数据库进行操作</p>
-<p>ORM的主流框架有Hibernate、MyBatis</p>
-<h1 id="mybatis简介"><a class="markdownIt-Anchor" href="#mybatis简介"></a> MyBatis简介</h1>
-<p>MyBatis是一款优秀的ORM框架，它支持自定义SQL，存储过程以及高级映射。</p>
-<p>它几乎避免了所有的JDBC代码和手动设置参数以及获取结果集</p>
-<p>它利用XML文件或者注解进行配置和映射</p>
-<p>将接口和POJO映射成数据库中的记录</p>
-<h1 id="mybatis功能架构"><a class="markdownIt-Anchor" href="#mybatis功能架构"></a> MyBatis功能架构</h1>
-<ul>
-<li>API接口层</li>
-<li>数据处理层</li>
-<li>基础支撑层</li>
-</ul>
-<h2 id="api接口层"><a class="markdownIt-Anchor" href="#api接口层"></a> API接口层</h2>
-<p>API接口层对开发人员提供操作数据库的接口，在收到开发人员的请求时，会调用数据处理层进行具体的数据处理。</p>
-<h2 id="数据处理层"><a class="markdownIt-Anchor" href="#数据处理层"></a> 数据处理层</h2>
-<p>负责具体的参数映射，SQL解析，SQL执行和结果映射，它的功能就是根据请求完成一次数据库操作。</p>
-<h2 id="基础支撑层"><a class="markdownIt-Anchor" href="#基础支撑层"></a> 基础支撑层</h2>
-<p>负责最基础的功能，包括连接管理，数据管理，配置加载缓存处理等。</p>
-<h1 id="mybatis的工作流程"><a class="markdownIt-Anchor" href="#mybatis的工作流程"></a> MyBatis的工作流程</h1>
-<ol>
-<li>读取配置文件和映射文件</li>
-<li>生成SqlSessionFactory对象</li>
-<li>通过SqlSession操作数据库</li>
-</ol>
-<h2 id="读取配置文件和映射文件"><a class="markdownIt-Anchor" href="#读取配置文件和映射文件"></a> 读取配置文件和映射文件</h2>
-<p>其中配置文件设置了数据源，事务等信息，</p>
-<p>映射文件设置了SQL执行相关的信息。</p>
-<h2 id="生成sqlsessionfactory对象"><a class="markdownIt-Anchor" href="#生成sqlsessionfactory对象"></a> 生成SqlSessionFactory对象</h2>
-<p>SqlSessionFactory对象的重要功能就是创建MyBatis的核心对象SqlSession</p>
-<h2 id="通过sqlsession操作数据库"><a class="markdownIt-Anchor" href="#通过sqlsession操作数据库"></a> 通过SqlSession操作数据库</h2>
-<p>SqlSession中封装了操作数据库的所有方法，开发人员通过调用SqlSession中的方法来操作数据库</p>
-<h1 id="mybatis的重要api"><a class="markdownIt-Anchor" href="#mybatis的重要api"></a> MyBatis的重要API</h1>
-<ol>
-<li>SqlSessionFactory</li>
-<li>SqlSession</li>
-</ol>
-<h2 id="sqlsessionfactory"><a class="markdownIt-Anchor" href="#sqlsessionfactory"></a> SqlSessionFactory</h2>
-<ul>
-<li>SqlSessionFactory的首要功能就是创建SqlSession对象</li>
-<li>因此，每一个MyBatis应用都以SqlSessionFactory</li>
-<li>所以SqlSessionFactory会存在于MyBatis应用的整个生命周期</li>
-<li>因此一个MyBatis应用一般只使用一个SqlSessionFactory对象</li>
-</ul>
-<h2 id="创建sqlsessionfactory"><a class="markdownIt-Anchor" href="#创建sqlsessionfactory"></a> 创建SqlSessionFactory</h2>
-<ul>
-<li>
-<p>SqlSessionFactory由SqlSessionFactoryBuilder对象创建</p>
-</li>
-<li>
-<p>通过使用SqlSessionFactoryBuilder对象的build()函数，由两种参数方式创建</p>
-<ul>
-<li>
-<pre class="highlight"><code class="java">  <span class="hljs-function">SQLSessionFactory <span class="hljs-title">build</span><span class="hljs-params">(InputStream inputStream[, String evironment][, properties props])</span>
-  &lt;!--hexoPostRenderEscape:&lt;figure class</span>=<span class="hljs-string">"highlight plain"</span>&gt;&lt;table&gt;&lt;tr&gt;&lt;td <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"code"</span>&gt;&lt;pre&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;    这种方式比较常用，参数inputStream封装了XML文件形式的配置信息&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;    参数environment和properties是可选参数&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;- &amp;#<span class="hljs-number">96</span>;&amp;#<span class="hljs-number">96</span>;&amp;#<span class="hljs-number">96</span>;java&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;    <span class="hljs-function">SqlSessionFactory <span class="hljs-title">build</span><span class="hljs-params">(Configuration config)</span>&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;:hexoPostRenderEscape--&gt;
-
-  这种方式需要预定义config，因此仅作了解即可
-
-
-
-</span></code></pre>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="调用sqlsessionfactory"><a class="markdownIt-Anchor" href="#调用sqlsessionfactory"></a> 调用SqlSessionFactory</h2>
-<ul>
-<li>创建SqlSessionFactory后，调用该对象的openSession()方法创建SqlSession对象</li>
-<li>该函数可以设置许多参数</li>
-</ul>
-<h2 id="sqlsession"><a class="markdownIt-Anchor" href="#sqlsession"></a> SqlSession</h2>
-<ul>
-<li>SqlSession是MyBatis中的核心类对象，也会存在于MyBatis中的全生命周期</li>
-<li>因此在执行完操作后要及时关闭SqlSession对象，以免影响系统性能</li>
-<li>SqlSession提供许多SQL执行函数，包括增删改查、事物的提交和回滚</li>
-</ul>
-<h1 id="mybatis的下载与使用"><a class="markdownIt-Anchor" href="#mybatis的下载与使用"></a> MyBatis的下载与使用</h1>
-<p>通过：<a href="https://github.com/mybatis/mybatis-3/releases%E4%B8%8B%E8%BD%BDMyBatis%E7%9A%84jar%E5%8C%85">https://github.com/mybatis/mybatis-3/releases下载MyBatis的jar包</a></p>
-<p>这里通过IDEA的maven工具组织jar包，建议百度</p>
-<h1 id="第一个mybatis程序"><a class="markdownIt-Anchor" href="#第一个mybatis程序"></a> 第一个MyBatis程序</h1>
-<h2 id="mybatisiml"><a class="markdownIt-Anchor" href="#mybatisiml"></a> MyBatis.iml</h2>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;module type&#x3D;&quot;JAVA_MODULE&quot; version&#x3D;&quot;4&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<h2 id="pomxml"><a class="markdownIt-Anchor" href="#pomxml"></a> pom.xml</h2>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.gitee.yunchongxiao<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>MyBatis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 依赖包 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- mybatis包--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- mysql连接驱动包 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.22<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Java类测试包 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 为了解决IEDA目前的bug而设置的方法 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.properties<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>false<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.properties<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="dbproperties"><a class="markdownIt-Anchor" href="#dbproperties"></a> db.properties</h2>
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">jdbc.driver</span> = <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="meta">jdbc.url</span> = <span class="string">jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai</span></span><br><span class="line"><span class="meta">jdbc.username</span> = <span class="string">root</span></span><br><span class="line"><span class="meta">jdbc.password</span> = <span class="string">xyc@444049406</span></span><br></pre></td></tr></table></figure>
-<h2 id="mybatis-configxml"><a class="markdownIt-Anchor" href="#mybatis-configxml"></a> mybatis-config.xml</h2>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">configuration</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;db.properties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;jdbc:mysql://localhost:3306/mybatis?useSSL=true<span class="symbol">&amp;amp;</span>useUnicode=true<span class="symbol">&amp;amp;</span>characterEncoding=UTF-8<span class="symbol">&amp;amp;</span>serverTimezone=Asia/Shanghai&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;root&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;xyc@444049406&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;cacheEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 全局性地开启所有映射器配置文件中已配置的任何缓存 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;lazyLoadingEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span><span class="comment">&lt;!-- 延迟加载的全局开关，所有关联对象都会延迟加载 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;multipleResultSetsEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 允许单个语句返回多结果集（需要数据库驱动支持） --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;useColumnLabel&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 使用列标签代替列名 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;useGeneratedKeys&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!-- 允许 JDBC 支持自动生成主键 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;autoMappingBehavior&quot;</span> <span class="attr">value</span>=<span class="string">&quot;PARTIAL&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;autoMappingUnknownColumnBehavior&quot;</span> <span class="attr">value</span>=<span class="string">&quot;WARNING&quot;</span>/&gt;</span><span class="comment">&lt;!-- -指定发现自动映射目标未知列（或未知属性类型）的行为，并输出警告日志 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;defaultExecutorType&quot;</span> <span class="attr">value</span>=<span class="string">&quot;SIMPLE&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;defaultStatementTimeout&quot;</span> <span class="attr">value</span>=<span class="string">&quot;25&quot;</span>/&gt;</span><span class="comment">&lt;!-- 设置超时时间，它决定数据库驱动等待数据库响应的秒数 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;defaultFetchSize&quot;</span> <span class="attr">value</span>=<span class="string">&quot;100&quot;</span>/&gt;</span><span class="comment">&lt;!-- 为驱动的结果集获取数量（fetchSize）设置一个建议值。此参数只可以在查询设置中被覆盖 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;safeRowBoundsEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!-- 允许在嵌套语句中使用分页，确实允许时值为false --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;mapUnderscoreToCamelCase&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!-- 不开启驼峰命名自动映射 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;localCacheScope&quot;</span> <span class="attr">value</span>=<span class="string">&quot;SESSION&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;jdbcTypeForNull&quot;</span> <span class="attr">value</span>=<span class="string">&quot;OTHER&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;lazyLoadTriggerMethods&quot;</span> <span class="attr">value</span>=<span class="string">&quot;equals,clone,hashCode,toString&quot;</span>/&gt;</span><span class="comment">&lt;!-- 指定对象的哪些方法触发一次延迟加载 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;io.gitee.yunchongxiao.pojo&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--    &lt;typeHandlers&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--        &lt;typeHandler handler=&quot;&quot; javaType=&quot;String&quot; jdbcType=&quot;VARCHAR&quot;/&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;/typeHandlers&gt;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span> = <span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;StudentMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="studentmapperxml"><a class="markdownIt-Anchor" href="#studentmapperxml"></a> StudentMapper.xml</h2>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 这里就是函数实现的地方 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">sql</span> <span class="attr">id</span>=<span class="string">&quot;studentCols&quot;</span>&gt;</span></span><br><span class="line">	sid, sname, age, course</span><br><span class="line"><span class="tag">&lt;/<span class="name">sql</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectBySid&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">resultType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        select * from mybatis.student where sid = #&#123;sid&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectBySname&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">resultType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        select * from mybatis.student where sname like &#x27;%$&#123;value&#125;%&#x27;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertStudent&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        insert into student(sname, age, course) values (#&#123;sname&#125;, #&#123;age&#125;, #&#123;course&#125;);</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteBySid&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span>&gt;</span></span><br><span class="line">        delete from student where sid = #&#123;sid&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateBySid&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        update student set sname = #&#123;sname&#125;, age = #&#123;age&#125;, course = #&#123;course&#125; where sid = #&#123;sid&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectByCourse&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        select</span><br><span class="line">        <span class="tag">&lt;<span class="name">include</span> <span class="attr">refid</span>=<span class="string">&quot;studentCols&quot;</span>/&gt;</span></span><br><span class="line">        from student where course = #&#123;course&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">idArg</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">discriminator</span> <span class="attr">javaType</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">case</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">discriminator</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="studentjava"><a class="markdownIt-Anchor" href="#studentjava"></a> Student.java</h2>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.pojo;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> sid;</span><br><span class="line">    <span class="keyword">private</span> String sname;</span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line">    <span class="keyword">private</span> String course;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String sname, String age, String course)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sname = sname;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">        <span class="keyword">this</span>.course = course;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSid</span><span class="params">(<span class="keyword">int</span> sid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sid = sid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSname</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sname;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSname</span><span class="params">(String sname)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sname = sname;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(String age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCourse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> course;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCourse</span><span class="params">(String course)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.course = course;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Student&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;sid=&quot;</span> + sid +</span><br><span class="line">                <span class="string">&quot;, sname=&#x27;&quot;</span> + sname + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, age=&#x27;&quot;</span> + age + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, course=&#x27;&quot;</span> + course + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h2 id="mytestjava"><a class="markdownIt-Anchor" href="#mytestjava"></a> MyTest.java</h2>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.mapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.pojo.Student;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.io.Resources;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSession;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactoryBuilder;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.type.Alias;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectBySid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">            Student student = sqlSession.selectOne(<span class="string">&quot;student.selectBySid&quot;</span>, <span class="number">2</span>);</span><br><span class="line">            System.out.println(student);</span><br><span class="line">            sqlSession.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectBySname</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            List&lt;Student&gt; students = sqlSession.selectList(<span class="string">&quot;selectBySname&quot;</span>, <span class="string">&quot;S&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (Student student : students) &#123;</span><br><span class="line">                System.out.println(student.toString());</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertStudent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            Student student = <span class="keyword">new</span> Student(<span class="string">&quot;Noiris&quot;</span>, <span class="string">&quot;20&quot;</span>, <span class="string">&quot;C++&quot;</span>);</span><br><span class="line">            <span class="keyword">int</span> result = sqlSession.insert(<span class="string">&quot;insertStudent&quot;</span>, student);</span><br><span class="line">            <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;成功插入&quot;</span> + result + <span class="string">&quot;条数据&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;插入操作失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlSession.commit();</span><br><span class="line">            sqlSession.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteBySid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            <span class="keyword">int</span> result = sqlSession.insert(<span class="string">&quot;deleteBySid&quot;</span>, <span class="number">8</span>);</span><br><span class="line">            <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;成功删除&quot;</span> + result + <span class="string">&quot;条数据&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;删除操作失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlSession.commit();</span><br><span class="line">            sqlSession.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateBySid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            Student student = <span class="keyword">new</span> Student(<span class="string">&quot;Noiris&quot;</span>, <span class="string">&quot;20&quot;</span>, <span class="string">&quot;C++&quot;</span>);</span><br><span class="line">            student.setSid(<span class="number">7</span>);</span><br><span class="line">            <span class="keyword">int</span> result = sqlSession.insert(<span class="string">&quot;updateBySid&quot;</span>, student);</span><br><span class="line">            <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;成功更新&quot;</span> + result + <span class="string">&quot;条数据&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;更新操作失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlSession.commit();</span><br><span class="line">            sqlSession.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectByCourse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            List&lt;Student&gt; students = sqlSession.selectList(<span class="string">&quot;selectByCourse&quot;</span>, <span class="string">&quot;Java&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (Student student : students) &#123;</span><br><span class="line">                System.out.println(student);</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>JavaEE（ssm）企业应用实战</category>
-      </categories>
-      <tags>
         <tag>MyBatis</tag>
-        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -2765,16 +2636,132 @@ AA-->BB-->CC-->DD-->EE</pre>
       </tags>
   </entry>
   <entry>
-    <title>第7章 集成Redis缓存</title>
-    <url>/post/f553.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="redis缓存介绍"><a class="markdownIt-Anchor" href="#redis缓存介绍"></a> Redis缓存介绍</h1>
-<p>Redis是一个基于内存的单线程高性能key-value型数据库，读写性能优异。支持丰富的数据类型，包括string（字符串）、list（链表）、set（集合）、zset（sorted set有序集合）和hash（哈希类型）。因此，Redis在企业中被广泛使用。</p>
+    <title>第一章-MyBatis概述</title>
+    <url>/post/db99.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="传统jdbc的劣势"><a class="markdownIt-Anchor" href="#传统jdbc的劣势"></a> 传统JDBC的劣势</h1>
+<ul>
+<li>JDBC是Java程序实现数据访问的基础，它提供了一套操作数据库的API，
+<ul>
+<li>加载驱动</li>
+<li>获取链接</li>
+<li>获取执行对象</li>
+<li>发送SQL语句</li>
+</ul>
+</li>
+<li>但存在以下的局限性：
+<ul>
+<li>代码繁琐</li>
+<li>表关系维护复杂</li>
+<li>硬编码</li>
+<li>性能问题</li>
+</ul>
+</li>
+<li>所以企业通常使用ORM来完成数据库的操作</li>
+</ul>
+<h1 id="orm简介"><a class="markdownIt-Anchor" href="#orm简介"></a> ORM简介</h1>
+<p>ORM是Object Relational Mapping，即关系对象映射，是一种规范。</p>
+<p>ORM将简单Java对象（POJO，Plain Ordinary Java Object）和数据库表记录进行映射。</p>
+<p>这样开发人员就可以通过操作Java对象来对数据库进行操作</p>
+<p>ORM的主流框架有Hibernate、MyBatis</p>
+<h1 id="mybatis简介"><a class="markdownIt-Anchor" href="#mybatis简介"></a> MyBatis简介</h1>
+<p>MyBatis是一款优秀的ORM框架，它支持自定义SQL，存储过程以及高级映射。</p>
+<p>它几乎避免了所有的JDBC代码和手动设置参数以及获取结果集</p>
+<p>它利用XML文件或者注解进行配置和映射</p>
+<p>将接口和POJO映射成数据库中的记录</p>
+<h1 id="mybatis功能架构"><a class="markdownIt-Anchor" href="#mybatis功能架构"></a> MyBatis功能架构</h1>
+<ul>
+<li>API接口层</li>
+<li>数据处理层</li>
+<li>基础支撑层</li>
+</ul>
+<h2 id="api接口层"><a class="markdownIt-Anchor" href="#api接口层"></a> API接口层</h2>
+<p>API接口层对开发人员提供操作数据库的接口，在收到开发人员的请求时，会调用数据处理层进行具体的数据处理。</p>
+<h2 id="数据处理层"><a class="markdownIt-Anchor" href="#数据处理层"></a> 数据处理层</h2>
+<p>负责具体的参数映射，SQL解析，SQL执行和结果映射，它的功能就是根据请求完成一次数据库操作。</p>
+<h2 id="基础支撑层"><a class="markdownIt-Anchor" href="#基础支撑层"></a> 基础支撑层</h2>
+<p>负责最基础的功能，包括连接管理，数据管理，配置加载缓存处理等。</p>
+<h1 id="mybatis的工作流程"><a class="markdownIt-Anchor" href="#mybatis的工作流程"></a> MyBatis的工作流程</h1>
+<ol>
+<li>读取配置文件和映射文件</li>
+<li>生成SqlSessionFactory对象</li>
+<li>通过SqlSession操作数据库</li>
+</ol>
+<h2 id="读取配置文件和映射文件"><a class="markdownIt-Anchor" href="#读取配置文件和映射文件"></a> 读取配置文件和映射文件</h2>
+<p>其中配置文件设置了数据源，事务等信息，</p>
+<p>映射文件设置了SQL执行相关的信息。</p>
+<h2 id="生成sqlsessionfactory对象"><a class="markdownIt-Anchor" href="#生成sqlsessionfactory对象"></a> 生成SqlSessionFactory对象</h2>
+<p>SqlSessionFactory对象的重要功能就是创建MyBatis的核心对象SqlSession</p>
+<h2 id="通过sqlsession操作数据库"><a class="markdownIt-Anchor" href="#通过sqlsession操作数据库"></a> 通过SqlSession操作数据库</h2>
+<p>SqlSession中封装了操作数据库的所有方法，开发人员通过调用SqlSession中的方法来操作数据库</p>
+<h1 id="mybatis的重要api"><a class="markdownIt-Anchor" href="#mybatis的重要api"></a> MyBatis的重要API</h1>
+<ol>
+<li>SqlSessionFactory</li>
+<li>SqlSession</li>
+</ol>
+<h2 id="sqlsessionfactory"><a class="markdownIt-Anchor" href="#sqlsessionfactory"></a> SqlSessionFactory</h2>
+<ul>
+<li>SqlSessionFactory的首要功能就是创建SqlSession对象</li>
+<li>因此，每一个MyBatis应用都以SqlSessionFactory</li>
+<li>所以SqlSessionFactory会存在于MyBatis应用的整个生命周期</li>
+<li>因此一个MyBatis应用一般只使用一个SqlSessionFactory对象</li>
+</ul>
+<h2 id="创建sqlsessionfactory"><a class="markdownIt-Anchor" href="#创建sqlsessionfactory"></a> 创建SqlSessionFactory</h2>
+<ul>
+<li>
+<p>SqlSessionFactory由SqlSessionFactoryBuilder对象创建</p>
+</li>
+<li>
+<p>通过使用SqlSessionFactoryBuilder对象的build()函数，由两种参数方式创建</p>
+<ul>
+<li>
+<pre class="highlight"><code class="java">  <span class="hljs-function">SQLSessionFactory <span class="hljs-title">build</span><span class="hljs-params">(InputStream inputStream[, String evironment][, properties props])</span>
+  &lt;!--hexoPostRenderEscape:&lt;figure class</span>=<span class="hljs-string">"highlight plain"</span>&gt;&lt;table&gt;&lt;tr&gt;&lt;td <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"code"</span>&gt;&lt;pre&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;    这种方式比较常用，参数inputStream封装了XML文件形式的配置信息&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;    参数environment和properties是可选参数&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;- &amp;#<span class="hljs-number">96</span>;&amp;#<span class="hljs-number">96</span>;&amp;#<span class="hljs-number">96</span>;java&lt;/span&gt;&lt;br&gt;&lt;span <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"line"</span>&gt;    <span class="hljs-function">SqlSessionFactory <span class="hljs-title">build</span><span class="hljs-params">(Configuration config)</span>&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;:hexoPostRenderEscape--&gt;
+
+  这种方式需要预定义config，因此仅作了解即可
+
+
+
+</span></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="调用sqlsessionfactory"><a class="markdownIt-Anchor" href="#调用sqlsessionfactory"></a> 调用SqlSessionFactory</h2>
+<ul>
+<li>创建SqlSessionFactory后，调用该对象的openSession()方法创建SqlSession对象</li>
+<li>该函数可以设置许多参数</li>
+</ul>
+<h2 id="sqlsession"><a class="markdownIt-Anchor" href="#sqlsession"></a> SqlSession</h2>
+<ul>
+<li>SqlSession是MyBatis中的核心类对象，也会存在于MyBatis中的全生命周期</li>
+<li>因此在执行完操作后要及时关闭SqlSession对象，以免影响系统性能</li>
+<li>SqlSession提供许多SQL执行函数，包括增删改查、事物的提交和回滚</li>
+</ul>
+<h1 id="mybatis的下载与使用"><a class="markdownIt-Anchor" href="#mybatis的下载与使用"></a> MyBatis的下载与使用</h1>
+<p>通过：<a href="https://github.com/mybatis/mybatis-3/releases%E4%B8%8B%E8%BD%BDMyBatis%E7%9A%84jar%E5%8C%85">https://github.com/mybatis/mybatis-3/releases下载MyBatis的jar包</a></p>
+<p>这里通过IDEA的maven工具组织jar包，建议百度</p>
+<h1 id="第一个mybatis程序"><a class="markdownIt-Anchor" href="#第一个mybatis程序"></a> 第一个MyBatis程序</h1>
+<h2 id="mybatisiml"><a class="markdownIt-Anchor" href="#mybatisiml"></a> MyBatis.iml</h2>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;module type&#x3D;&quot;JAVA_MODULE&quot; version&#x3D;&quot;4&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="pomxml"><a class="markdownIt-Anchor" href="#pomxml"></a> pom.xml</h2>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.gitee.yunchongxiao<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>MyBatis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 依赖包 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- mybatis包--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- mysql连接驱动包 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.22<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Java类测试包 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 为了解决IEDA目前的bug而设置的方法 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.properties<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">filtering</span>&gt;</span>false<span class="tag">&lt;/<span class="name">filtering</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.xml<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/*.properties<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="dbproperties"><a class="markdownIt-Anchor" href="#dbproperties"></a> db.properties</h2>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">jdbc.driver</span> = <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="meta">jdbc.url</span> = <span class="string">jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai</span></span><br><span class="line"><span class="meta">jdbc.username</span> = <span class="string">root</span></span><br><span class="line"><span class="meta">jdbc.password</span> = <span class="string">xyc@444049406</span></span><br></pre></td></tr></table></figure>
+<h2 id="mybatis-configxml"><a class="markdownIt-Anchor" href="#mybatis-configxml"></a> mybatis-config.xml</h2>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">configuration</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;db.properties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;jdbc:mysql://localhost:3306/mybatis?useSSL=true<span class="symbol">&amp;amp;</span>useUnicode=true<span class="symbol">&amp;amp;</span>characterEncoding=UTF-8<span class="symbol">&amp;amp;</span>serverTimezone=Asia/Shanghai&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;root&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;jdbc.password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;xyc@444049406&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;cacheEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 全局性地开启所有映射器配置文件中已配置的任何缓存 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;lazyLoadingEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span><span class="comment">&lt;!-- 延迟加载的全局开关，所有关联对象都会延迟加载 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;multipleResultSetsEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 允许单个语句返回多结果集（需要数据库驱动支持） --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;useColumnLabel&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span> <span class="comment">&lt;!-- 使用列标签代替列名 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;useGeneratedKeys&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!-- 允许 JDBC 支持自动生成主键 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;autoMappingBehavior&quot;</span> <span class="attr">value</span>=<span class="string">&quot;PARTIAL&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;autoMappingUnknownColumnBehavior&quot;</span> <span class="attr">value</span>=<span class="string">&quot;WARNING&quot;</span>/&gt;</span><span class="comment">&lt;!-- -指定发现自动映射目标未知列（或未知属性类型）的行为，并输出警告日志 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;defaultExecutorType&quot;</span> <span class="attr">value</span>=<span class="string">&quot;SIMPLE&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;defaultStatementTimeout&quot;</span> <span class="attr">value</span>=<span class="string">&quot;25&quot;</span>/&gt;</span><span class="comment">&lt;!-- 设置超时时间，它决定数据库驱动等待数据库响应的秒数 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;defaultFetchSize&quot;</span> <span class="attr">value</span>=<span class="string">&quot;100&quot;</span>/&gt;</span><span class="comment">&lt;!-- 为驱动的结果集获取数量（fetchSize）设置一个建议值。此参数只可以在查询设置中被覆盖 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;safeRowBoundsEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!-- 允许在嵌套语句中使用分页，确实允许时值为false --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;mapUnderscoreToCamelCase&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!-- 不开启驼峰命名自动映射 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;localCacheScope&quot;</span> <span class="attr">value</span>=<span class="string">&quot;SESSION&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;jdbcTypeForNull&quot;</span> <span class="attr">value</span>=<span class="string">&quot;OTHER&quot;</span>/&gt;</span><span class="comment">&lt;!-- --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;lazyLoadTriggerMethods&quot;</span> <span class="attr">value</span>=<span class="string">&quot;equals,clone,hashCode,toString&quot;</span>/&gt;</span><span class="comment">&lt;!-- 指定对象的哪些方法触发一次延迟加载 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;io.gitee.yunchongxiao.pojo&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--    &lt;typeHandlers&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--        &lt;typeHandler handler=&quot;&quot; javaType=&quot;String&quot; jdbcType=&quot;VARCHAR&quot;/&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;/typeHandlers&gt;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span> = <span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;StudentMapper.xml&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="studentmapperxml"><a class="markdownIt-Anchor" href="#studentmapperxml"></a> StudentMapper.xml</h2>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 这里就是函数实现的地方 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">sql</span> <span class="attr">id</span>=<span class="string">&quot;studentCols&quot;</span>&gt;</span></span><br><span class="line">	sid, sname, age, course</span><br><span class="line"><span class="tag">&lt;/<span class="name">sql</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectBySid&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">resultType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        select * from mybatis.student where sid = #&#123;sid&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectBySname&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">resultType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        select * from mybatis.student where sname like &#x27;%$&#123;value&#125;%&#x27;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertStudent&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        insert into student(sname, age, course) values (#&#123;sname&#125;, #&#123;age&#125;, #&#123;course&#125;);</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteBySid&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Integer&quot;</span>&gt;</span></span><br><span class="line">        delete from student where sid = #&#123;sid&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateBySid&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        update student set sname = #&#123;sname&#125;, age = #&#123;age&#125;, course = #&#123;course&#125; where sid = #&#123;sid&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectByCourse&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;student&quot;</span>&gt;</span></span><br><span class="line">        select</span><br><span class="line">        <span class="tag">&lt;<span class="name">include</span> <span class="attr">refid</span>=<span class="string">&quot;studentCols&quot;</span>/&gt;</span></span><br><span class="line">        from student where course = #&#123;course&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">constructor</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">idArg</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">constructor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">discriminator</span> <span class="attr">javaType</span>=<span class="string">&quot;&quot;</span> <span class="attr">column</span>=<span class="string">&quot;&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">case</span> <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">discriminator</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="studentjava"><a class="markdownIt-Anchor" href="#studentjava"></a> Student.java</h2>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.pojo;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> sid;</span><br><span class="line">    <span class="keyword">private</span> String sname;</span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line">    <span class="keyword">private</span> String course;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">(String sname, String age, String course)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sname = sname;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">        <span class="keyword">this</span>.course = course;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSid</span><span class="params">(<span class="keyword">int</span> sid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sid = sid;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSname</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sname;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSname</span><span class="params">(String sname)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sname = sname;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(String age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCourse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> course;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCourse</span><span class="params">(String course)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.course = course;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Student&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;sid=&quot;</span> + sid +</span><br><span class="line">                <span class="string">&quot;, sname=&#x27;&quot;</span> + sname + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, age=&#x27;&quot;</span> + age + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, course=&#x27;&quot;</span> + course + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="mytestjava"><a class="markdownIt-Anchor" href="#mytestjava"></a> MyTest.java</h2>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.mapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.gitee.yunchongxiao.pojo.Student;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.io.Resources;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSession;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactoryBuilder;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.type.Alias;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyTest</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectBySid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sqlSessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sqlSessionFactory.openSession();</span><br><span class="line">            Student student = sqlSession.selectOne(<span class="string">&quot;student.selectBySid&quot;</span>, <span class="number">2</span>);</span><br><span class="line">            System.out.println(student);</span><br><span class="line">            sqlSession.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectBySname</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            List&lt;Student&gt; students = sqlSession.selectList(<span class="string">&quot;selectBySname&quot;</span>, <span class="string">&quot;S&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (Student student : students) &#123;</span><br><span class="line">                System.out.println(student.toString());</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertStudent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            Student student = <span class="keyword">new</span> Student(<span class="string">&quot;Noiris&quot;</span>, <span class="string">&quot;20&quot;</span>, <span class="string">&quot;C++&quot;</span>);</span><br><span class="line">            <span class="keyword">int</span> result = sqlSession.insert(<span class="string">&quot;insertStudent&quot;</span>, student);</span><br><span class="line">            <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;成功插入&quot;</span> + result + <span class="string">&quot;条数据&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;插入操作失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlSession.commit();</span><br><span class="line">            sqlSession.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteBySid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            <span class="keyword">int</span> result = sqlSession.insert(<span class="string">&quot;deleteBySid&quot;</span>, <span class="number">8</span>);</span><br><span class="line">            <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;成功删除&quot;</span> + result + <span class="string">&quot;条数据&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;删除操作失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlSession.commit();</span><br><span class="line">            sqlSession.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateBySid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            Student student = <span class="keyword">new</span> Student(<span class="string">&quot;Noiris&quot;</span>, <span class="string">&quot;20&quot;</span>, <span class="string">&quot;C++&quot;</span>);</span><br><span class="line">            student.setSid(<span class="number">7</span>);</span><br><span class="line">            <span class="keyword">int</span> result = sqlSession.insert(<span class="string">&quot;updateBySid&quot;</span>, student);</span><br><span class="line">            <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;成功更新&quot;</span> + result + <span class="string">&quot;条数据&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;更新操作失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sqlSession.commit();</span><br><span class="line">            sqlSession.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectByCourse</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;mybatis-config.xml&quot;</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            InputStream in = Resources.getResourceAsStream(resource);</span><br><span class="line">            SqlSessionFactory sessionFactory = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(in);</span><br><span class="line">            SqlSession sqlSession = sessionFactory.openSession();</span><br><span class="line">            List&lt;Student&gt; students = sqlSession.selectList(<span class="string">&quot;selectByCourse&quot;</span>, <span class="string">&quot;Java&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (Student student : students) &#123;</span><br><span class="line">                System.out.println(student);</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>一步一步学SpringBoot2微服务项目实战</category>
+        <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Spring Boot</tag>
+        <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -2809,9 +2796,11 @@ AA-->BB-->CC-->DD-->EE</pre>
       </tags>
   </entry>
   <entry>
-    <title>第9章 Quartz定时器和发送Email</title>
-    <url>/post/e345.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    <title>第7章 集成Redis缓存</title>
+    <url>/post/f553.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="redis缓存介绍"><a class="markdownIt-Anchor" href="#redis缓存介绍"></a> Redis缓存介绍</h1>
+<p>Redis是一个基于内存的单线程高性能key-value型数据库，读写性能优异。支持丰富的数据类型，包括string（字符串）、list（链表）、set（集合）、zset（sorted set有序集合）和hash（哈希类型）。因此，Redis在企业中被广泛使用。</p>
+]]></content>
       <categories>
         <category>一步一步学SpringBoot2微服务项目实战</category>
       </categories>
@@ -2850,19 +2839,11 @@ AA-->BB-->CC-->DD-->EE</pre>
       </tags>
   </entry>
   <entry>
-    <title>第4章 开始约定编程——Spring AOP</title>
-    <url>/post/7800.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="aop术语"><a class="markdownIt-Anchor" href="#aop术语"></a> AOP术语</h1>
-<ul>
-<li>连接点（join point）：对应的是具体被拦截的对象，因为Spring Boot只能支持方法，所以被拦截的对象往往就是指特定的方法。</li>
-<li>切面（aspect）：是一个可以定义切点、各类通知和引入的内容，Spring AOP将通过它的信息来增强Bean的功能或者将对应的方法织入流程。</li>
-<li>切点（point cut）：有时候，我们的切面不单单应用于单个方法，也可能是多个类的不同方法，这时，可以通过正则表达式等方法匹配连接点，切点就是提供这样一个功能的概念。</li>
-<li>通知（advice）：按照决定流程下的方法，分为前置通知（before advice）、后置通知（after advice）、环绕通知（around advice）、事后返回通知（afterReturning advice）和异常通知（afterThrowing advice），他会根据约定织入流程中，需要弄明白它们在流程中的顺序和运行条件。</li>
-<li></li>
-</ul>
-]]></content>
+    <title>第9章 Quartz定时器和发送Email</title>
+    <url>/post/e345.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
       <categories>
-        <category>深入浅出Spring Boot 2.x</category>
+        <category>一步一步学SpringBoot2微服务项目实战</category>
       </categories>
       <tags>
         <tag>Spring Boot</tag>
@@ -3067,6 +3048,25 @@ AA-->BB-->CC-->DD-->EE</pre>
 ]]></content>
       <categories>
         <category>一步一步学SpringBoot2微服务项目实战</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第4章 开始约定编程——Spring AOP</title>
+    <url>/post/7800.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="aop术语"><a class="markdownIt-Anchor" href="#aop术语"></a> AOP术语</h1>
+<ul>
+<li>连接点（join point）：对应的是具体被拦截的对象，因为Spring Boot只能支持方法，所以被拦截的对象往往就是指特定的方法。</li>
+<li>切面（aspect）：是一个可以定义切点、各类通知和引入的内容，Spring AOP将通过它的信息来增强Bean的功能或者将对应的方法织入流程。</li>
+<li>切点（point cut）：有时候，我们的切面不单单应用于单个方法，也可能是多个类的不同方法，这时，可以通过正则表达式等方法匹配连接点，切点就是提供这样一个功能的概念。</li>
+<li>通知（advice）：按照决定流程下的方法，分为前置通知（before advice）、后置通知（after advice）、环绕通知（around advice）、事后返回通知（afterReturning advice）和异常通知（afterThrowing advice），他会根据约定织入流程中，需要弄明白它们在流程中的顺序和运行条件。</li>
+<li></li>
+</ul>
+]]></content>
+      <categories>
+        <category>深入浅出Spring Boot 2.x</category>
       </categories>
       <tags>
         <tag>Spring Boot</tag>
@@ -3312,17 +3312,6 @@ A(Jparepository)--&gt;B(PagingAndSortingRepository)--&gt;C(CrudRepository)--&gt;
       </tags>
   </entry>
   <entry>
-    <title>第1章 Spring Boot来临</title>
-    <url>/post/802b.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
-      <categories>
-        <category>深入浅出Spring Boot 2.x</category>
-      </categories>
-      <tags>
-        <tag>Spring Boot</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第10章 集成MyBatis</title>
     <url>/post/3fdb.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="mybatis介绍"><a class="markdownIt-Anchor" href="#mybatis介绍"></a> MyBatis介绍</h1>
@@ -3336,6 +3325,17 @@ A(Jparepository)--&gt;B(PagingAndSortingRepository)--&gt;C(CrudRepository)--&gt;
 ]]></content>
       <categories>
         <category>一步一步学SpringBoot2微服务项目实战</category>
+      </categories>
+      <tags>
+        <tag>Spring Boot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第1章 Spring Boot来临</title>
+    <url>/post/802b.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+      <categories>
+        <category>深入浅出Spring Boot 2.x</category>
       </categories>
       <tags>
         <tag>Spring Boot</tag>
