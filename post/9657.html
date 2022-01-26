@@ -1,0 +1,518 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第六章-Spring基础 | Good Good Study, Day Day Up!</title><meta name="keywords" content="Java开发,Spring"><meta name="author" content="冲酱"><meta name="copyright" content="冲酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="理解Spring的概念、优秀、体系结构、核心容器，编写入门程序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第六章-Spring基础">
+<meta property="og:url" content="http://yunchongxiao.gitee.io/post/9657.html">
+<meta property="og:site_name" content="Good Good Study, Day Day Up!">
+<meta property="og:description" content="理解Spring的概念、优秀、体系结构、核心容器，编写入门程序">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yunchongxiao.gitee.io/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg">
+<meta property="article:published_time" content="2021-01-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-26T14:40:35.258Z">
+<meta property="article:author" content="冲酱">
+<meta property="article:tag" content="Java开发">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yunchongxiao.gitee.io/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg"><link rel="shortcut icon" href="/imgs/favicon.jpg"><link rel="canonical" href="http://yunchongxiao.gitee.io/post/9657"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '第六章-Spring基础',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-01-26 22:40:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/universe.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Good Good Study, Day Day Up!" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">54</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Good Good Study, Day Day Up!</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">第六章-Spring基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-01-05T16:00:00.000Z" title="发表于 2021-01-06 00:00:00">2021-01-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-26T14:40:35.258Z" title="更新于 2022-01-26 22:40:35">2022-01-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98/">JavaEE（ssm）企业应用实战</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="第六章-Spring基础"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/9657.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/post/9657.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="spring概述"><a class="markdownIt-Anchor" href="#spring概述"></a> Spring概述</h1>
+<h2 id="spring简介"><a class="markdownIt-Anchor" href="#spring简介"></a> Spring简介</h2>
+<ul>
+<li>Spring是一个分层的Java SE/EE应用的一站式轻量级开源框架</li>
+<li>Spring的核心理念：IOC（控制反转）和AOP（面向切面编程）</li>
+<li>IOC是Spring的基础，它支撑着Spring对JavaBean的管理功能</li>
+</ul>
+<h2 id="spring的优势"><a class="markdownIt-Anchor" href="#spring的优势"></a> Spring的优势</h2>
+<ol>
+<li>
+<p>降低耦合度，方便开发</p>
+<p>通过IOC容器，Spring可以管理对象的生命周期，控制对象之间的依赖关系，降低程序之间的耦合度</p>
+</li>
+<li>
+<p>支持AOP编程</p>
+<p>通过AOP，Spring可以对程序进行权限拦截，安全监控等操作，这可以减少传统OOP方法带来的代码冗余和繁杂</p>
+</li>
+<li>
+<p>支持声明式事务</p>
+<p>在Spring中，可以直接通过Spring配置文件管理数据库事务，省去了手动编程的繁琐，提高了开发效率。</p>
+</li>
+<li>
+<p>方便程序测试</p>
+<p>Spring中集成了Junit，开发人员可以空过Junit进行单元测试</p>
+</li>
+<li>
+<p>方便集成各种优秀框架</p>
+<p>Spring提供了一个广阔的基础平台，它不排斥各种优秀的开源框架，其内部提供了对各种优秀框架（如MyBatis）的直接支持。</p>
+</li>
+<li>
+<p>降低Java EE API的使用难度</p>
+<p>Spring封装了Java EE中使用难度较大的API，经过封装，这些API更容易被开发人员理解和调用。</p>
+</li>
+</ol>
+<h2 id="spring功能体系"><a class="markdownIt-Anchor" href="#spring功能体系"></a> Spring功能体系</h2>
+<p>Spring框架采用分层和模块的架构方式，由核心容器、数据访问及集成、Web、AOP等功能构成。</p>
+<h3 id="核心容器core-container"><a class="markdownIt-Anchor" href="#核心容器core-container"></a> 核心容器（Core Container）</h3>
+<p>核心容器在Spring的功能体系中起支撑性的作用，是其他模块实现功能的基石</p>
+<p>核心容器包括Beans、Core、Context、SpEL四个模块，具体如下：</p>
+<ol>
+<li>
+<p>Beans和Core模块</p>
+<p>Beans和Core模块规定了创建、配置和管理Bean的方式，提供了IOC和DI功能，BeanFactory类是Beans和Core模块的关键。</p>
+</li>
+<li>
+<p>Context模块</p>
+<p>Context模块在Beans和Core模块的基础上扩展了功能，通过ApplicationContext接口提供上下文信息。</p>
+</li>
+<li>
+<p>SpEL模块</p>
+<p>SpEL模块提供了一个强大的表达式语言，该语言用于在Spring运行时查询和操纵对象。</p>
+</li>
+</ol>
+<h3 id="数据访问及集成data-accessintegration"><a class="markdownIt-Anchor" href="#数据访问及集成data-accessintegration"></a> 数据访问及集成（Data Access/Integration）</h3>
+<p>数据访问及集成主要用于操作和访问数据库中的数据，它主要包含JDBC、ORM、OXM、JMS和Transaction模块。</p>
+<ol>
+<li>
+<p>JDBC模块</p>
+<p>JDBC模块提供了JDBC抽象层，它消除了冗长的JDBC编码并解析数据库供应商特有的代码错误。</p>
+</li>
+<li>
+<p>ORM模块</p>
+<p>ORM模块为主流的对象关系映射API提供了集成层，这些主流的对象关系映射主要包含MyBatis、HiBernate和JDO等，该模块可将对象关系映射框架与Spring提供的特性组合使用。</p>
+</li>
+<li>
+<p>OXM模块</p>
+<p>OXM模块提供了对OXM实现的支持，例如XML、Beans、JAXB、Castor、JiBX和XStream等。</p>
+</li>
+<li>
+<p>JMS模块</p>
+<p>JMS模块包含生产（produce）和消费（consume）消息的功能，从4.1版本开始，Spring集成了spring-messaging模块。</p>
+</li>
+<li>
+<p>Transactions模块</p>
+<p>Transaction模块的主要功能是事务管理，Spring支持手写beginTransaction()、commit()、rollback()的编程式事务，同时，它也支持通过注解或配置后由Spring自动处理的声明式事务。</p>
+</li>
+</ol>
+<h3 id="web"><a class="markdownIt-Anchor" href="#web"></a> Web</h3>
+<p>Web功能的实现基于ApplicationContext基础之上，它提供了Web应用的各种工具类，包括Web、servlet、WebSocket和Protlet模块。</p>
+<ol>
+<li>
+<p>Web模块</p>
+<p>Web模块提供了基本的面向Web的集成功能，如大部分文件上传功能，使用Servlet侦听器的IoC容器的初始化以及面向Web的应用程序上下文。它还包含一个HTTP客户端和Spring远程处理支持的Web相关部分。</p>
+</li>
+<li>
+<p>Servlet模块</p>
+<p>Servlet模块包含Spring的模型、视图、控制器以及Web应用程序的REST Web服务实现。</p>
+</li>
+<li>
+<p>WebSocket模块</p>
+<p>WebSocket模块是Spring4版本加入的一个模块，该模块用于适配不同的WebSocket引擎，并能够全面支持WebSocket，它与Java WebSocket API标准保持一致，同时提供了额外的服务。</p>
+</li>
+<li>
+<p>Protlet模块</p>
+<p>Protlet模块提供了一个在Protlet环境中使用的MVC实现，相当于镜像了Servlet模块的功能。</p>
+</li>
+</ol>
+<h3 id="aop-aspects和instrumentation"><a class="markdownIt-Anchor" href="#aop-aspects和instrumentation"></a> AOP、Aspects和Instrumentation</h3>
+<p>AOP提供了面向切面的编程实现，允许定义方法拦截器和切入点对代码解耦，Aspects主要用于集成AspectJ，AspectJ是一个功能强大且成熟的AOP框架，为面向切面编程提供多种实现方法，Instrumentation提供了类instrumentation的支持和类加载器的实现，通常在特定的服务器使用。</p>
+<h3 id="test"><a class="markdownIt-Anchor" href="#test"></a> TEST</h3>
+<p>TEST模块支持使用JUnit或TestNG对Spring组件进行单元测试和集成测试，他提供了一直加载ApplicationContext和这些ApplicationContext的缓存。除此之外，它还提供了可用于独立测试代码的模拟对象。</p>
+<h3 id="message"><a class="markdownIt-Anchor" href="#message"></a> MESSAGE</h3>
+<p>MESSAGE在Spring4版本时开始引入Spring的功能体系中，主要用于为Spring框架集成一些基础的消息传送应用。</p>
+<h1 id="spring的容器机制"><a class="markdownIt-Anchor" href="#spring的容器机制"></a> Spring的容器机制</h1>
+<p>容器是Spring框架实现功能的基础，Spring容器类似一家超级工厂，当Spring启动时，所有被配置过的类都会被纳入Spring容器的管理之中。</p>
+<p>Spring把他管理的类称为Bean，Spring可以通过XML文件或者注解获取配置信息，进而通过容器对象来管理Bean。</p>
+<p>在Spring的容器API中，开发人员接触的最多的是BeanFactory和ApplicationContext接口，其中后者是前者的子接口。</p>
+<h2 id="beanfactory接口"><a class="markdownIt-Anchor" href="#beanfactory接口"></a> BeanFactory接口</h2>
+<p>BeanFactory接口时IOC最基本的容器接口，它定义了创建和管理Bean的方法，为其他容器提供了最基本的规范。</p>
+<p>BeanFactory接口提供了一系列操作Bean的方法：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">方法名称</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">getBean(String name)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">getBean(String name, Class<T> type)</T></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"><T>T getBean(Class<T> requiredType)</T></T></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">Object getBean(String name, Object… args)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">isSingleton(String name)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center">isPrototype(String name)</td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="applicationcontext接口"><a class="markdownIt-Anchor" href="#applicationcontext接口"></a> ApplicationContext接口</h2>
+<p>ApplicationContext接口的常用实现类</p>
+<table>
+<thead>
+<tr>
+<th>类名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClassPathXmlApplicationContext</td>
+<td>从类路径加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>FileSystemApplicationContext</td>
+<td>从文件系统加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>AnnotationConfigApplicationContext</td>
+<td>从注解中加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>WebApplicationContext</td>
+<td>在Web应用中使用，从相对于Web根目录的路径中加载配置文件，创建ApplicationContext实例</td>
+</tr>
+<tr>
+<td>ConfigurableWebApplicationContext</td>
+<td>允许通过配置的方式实例化WebApplicationContext</td>
+</tr>
+</tbody>
+</table>
+<h2 id="容器的启动过程"><a class="markdownIt-Anchor" href="#容器的启动过程"></a> 容器的启动过程</h2>
+<ol>
+<li>
+<p>BeanDifinition的Resource定位</p>
+<p>Spring容器通过XML文件或者注解定位到Resource。</p>
+</li>
+<li>
+<p>BeanDifinition的载入与解析</p>
+<p>读取配置，将<code>&lt;bean&gt;</code>配置信息转换为Spring容器内部的数据接口，这个数据接口就是BeanDifinition，通过BeanDifinition，Spring能够方便的对Bean进行管理。</p>
+</li>
+<li>
+<p>BeanDifinition的注册</p>
+<p>在完成BD的载入后，BD会注册到Spring的容器中。Spring容器通过一个HashMap对象持有BeanDifinition数据。</p>
+</li>
+</ol>
+<h1 id="spring的简单应用"><a class="markdownIt-Anchor" href="#spring的简单应用"></a> Spring的简单应用</h1>
+<h2 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h2>
+<p>创建一个Maven对象，在pom.xml中导入依赖</p>
+<h3 id="pomxml"><a class="markdownIt-Anchor" href="#pomxml"></a> pom.xml</h3>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.example<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>pom<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modules</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">module</span>&gt;</span>chapter06<span class="tag">&lt;/<span class="name">module</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">modules</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-logging<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-expression<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="创建bean"><a class="markdownIt-Anchor" href="#创建bean"></a> 创建Bean</h2>
+<p>所谓的创建Bean我的理解是创建一个待Spring管理的Java类</p>
+<h3 id="studentjava"><a class="markdownIt-Anchor" href="#studentjava"></a> student.java</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Student</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Student对象创建了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">study</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;学生正在学习&quot;</span> + msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="teaccherjava"><a class="markdownIt-Anchor" href="#teaccherjava"></a> teaccher.java</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Teacher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Teacher对象创建了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMsg</span><span class="params">(String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">teach</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;老师讲解&quot;</span> + msg + <span class="string">&quot;知识&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="创建配置文件"><a class="markdownIt-Anchor" href="#创建配置文件"></a> 创建配置文件</h2>
+<p>spring通过该配置文件获取Bean的配置信息。</p>
+<h3 id="applicationcontextxml"><a class="markdownIt-Anchor" href="#applicationcontextxml"></a> applicationContext.xml</h3>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;student&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.Student&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>Spring<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;teacher&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.Teacher&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>C++<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="编写测试类"><a class="markdownIt-Anchor" href="#编写测试类"></a> 编写测试类</h2>
+<p>测试一下Spring是否能根据配置文件自动创建Student对象</p>
+<h3 id="testspringjava"><a class="markdownIt-Anchor" href="#testspringjava"></a> TestSpring.java</h3>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> io.gitee.yunchongxiao.bean;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSpring</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testStudent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        Student student = applicationContext.getBean(<span class="string">&quot;student&quot;</span>, Student.class);</span><br><span class="line">        student.study();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testTeacher</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ApplicationContext applicationContext = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line">        Teacher teacher = applicationContext.getBean(<span class="string">&quot;teacher&quot;</span>, Teacher.class);</span><br><span class="line">        teacher.teach();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="运行结果"><a class="markdownIt-Anchor" href="#运行结果"></a> 运行结果</h2>
+<p>运行testTeacher()函数，可以得到如下结果：</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">Student对象创建了</span><br><span class="line">Teacher对象创建了</span><br><span class="line">老师讲解C++知识</span><br></pre></td></tr></table></figure>
+<p>可以看出，虽然没有调用Student对象，但是Student和Teacher都被创建了。</p>
+<p>这是因为在Spring容器启动时，Spring会自动创建所有他所管理的Bean对象，而不是在第一次调用时才实例化</p>
+<p>若想要等到第一次调用时才实例化对象，可以在bean中使用lazy-init属性：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;teacher&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.gitee.yunchongxiao.bean.teacher&quot;</span> <span class="attr">lazy-init</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">value</span>&gt;</span>C++<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">冲酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yunchongxiao.gitee.io/post/9657.html">http://yunchongxiao.gitee.io/post/9657.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yunchongxiao.gitee.io" target="_blank">Good Good Study, Day Day Up!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java%E5%BC%80%E5%8F%91/">Java开发</a><a class="post-meta__tags" href="/tags/Spring/">Spring</a></div><div class="post_share"><div class="social-share" data-image="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/imgs/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/imgs/reward/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/imgs/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/imgs/reward/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/9557.html"><img class="prev-cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">第七章-使用Spring管理Bean</div></div></a></div><div class="next-post pull-right"><a href="/post/6821.html"><img class="next-cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">第五章-MyBatis缓存处理（选学）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/84b4.html" title="第十章-Spring管理数据库事务"><img class="cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-10</div><div class="title">第十章-Spring管理数据库事务</div></div></a></div><div><a href="/post/ef92.html" title="第九章-Spring的JDBC"><img class="cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-09</div><div class="title">第九章-Spring的JDBC</div></div></a></div><div><a href="/post/22d8.html" title="第八章-Spring的AOP"><img class="cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-08</div><div class="title">第八章-Spring的AOP</div></div></a></div><div><a href="/post/9557.html" title="第七章-使用Spring管理Bean"><img class="cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-07</div><div class="title">第七章-使用Spring管理Bean</div></div></a></div><div><a href="/post/6821.html" title="第五章-MyBatis缓存处理（选学）"><img class="cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-05</div><div class="title">第五章-MyBatis缓存处理（选学）</div></div></a></div><div><a href="/post/ed09.html" title="第四章-动态SQL和注解"><img class="cover" src="/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-04</div><div class="title">第四章-动态SQL和注解</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">冲酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">54</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/yunchongxiao"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/yunchongxiao" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:444049406@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的小破站~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#spring%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text"> Spring概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#spring%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text"> Spring简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spring%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.2.</span> <span class="toc-text"> Spring的优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#spring%E5%8A%9F%E8%83%BD%E4%BD%93%E7%B3%BB"><span class="toc-number">1.3.</span> <span class="toc-text"> Spring功能体系</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%AE%B9%E5%99%A8core-container"><span class="toc-number">1.3.1.</span> <span class="toc-text"> 核心容器（Core Container）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E8%AE%BF%E9%97%AE%E5%8F%8A%E9%9B%86%E6%88%90data-accessintegration"><span class="toc-number">1.3.2.</span> <span class="toc-text"> 数据访问及集成（Data Access&#x2F;Integration）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#web"><span class="toc-number">1.3.3.</span> <span class="toc-text"> Web</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#aop-aspects%E5%92%8Cinstrumentation"><span class="toc-number">1.3.4.</span> <span class="toc-text"> AOP、Aspects和Instrumentation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#test"><span class="toc-number">1.3.5.</span> <span class="toc-text"> TEST</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#message"><span class="toc-number">1.3.6.</span> <span class="toc-text"> MESSAGE</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#spring%E7%9A%84%E5%AE%B9%E5%99%A8%E6%9C%BA%E5%88%B6"><span class="toc-number">2.</span> <span class="toc-text"> Spring的容器机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#beanfactory%E6%8E%A5%E5%8F%A3"><span class="toc-number">2.1.</span> <span class="toc-text"> BeanFactory接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#applicationcontext%E6%8E%A5%E5%8F%A3"><span class="toc-number">2.2.</span> <span class="toc-text"> ApplicationContext接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B"><span class="toc-number">2.3.</span> <span class="toc-text"> 容器的启动过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#spring%E7%9A%84%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text"> Spring的简单应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">3.1.</span> <span class="toc-text"> 环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pomxml"><span class="toc-number">3.1.1.</span> <span class="toc-text"> pom.xml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAbean"><span class="toc-number">3.2.</span> <span class="toc-text"> 创建Bean</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#studentjava"><span class="toc-number">3.2.1.</span> <span class="toc-text"> student.java</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#teaccherjava"><span class="toc-number">3.2.2.</span> <span class="toc-text"> teaccher.java</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">3.3.</span> <span class="toc-text"> 创建配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#applicationcontextxml"><span class="toc-number">3.3.1.</span> <span class="toc-text"> applicationContext.xml</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E7%B1%BB"><span class="toc-number">3.4.</span> <span class="toc-text"> 编写测试类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#testspringjava"><span class="toc-number">3.4.1.</span> <span class="toc-text"> TestSpring.java</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">3.5.</span> <span class="toc-text"> 运行结果</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/af46.html" title="第3章 全注解下的Spring IoC"><img src="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第3章 全注解下的Spring IoC"/></a><div class="content"><a class="title" href="/post/af46.html" title="第3章 全注解下的Spring IoC">第3章 全注解下的Spring IoC</a><time datetime="2022-01-26T14:36:40.861Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/802b.html" title="第1章 Spring Boot来临"><img src="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第1章 Spring Boot来临"/></a><div class="content"><a class="title" href="/post/802b.html" title="第1章 Spring Boot来临">第1章 Spring Boot来临</a><time datetime="2022-01-26T14:36:40.840Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/7800.html" title="第4章 开始约定编程——Spring AOP"><img src="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第4章 开始约定编程——Spring AOP"/></a><div class="content"><a class="title" href="/post/7800.html" title="第4章 开始约定编程——Spring AOP">第4章 开始约定编程——Spring AOP</a><time datetime="2022-01-26T14:36:40.840Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/6532.html" title="信息经济学（第四部分）"><img src="https://s4.ax1x.com/2022/01/04/TO1n74.png" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="信息经济学（第四部分）"/></a><div class="content"><a class="title" href="/post/6532.html" title="信息经济学（第四部分）">信息经济学（第四部分）</a><time datetime="2022-01-26T14:36:40.808Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/d5d0.html" title="信息经济学（第二部分）"><img src="https://s4.ax1x.com/2022/01/03/TbCOyT.png" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="信息经济学（第二部分）"/></a><div class="content"><a class="title" href="/post/d5d0.html" title="信息经济学（第二部分）">信息经济学（第二部分）</a><time datetime="2022-01-26T14:36:40.793Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/pictures/covers/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 冲酱</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'VzaybaUM1tC9Jx76YTBf50nT-MdYXbMMI',
+      appKey: 'JFGs27pMegRQqKCAITeefKgs',
+      placeholder: '随便说点啥吧~',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I" data-fontsize="15px" data-random="false" async="async"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/958a88a8.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '958a88a8',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-clock/clock/images/weather/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>（五）Models与数据库 | Good Good Study, Day Day Up!</title><meta name="keywords" content="Django,系统开发,Python"><meta name="author" content="冲酱"><meta name="copyright" content="冲酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="网页中几乎所有的东西都存放在数据库中，本章介绍models如何操纵数据库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="（五）Models与数据库">
+<meta property="og:url" content="http://yunchongxiao.gitee.io/post/a0dc.html">
+<meta property="og:site_name" content="Good Good Study, Day Day Up!">
+<meta property="og:description" content="网页中几乎所有的东西都存放在数据库中，本章介绍models如何操纵数据库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yunchongxiao.gitee.io/pictures/covers/django2.jpg">
+<meta property="article:published_time" content="2022-01-26T14:36:34.204Z">
+<meta property="article:modified_time" content="2022-01-05T14:41:42.318Z">
+<meta property="article:author" content="冲酱">
+<meta property="article:tag" content="Django">
+<meta property="article:tag" content="系统开发">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yunchongxiao.gitee.io/pictures/covers/django2.jpg"><link rel="shortcut icon" href="/imgs/favicon.jpg"><link rel="canonical" href="http://yunchongxiao.gitee.io/post/a0dc"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '（五）Models与数据库',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-01-05 22:41:42'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/universe.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/static-butterfly/dist/css/index.min.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.css"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="Good Good Study, Day Day Up!" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">54</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/pictures/covers/django2.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Good Good Study, Day Day Up!</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">（五）Models与数据库</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-01-26T14:36:34.204Z" title="发表于 2022-01-26 22:36:34">2022-01-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-05T14:41:42.318Z" title="更新于 2022-01-05 22:41:42">2022-01-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/python%E6%96%B0%E6%89%8B%E5%AD%A6Django2-0%E6%9E%B6%E6%9E%8416%E5%A0%82%E8%AF%BE/">python新手学Django2.0架构16堂课</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="（五）Models与数据库"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/a0dc.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/post/a0dc.html" itemprop="commentCount"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="数据库简介"><a class="markdownIt-Anchor" href="#数据库简介"></a> 数据库简介</h1>
+<p>在Django中，使用SQLite作为数据库管理系统，这是一个简易型数据库管理系统，方便简洁，但只适合测试开发时使用，对于真正的大型数据库，七扩充性和性能就有了很大的限制，我们这里先使用SQLite进行学习，后续会教授如何使用更适合正式网站的数据库系统。</p>
+<p>对于网站来说，最重要的内容就是数据库，所以设计网站的第一步往往是根据网站的需求先设计数据库，确定数据库的所有细节，并且做好正规化操作（如拆解范式）后，才能开始编写程序。</p>
+<p>Django操作数据库的简单示意图如下所示：</p>
+<pre class="mermaid">graph TD
+M("Model类(models.py)")
+V("控制处理函数(views.py)")
+D(Django的Models机制)
+Q(驱动程序接口)
+Data[(数据内容)]
+M-->V-->D-->Q-->Data-->Q-->D-->V</pre>
+<p>其中Model类与数据库中的数据表对应，当我们设计好数据表后，就需要根据数据表的字段编写Model类，下面举一个数据表与Model类对应的例子：</p>
+<p>student表和Teacher表：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sno</td>
+<td>字符串</td>
+<td>学生编号</td>
+</tr>
+<tr>
+<td>name</td>
+<td>整型</td>
+<td>学生姓名</td>
+</tr>
+<tr>
+<td>age</td>
+<td>整型</td>
+<td>学生年龄</td>
+</tr>
+<tr>
+<td>tno</td>
+<td>整型</td>
+<td>老师编号（外键）</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tno</td>
+<td>字符串</td>
+<td>老师编号</td>
+</tr>
+<tr>
+<td>name</td>
+<td>字符串给</td>
+<td>老师姓名</td>
+</tr>
+<tr>
+<td>age</td>
+<td>正整数</td>
+<td>老师年龄</td>
+</tr>
+</tbody>
+</table>
+<p>Model类（student表和Teacher表）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Teacher</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    tno = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    name = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    age = models.PositiveIntegerField()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.name</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    sno = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    name = models.CharField(max_length=<span class="number">20</span>)</span><br><span class="line">    age = models.PositiveIntegerField()</span><br><span class="line">    tno = models.ForeignKey(Teacher, on_delete=models.CASCADE)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.name</span><br></pre></td></tr></table></figure>
+<p>这个表有几个注意点：</p>
+<ul>
+<li>
+<p>为了方便观察数据，我们最好定义一下<code>__str__</code>函数，这样我们在admin界面查看数据项时我们就能查看到实际的信息，如果不设置，数据项默认会显示（类名+编号）</p>
+<p><img src="/post/a0dc/image-20210306150911498.png" alt="对比"></p>
+</li>
+<li>
+<p>Django对于每条数据，都会隐式的创建一个id字段，该字段作为主键来区别数据项，所以一般不需要自己设置主键，</p>
+</li>
+<li>
+<p>Student与Teacher之间存在外键关系，因此我们可以看到student类中的teacher是通过ForeignKey进行定义的，后面的on_delete参数表示在删除外键时，对引用外键的数据的处理：</p>
+<ol>
+<li>on_delete=models.CASCADE：引用外键的数据一并删除</li>
+<li>on_delete=models.PROTECT：禁止删除并抛出一个错误</li>
+<li>on_delete=models.SET_NULL：将外键设置为null，前提是外键可以为Null</li>
+<li>on_delete=models.SET_DEFAULT：将外键设置为默认值，前提是外键设置了默认值</li>
+<li>on_delete=models.DO_NOTHING：do nothing.</li>
+</ol>
+</li>
+<li>
+<p>每次修改完models.py后，我们需要让数据库的数据表进行同步的修改，因此需要：</p>
+<ol>
+<li><code>python manage.py makemigrations</code>：记录数据表的修改命令</li>
+<li><code>python manage.py migrate</code>：执行数据表的修改命令</li>
+</ol>
+<p>这在之前的章节有过讲解，如果感到陌生的话可以<a href="https://yunchongxiao.gitee.io/2021/03/03/Django2.0%E6%9E%B6%E7%AB%99%E7%9A%8416%E5%A0%82%E8%AF%BE/4/#model%E7%AE%80%E4%BB%8B">点此回顾</a>。</p>
+</li>
+</ul>
+<h1 id="修改admin管理界面的外观"><a class="markdownIt-Anchor" href="#修改admin管理界面的外观"></a> 修改Admin管理界面的外观</h1>
+<h2 id="数据项呈现多字段"><a class="markdownIt-Anchor" href="#数据项呈现多字段"></a> 数据项呈现多字段</h2>
+<p>默认的admin界面仅显示<code>__str__</code>返回的字符串，如果我们想显示多个字段，则需要在admin.py中添加一个类，来做一些调整：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StudentAdmin</span>(<span class="params">admin.ModelAdmin</span>):</span></span><br><span class="line">    list_display = [<span class="string">&#x27;sno&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;tno&#x27;</span>]</span><br><span class="line">    </span><br><span class="line"><span class="comment"># admin.site.register(Student)</span></span><br><span class="line">admin.site.register(Student, StudentAdmin)</span><br></pre></td></tr></table></figure>
+<p><img src="/post/a0dc/image-20210306155238158.png" alt="增添显示字段"></p>
+<p>这个类可以做很多事情，比如给管理页面添加排序功能、修改每个字段的名称：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StudentAdmin</span>(<span class="params">admin.ModelAdmin</span>):</span></span><br><span class="line">    list_display = [<span class="string">&#x27;sno&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;tno&#x27;</span>]</span><br><span class="line">    search_fields = (<span class="string">&#x27;sno&#x27;</span>, <span class="string">&#x27;name&#x27;</span>,)</span><br><span class="line">    ordering = (<span class="string">&#x27;sno&#x27;</span>,)</span><br></pre></td></tr></table></figure>
+<h1 id="使用pycharm连接database"><a class="markdownIt-Anchor" href="#使用pycharm连接database"></a> 使用PyCharm连接Da	tabase</h1>
+<p>按图来即可：</p>
+<p><img src="/post/a0dc/image-20210306160804732.png" alt="创建mysql连接"></p>
+<p><img src="/post/a0dc/image-20210306160941445.png" alt="设置账号密码"></p>
+<p><img src="/post/a0dc/image-20210306161052805.png" alt="测试连接"></p>
+<p><img src="/post/a0dc/image-20210306161237471.png" alt="设置时区"></p>
+<p><img src="/post/a0dc/image-20210306161341049.png" alt="再次测试"></p>
+<p><img src="/post/a0dc/image-20210306161838572.png" alt="创建数据库"></p>
+<h1 id="连接mysql"><a class="markdownIt-Anchor" href="#连接mysql"></a> 连接MySQl</h1>
+<p>首先需要安装mysqlclient，使用<code>pip install mysqlclient</code>，在PyCharm中可以直接安装：</p>
+<p><img src="/post/a0dc/image-20210310210359490.png" alt="打开python解释器设置"></p>
+<p>我们可以在这里查看并管理package</p>
+<p><img src="/post/a0dc/image-20210310210546610.png" alt="查看并管理包"></p>
+<p>搜索mysqlclient并安装即可</p>
+<p><img src="/post/a0dc/image-20210310210832115.png" alt="安装mysqlclient"></p>
+<p>安装完毕后，只需要在settings.py中设置MySql的各种属性即可：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;default&#x27;</span>: &#123;</span><br><span class="line">        <span class="string">&#x27;ENGINE&#x27;</span>: <span class="string">&#x27;django.db.backends.mysql&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;NAME&#x27;</span>: <span class="string">&#x27;django_chapter07&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;USER&#x27;</span>: <span class="string">&#x27;root&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;PASSWORD&#x27;</span>: <span class="string">&#x27;xyc@444049406&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;HOST&#x27;</span>: <span class="string">&#x27;localhost&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;PORT&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;OPTIONS&#x27;</span>: &#123;</span><br><span class="line">            <span class="string">&#x27;init_command&#x27;</span>: <span class="string">&#x27;SET sql_mode = &quot;STRICT_TRANS_TABLES&quot;&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+<p>设置完毕后，使用<code>python manage.py migrate</code>命令，Django就会自动将数据库连接到MySql上。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">冲酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yunchongxiao.gitee.io/post/a0dc.html">http://yunchongxiao.gitee.io/post/a0dc.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yunchongxiao.gitee.io" target="_blank">Good Good Study, Day Day Up!</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Django/">Django</a><a class="post-meta__tags" href="/tags/%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91/">系统开发</a><a class="post-meta__tags" href="/tags/Python/">Python</a></div><div class="post_share"><div class="social-share" data-image="/pictures/covers/django2.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/imgs/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/imgs/reward/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/imgs/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/imgs/reward/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/729c.html"><img class="prev-cover" src="/pictures/covers/django2.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">（六）网站窗体的应用</div></div></a></div><div class="next-post pull-right"><a href="/post/da60.html"><img class="next-cover" src="/pictures/covers/django2.jpg" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">（四）Template深入探讨</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/af1b.html" title="（七）网站的Session功能"><img class="cover" src="/pictures/covers/django2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-26</div><div class="title">（七）网站的Session功能</div></div></a></div><div><a href="/post/729c.html" title="（六）网站窗体的应用"><img class="cover" src="/pictures/covers/django2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-26</div><div class="title">（六）网站窗体的应用</div></div></a></div><div><a href="/post/da60.html" title="（四）Template深入探讨"><img class="cover" src="/pictures/covers/django2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-26</div><div class="title">（四）Template深入探讨</div></div></a></div><div><a href="/post/7d13.html" title="（三）网址的对应与委派"><img class="cover" src="/pictures/covers/django2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-26</div><div class="title">（三）网址的对应与委派</div></div></a></div><div><a href="/post/f3a5.html" title="（二）深入了解Django的MVC架构"><img class="cover" src="/pictures/covers/django2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-26</div><div class="title">（二）深入了解Django的MVC架构</div></div></a></div><div><a href="/post/1aa5.html" title="（一）Django网站快速入门"><img class="cover" src="/pictures/covers/django2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-26</div><div class="title">（一）Django网站快速入门</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">冲酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">54</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/yunchongxiao"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/yunchongxiao" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:444049406@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的小破站~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text"> 数据库简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9admin%E7%AE%A1%E7%90%86%E7%95%8C%E9%9D%A2%E7%9A%84%E5%A4%96%E8%A7%82"><span class="toc-number">2.</span> <span class="toc-text"> 修改Admin管理界面的外观</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%A1%B9%E5%91%88%E7%8E%B0%E5%A4%9A%E5%AD%97%E6%AE%B5"><span class="toc-number">2.1.</span> <span class="toc-text"> 数据项呈现多字段</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8pycharm%E8%BF%9E%E6%8E%A5database"><span class="toc-number">3.</span> <span class="toc-text"> 使用PyCharm连接Da	tabase</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5mysql"><span class="toc-number">4.</span> <span class="toc-text"> 连接MySQl</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/af46.html" title="第3章 全注解下的Spring IoC"><img src="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第3章 全注解下的Spring IoC"/></a><div class="content"><a class="title" href="/post/af46.html" title="第3章 全注解下的Spring IoC">第3章 全注解下的Spring IoC</a><time datetime="2022-01-26T14:36:40.861Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/802b.html" title="第1章 Spring Boot来临"><img src="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第1章 Spring Boot来临"/></a><div class="content"><a class="title" href="/post/802b.html" title="第1章 Spring Boot来临">第1章 Spring Boot来临</a><time datetime="2022-01-26T14:36:40.840Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/7800.html" title="第4章 开始约定编程——Spring AOP"><img src="/pictures/covers/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BASpring%20Boot%202.x.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="第4章 开始约定编程——Spring AOP"/></a><div class="content"><a class="title" href="/post/7800.html" title="第4章 开始约定编程——Spring AOP">第4章 开始约定编程——Spring AOP</a><time datetime="2022-01-26T14:36:40.840Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/6532.html" title="信息经济学（第四部分）"><img src="https://s4.ax1x.com/2022/01/04/TO1n74.png" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="信息经济学（第四部分）"/></a><div class="content"><a class="title" href="/post/6532.html" title="信息经济学（第四部分）">信息经济学（第四部分）</a><time datetime="2022-01-26T14:36:40.808Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/d5d0.html" title="信息经济学（第二部分）"><img src="https://s4.ax1x.com/2022/01/03/TbCOyT.png" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="信息经济学（第二部分）"/></a><div class="content"><a class="title" href="/post/d5d0.html" title="信息经济学（第二部分）">信息经济学（第二部分）</a><time datetime="2022-01-26T14:36:40.793Z" title="发表于 2022-01-26 22:36:40">2022-01-26</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/pictures/covers/django2.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 冲酱</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(() => {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'VzaybaUM1tC9Jx76YTBf50nT-MdYXbMMI',
+      appKey: 'JFGs27pMegRQqKCAITeefKgs',
+      placeholder: '随便说点啥吧~',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I" data-fontsize="15px" data-random="false" async="async"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/958a88a8.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '958a88a8',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.jsdelivr.net/gh/Zfour/Butterfly-clock/clock/images/weather/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://cdn.jsdelivr.net/npm/hexo-butterfly-clock/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
