@@ -38,16 +38,16 @@
   </entry>
   
   <entry>
-    <title>第1章 Spring Boot来临</title>
-    <link href="http://yunchongxiao.gitee.io/post/802b.html"/>
-    <id>http://yunchongxiao.gitee.io/post/802b.html</id>
+    <title>第4章 开始约定编程——Spring AOP</title>
+    <link href="http://yunchongxiao.gitee.io/post/7800.html"/>
+    <id>http://yunchongxiao.gitee.io/post/7800.html</id>
     <published>2022-01-26T14:36:40.840Z</published>
-    <updated>2022-01-05T14:41:42.359Z</updated>
+    <updated>2022-01-05T14:41:42.362Z</updated>
     
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="aop术语"><a class="markdownIt-Anchor" href="#aop术语"></a> AOP术语</h1><ul><li>连接点（join point）：对应的是具体被拦截的对象，因为Spring Boot只能支持方法，所以被拦截的对象往往就是指特定的方法。</li><li>切面（aspect）：是一个可以定义切点、各类通知和引入的内容，Spring AOP将通过它的信息来增强Bean的功能或者将对应的方法织入流程。</li><li>切点（point cut）：有时候，我们的切面不单单应用于单个方法，也可能是多个类的不同方法，这时，可以通过正则表达式等方法匹配连接点，切点就是提供这样一个功能的概念。</li><li>通知（advice）：按照决定流程下的方法，分为前置通知（before advice）、后置通知（after advice）、环绕通知（around advice）、事后返回通知（afterReturning advice）和异常通知（afterThrowing advice），他会根据约定织入流程中，需要弄明白它们在流程中的顺序和运行条件。</li><li></li></ul>]]></content>
     
     
-    <summary type="html">回顾Spring Framework的历史。</summary>
+    <summary type="html">本章探讨AOP的各种概念。</summary>
     
     
     
@@ -59,16 +59,16 @@
   </entry>
   
   <entry>
-    <title>第4章 开始约定编程——Spring AOP</title>
-    <link href="http://yunchongxiao.gitee.io/post/7800.html"/>
-    <id>http://yunchongxiao.gitee.io/post/7800.html</id>
+    <title>第1章 Spring Boot来临</title>
+    <link href="http://yunchongxiao.gitee.io/post/802b.html"/>
+    <id>http://yunchongxiao.gitee.io/post/802b.html</id>
     <published>2022-01-26T14:36:40.840Z</published>
-    <updated>2022-01-05T14:41:42.362Z</updated>
+    <updated>2022-01-05T14:41:42.359Z</updated>
     
-    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="aop术语"><a class="markdownIt-Anchor" href="#aop术语"></a> AOP术语</h1><ul><li>连接点（join point）：对应的是具体被拦截的对象，因为Spring Boot只能支持方法，所以被拦截的对象往往就是指特定的方法。</li><li>切面（aspect）：是一个可以定义切点、各类通知和引入的内容，Spring AOP将通过它的信息来增强Bean的功能或者将对应的方法织入流程。</li><li>切点（point cut）：有时候，我们的切面不单单应用于单个方法，也可能是多个类的不同方法，这时，可以通过正则表达式等方法匹配连接点，切点就是提供这样一个功能的概念。</li><li>通知（advice）：按照决定流程下的方法，分为前置通知（before advice）、后置通知（after advice）、环绕通知（around advice）、事后返回通知（afterReturning advice）和异常通知（afterThrowing advice），他会根据约定织入流程中，需要弄明白它们在流程中的顺序和运行条件。</li><li></li></ul>]]></content>
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
     
     
-    <summary type="html">本章探讨AOP的各种概念。</summary>
+    <summary type="html">回顾Spring Framework的历史。</summary>
     
     
     
