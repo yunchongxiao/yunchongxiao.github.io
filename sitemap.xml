@@ -277,6 +277,13 @@
   </url>
   
   <url>
+    <loc>http://yunchongxiao.gitee.io/tags/MyBatis/</loc>
+    <lastmod>2022-02-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://yunchongxiao.gitee.io/tags/Java%E5%BC%80%E5%8F%91/</loc>
     <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -290,24 +297,17 @@
     <priority>0.2</priority>
   </url>
   
-  <url>
-    <loc>http://yunchongxiao.gitee.io/tags/MyBatis/</loc>
-    <lastmod>2022-02-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
 
   
   <url>
-    <loc>http://yunchongxiao.gitee.io/categories/React-17-Design-Patterns-Best-Practices/</loc>
+    <loc>http://yunchongxiao.gitee.io/categories/react-guide-to-main-concepts/</loc>
     <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://yunchongxiao.gitee.io/categories/react-guide-to-main-concepts/</loc>
+    <loc>http://yunchongxiao.gitee.io/categories/React-17-Design-Patterns-Best-Practices/</loc>
     <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
