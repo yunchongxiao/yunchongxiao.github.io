@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yunchongxiao.gitee.io/post/2290.html</loc>
+    
+    <lastmod>2022-02-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://yunchongxiao.gitee.io/post/d290.html</loc>
+    
+    <lastmod>2022-02-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://yunchongxiao.gitee.io/post/6821.html</loc>
     
     <lastmod>2022-01-30</lastmod>
@@ -182,15 +200,6 @@
   </url>
   
   <url>
-    <loc>http://yunchongxiao.gitee.io/post/d290.html</loc>
-    
-    <lastmod>2022-01-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://yunchongxiao.gitee.io/post/b2f2.html</loc>
     
     <lastmod>2022-01-30</lastmod>
@@ -247,7 +256,7 @@
 
   <url>
     <loc>http://yunchongxiao.gitee.io/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -255,35 +264,35 @@
   
   <url>
     <loc>http://yunchongxiao.gitee.io/tags/react/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://yunchongxiao.gitee.io/tags/vue3-2/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://yunchongxiao.gitee.io/tags/MyBatis/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://yunchongxiao.gitee.io/tags/Java%E5%BC%80%E5%8F%91/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://yunchongxiao.gitee.io/tags/Spring/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -292,21 +301,21 @@
   
   <url>
     <loc>http://yunchongxiao.gitee.io/categories/React-17-Design-Patterns-Best-Practices/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://yunchongxiao.gitee.io/categories/react-guide-to-main-concepts/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>http://yunchongxiao.gitee.io/categories/JavaEE%EF%BC%88ssm%EF%BC%89%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8%E5%AE%9E%E6%88%98/</loc>
-    <lastmod>2022-01-30</lastmod>
+    <lastmod>2022-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>

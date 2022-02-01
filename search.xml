@@ -7,7 +7,560 @@
 ]]></content>
   </entry>
   <entry>
-    <title>React 17 Design Patterns Best Practices(1)</title>
+    <title>02-React 17 Design Patterns Best Practices</title>
+    <url>/post/2290.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="what-you-can-learn"><a class="markdownIt-Anchor" href="#what-you-can-learn"></a> What you can learn</h1>
+<p>在这一节，我们主要讨论如下话题：</p>
+<ul>
+<li>什么是JSX，我们为什么推荐使用它</li>
+<li>什么是Babel，我们如何使用它来写现代的JavaScript代码</li>
+<li>JSX的主要特点，他和 HTML 的区别</li>
+<li>用一种优雅，可维护的方式进行 JSX 的最佳实践</li>
+<li>linting（尤其是ESLint）能够在团队编程中保持JavaScript的一致性</li>
+<li>函数式编程的基础，学习为什么遵循函数式范式能够更好的编写 React 组件</li>
+</ul>
+<h1 id="babel-7"><a class="markdownIt-Anchor" href="#babel-7"></a> Babel 7</h1>
+<p>React 提供了两种方法来定义我们的element</p>
+<p>1.使用JavaScript 函数</p>
+<pre class="line-numbers language-JavaScript" data-language="JavaScript"><code class="language-JavaScript">class HelloMessage extends React.Component &#123;
+  render() &#123;
+    &#x2F;&#x2F; React 17 弃用 React.createElement，改为 _jsx(...)
+    return React.createElement(
+      &quot;div&quot;,
+      null,
+      &quot;Hello&quot;,
+      this.props.name
+    );
+  &#125;
+&#125;
+
+ReactDOM.render(
+  React.createElement(HelloMessage, &#123; name:&quot;Taylor&quot; &#125;), 
+  document.getElementById(&#39;hello-example&#39;)
+);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>在React 17中，<code>React.createElement('div')</code>已弃用，现在在React内部使用 react/JSX-runtime 来呈现 JSX，这意味着我们将使用 _jsx(’ div’, {}) 之类的东西。也就是说，不再需要为了编写JSX代码而导入React对象。</p>
+</blockquote>
+<p>2.使用JSX语法糖（XML-like syntax）</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">class</span> <span class="token class-name">HelloMessage</span> <span class="token keyword">extends</span> <span class="token class-name">React<span class="token punctuation">.</span>Component</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+      Hello </span><span class="token punctuation">&#123;</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>name<span class="token punctuation">&#125;</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">HelloMessage</span></span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>Taylor<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">,</span>
+  document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'hello-example'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这两个例子均可以在React官方文档的https://reactjs.org/#examples中找到。</p>
+<p>为了使用 JSX 和 ES6，我们需要安装 Babel 7。Babel 是一个在 React 社区中广泛运用的 JavaScript 编译器（JavaScript Compiler）</p>
+<p>我们需要明白的是，因为我们希望使用 JSX 和 ES6，使我们的代码简洁优雅且具有可维护性，但这种语法浏览器无法识别，因此我们使用 Babel 来将我们的代码转化为 ES5 或更低的可被浏览器支持的版本。</p>
+<p>在以前的Babel 6.x 版本，我们通过安装<code>babel-cli</code>，其中包含<code>babel-node</code>和 <code>babel-core</code>，在最新版本中，我们将其分离开了，因此，我们需要通过如下命令安装 Babel 7：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install -g @babel&#x2F;core @babel&#x2F;node<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>在多数情况下，开发者往往不希望安装全局包，而是将其内置在项目中，但在教学过程中，这样是比较方便的</p>
+</blockquote>
+<p>安装完毕后，我们就可以通过限免的命令将我们编写的JSX ES6 语法转换成浏览器可支持的JavaScript版本：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">babel source.js -o output.js<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>Babel的强大之处在于，他是高度可配置的，虽然我们可以手动配置，但更方便的选择是使用一些预设好的配置：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install -g @babel&#x2F;preset-env @babel&#x2F;preset-react<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h1 id="creating-our-first-element"><a class="markdownIt-Anchor" href="#creating-our-first-element"></a> Creating our first element</h1>
+<p>现在，我们的编程环境已经可以支持 JSX，让我们从一个创建一个<code>div</code>element 开始学习，在JavaScript中，我们可以通过<code>_jsx</code>函数来创建一个<code>div</code>element：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">_jsx</span><span class="token punctuation">(</span>
+  <span class="token comment">// props</span>
+  <span class="token string">'div'</span> <span class="token punctuation">,</span> 
+  <span class="token comment">// props</span>
+  <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>  
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>用 JSX 语法糖实现则是如下所示：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这像是一个HTML语法，但存在于 .js 文件中。需要注意的是，JSX只是一种语法糖，他在交给浏览器执行前是会被转化成 JavaScript代码的，即当我们运行Babel时，<code>&lt;div /&gt;</code>JSX代码会被转换成<code>_jsx('div', &#123;&#125;)</code>JavaScript代码，这是我们在编写模板时应该始终牢记的一点。</p>
+<h1 id="dom-elements-and-react-components"><a class="markdownIt-Anchor" href="#dom-elements-and-react-components"></a> DOM elements and React components</h1>
+<p>通过 JSX， 我们可以创建 HTML 元素和 React 组件，二者的唯一区别在于首字母是否大写。</p>
+<ul>
+<li>渲染HTML按钮，我们使用<code>&lt;button /&gt;</code>，Babel为我们编译的js代码为：<code>_jsx('button', &#123;&#125;)</code></li>
+<li>渲染button组件，我们使用<code>&lt;Button /&gt;</code>，Babel为我们编译的js代码为：<code>_jsx(Button, &#123;&#125;)</code></li>
+</ul>
+<p>如果你能明白这两个参数的区别，说明你对前一章知识掌握的还不错，正如上一章所讲的 element，拥有一个重要的参数type，我们将字符串传入type时，表示DOM节点，我们将函数传给type时，表示React字符串。</p>
+<h1 id="props"><a class="markdownIt-Anchor" href="#props"></a> Props</h1>
+<p>当我们的DOM element 或者 React Component 需要 参数（Props）时，使用 JSX 是非常方便的：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> 
+  <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://www.js.education/images/logo.png<span class="token punctuation">"</span></span> 
+  <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>JS Education<span class="token punctuation">"</span></span> 
+<span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其等价的 JavaScript 代码可读性就差多了：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">_jsx</span><span class="token punctuation">(</span>
+  <span class="token comment">// type </span>
+  <span class="token string">"img"</span><span class="token punctuation">,</span> 
+  <span class="token comment">// props</span>
+  <span class="token punctuation">&#123;</span>
+    src<span class="token operator">:</span><span class="token string">"https://www.js.education/images/logo.png"</span><span class="token punctuation">,</span>
+    alt<span class="token operator">:</span><span class="token string">"JS Education"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="children"><a class="markdownIt-Anchor" href="#children"></a> Children</h1>
+<p>JSX允许您定义子元素来描述元素树，并组合复杂元素UI，一个基本的例子是一个包含文本的链接，如下所示:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://js.education<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Click me! </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>转译为JavaScript代码如下所示：</p>
+<pre class="line-numbers language-JavaScript" data-language="JavaScript"><code class="language-JavaScript">_jsx(
+  &#x2F;&#x2F; type
+  &quot;a&quot;,  
+  &#x2F;&#x2F; props
+  &#123;
+    href:&quot;https:&#x2F;&#x2F;www.js.education&quot;
+  &#125;,
+  &#x2F;&#x2F; children
+  &quot;Click me! &quot;
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们的链接可能被包含在一个div元素中以满足一些布局要求，而JSX代码片段实现如下:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>https://www.js.education<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Click me! </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>等价的 JavaScript 写法如下：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token function">_jsx</span><span class="token punctuation">(</span>
+  <span class="token comment">// type</span>
+  <span class="token string">"div"</span><span class="token punctuation">,</span>
+  <span class="token comment">// prop</span>
+  <span class="token keyword">null</span><span class="token punctuation">,</span>
+  <span class="token comment">// children</span>
+  <span class="token function">_jsx</span><span class="token punctuation">(</span>
+    <span class="token comment">// type</span>
+    <span class="token string">"a"</span><span class="token punctuation">,</span>
+    <span class="token comment">//prop</span>
+    <span class="token punctuation">&#123;</span> href<span class="token operator">:</span><span class="token string">"https://www.js.education"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token comment">// children</span>
+    <span class="token string">"Click me!"</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>现在应该清晰的看出，JSX的类似xml的语法是如何使一切更加可读和可维护的，但重要的是要知道，与我们的JSX并行的JavaScript可以控制元素的创建。</p>
+<p>我们还可以在 Children 中使用JavaScript表达式，比如函数或变量，为此，我们必须将表达式括在花括号内:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+  Hello, </span><span class="token punctuation">&#123;</span>variable<span class="token punctuation">&#125;</span><span class="token plain-text">.
+  </span><span class="token punctuation">&#123;</span><span class="token comment">/* 大括号内的 () => console.log("Function") 是JS表达式，本句注释也是JS表达式 */</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+  I' m a &#123;() => console.log(' Function' )&#125;.
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="differences-with-html"><a class="markdownIt-Anchor" href="#differences-with-html"></a> Differences with HTML</h1>
+<p>到目前为止，我们已经看到了JSX和HTML之间的相似之处。现在让我们看看它们之间的细微差别以及它们存在的原因。</p>
+<h2 id="attributes"><a class="markdownIt-Anchor" href="#attributes"></a> Attributes</h2>
+<p>我们必须始终牢记，JSX不是标准语言，它会被转换成JavaScript。因此，有些属性不能使用。</p>
+<p>例如，我们必须使用className而不是class，必须使用htmlFor而不是For，如下所示:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>label</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>awesome-label<span class="token punctuation">"</span></span> <span class="token attr-name">htmlFor</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>name<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这样做的原因是class和for在JavaScript中是保留字。</p>
+<h2 id="style"><a class="markdownIt-Anchor" href="#style"></a> Style</h2>
+<p>样式属性不像HTML那样接受CSS字符串，而是接受一个JavaScript对象，其中样式为小驼峰命名:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token punctuation">&#123;</span><span class="token comment">/* div style="background-color: red" */</span><span class="token punctuation">&#125;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span> backgroundColor<span class="token operator">:</span> <span class="token string">'red'</span> <span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>注意，这里最外层的大括号表示其包含的内容为JavaScript表达式，内层的大括号表示一个JavaScript 对象，因此看起来像是两层大括号</p>
+</blockquote>
+<p>因此，你也可以将你的样式定义为变量，再传入其中：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> styles <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+	backgroundColor<span class="token operator">:</span> <span class="token string">' red'</span>
+<span class="token punctuation">&#125;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>styles<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="root"><a class="markdownIt-Anchor" href="#root"></a> Root</h2>
+<p>由于每一个JSX元素最终都会被转换成与其对应的JavaScript函数，由于不能在JavaScript代码中返回两个函数，所以在同级上有多个元素时（每个元素对应自己的JavaScript函数，因此一个.js文件中的最外层就会出现多个return语句），我们必须将它们包装在父级中。</p>
+<p>让我们看一个简单的例子：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这会给我们带来以下错误：<code>Adjacent JSX elements must be wrapped in an enclosing tag.</code>。因此我们需要在其外层包裹一个父标签：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从 React 16.2.0 之后，我们可以直接返回一个数组了：</p>
+<pre class="line-numbers language-JSX" data-language="JSX"><code class="language-JSX">return [
+  &lt;li key&#x3D;&quot;1&quot;&gt;First item&lt;&#x2F;li&gt;,
+  &lt;li key&#x3D;&quot;2&quot;&gt;Second item&lt;&#x2F;li&gt;,
+  &lt;li key&#x3D;&quot;3&quot;&gt;Third item&lt;&#x2F;li&gt;
+]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此外，React现在有一个叫做Fragment的新功能，它也可以作为元素的特殊包装：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span><span class="token punctuation">&#123;</span> Fragment <span class="token punctuation">&#125;</span><span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token keyword">return</span><span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Fragment</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Anh1heading</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+    Sometexthere.
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">Anh2heading</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span><span class="token plain-text">
+    Moretexthere.
+    Evenmoretexthere.
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Fragment</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>或者你可以使用空标签(&lt;&gt;&lt;/&gt;)：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ComponentA</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ComponentB</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">ComponentC</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="spaces"><a class="markdownIt-Anchor" href="#spaces"></a> Spaces</h2>
+<p>需要再次强调的是，JSX并不是HTML，即使它是类XML（XML-like）语法，在空格方面，JSX有一点反直觉：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">My</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+  name is
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Carlos</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果你将其视为HTML，则运行结果应该为<code>My name is Carios</code>（这也是我们所期望的），但实际上，上述代码如果为JSX时，运行结果则为：<code>Myname isCarios</code>。如果你希望带上空格，你需要显式的打出<code>&quot; &quot;</code>才行：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">My</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+  name is
+  </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">Carlos</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="boolean-attributes"><a class="markdownIt-Anchor" href="#boolean-attributes"></a> Boolean attributes</h2>
+<p>当你不给属性（props）赋值时，JSX会自动推断为 true：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">disabled</span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">&#123;</span><span class="token comment">/* _jsx("button", &#123; disabled: true &#125;) */</span><span class="token punctuation">&#125;</span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">disabled</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token boolean">false</span><span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">&#123;</span><span class="token comment">/* _jsx("button", &#123; disabled: false &#125;) */</span><span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>因此，为了避免困惑，最好每次都显式声明。</p>
+<h1 id="spread-attributes"><a class="markdownIt-Anchor" href="#spread-attributes"></a> Spread attributes</h1>
+<p>这里有一个非常好用的特性，就是使用展开属性运算符<code>...</code>，它来自ECMAScrip 提案中的 展开/剩余属性（rest/spread）。当你希望将一个对象中的所有属性传递给 element 时非常好用。</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> attrs <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token string">'myId'</span> <span class="token punctuation">,</span>
+  className<span class="token operator">:</span> <span class="token string">'myClass'</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token spread"><span class="token punctuation">&#123;</span><span class="token punctuation">...</span><span class="token attr-value">attrs</span><span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>转译后的JavaScript代码为：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">var</span> attrs <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token string">'myId'</span> <span class="token punctuation">,</span>
+  className<span class="token operator">:</span> <span class="token string">'myClass'</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> <span class="token function">_jsx</span><span class="token punctuation">(</span><span class="token string">'div'</span> <span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="template-literals"><a class="markdownIt-Anchor" href="#template-literals"></a> Template literals</h1>
+<p>模板字面量（Template literals）是一种允许内嵌表达式的字符串字面量，你可以在里面使用多行字符串和字符串的插值特性。</p>
+<p>模板字面量使用反引号<code>` `</code>包裹，通过<code>$&#123;表达式&#125;</code>使用预设值：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> name <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Carlos</span><span class="token template-punctuation string">`</span></span>
+<span class="token keyword">const</span> multilineHtml <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;p>
+This is a multiline string
+&lt;/p></span><span class="token template-punctuation string">`</span></span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Hi, my name is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span> <span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="common-patterns"><a class="markdownIt-Anchor" href="#common-patterns"></a> Common patterns</h1>
+<p>现在我们已经了解了JSX的工作方式，接下来我们将了解如何按照一些有用的约定和技术以正确的方式使用它。</p>
+<h2 id="multiline"><a class="markdownIt-Anchor" href="#multiline"></a> Multiline</h2>
+<ul>
+<li>当存在嵌套关系时，总是分行，而不仅写在一行：</li>
+</ul>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token punctuation">&#123;</span><span class="token comment">/* 推荐 */</span><span class="token punctuation">&#125;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Main</span></span> <span class="token attr-name">content</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">&#123;</span><span class="token comment">/* 不推荐 */</span><span class="token punctuation">&#125;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Header</span></span> <span class="token punctuation">/></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Main</span></span> <span class="token attr-name">content</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当然，如果标签内部时变量或文本，则不建议分行。</p>
+<ul>
+<li>当element 存在多行时，需要用小括号<code>( )</code>包裹：</li>
+</ul>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">return</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span>
+<span class="token keyword">return</span> <span class="token punctuation">(</span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果多行时不添加括号，则可能出现一些bug，例如下面的例子：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">return</span> 
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>该 JSX 被编译成 JavaScript 时，其代码为：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">return</span>
+<span class="token function">_jsx</span><span class="token punctuation">(</span><span class="token string">"div"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>由于 JavaScript 会自动在行尾添加缺失的分号，因此该 JavaScript 被视为两个语句。</p>
+<h2 id="multi-properties"><a class="markdownIt-Anchor" href="#multi-properties"></a> Multi-properties</h2>
+<p>当 element 具有多属性时，一种常见的解决方案是将每个属性写在新行上，并使用同一级缩进，然后将结束括号与开始标记对齐：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+  <span class="token attr-name">foo</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>bar<span class="token punctuation">"</span></span>
+  <span class="token attr-name">veryLongPropertyName</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>baz<span class="token punctuation">"</span></span>
+  <span class="token attr-name">onSomething</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token keyword">this</span><span class="token punctuation">.</span>handleSomething<span class="token punctuation">&#125;</span></span>
+<span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="conditionals"><a class="markdownIt-Anchor" href="#conditionals"></a> Conditionals</h2>
+<p>在 JavaScript 中，我们可以使用 if else 等表达式来进行条件判断，但在 JSX 中，我们根据不同的情况，总结出了如下的最佳实现，仅供参考：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token punctuation">&#123;</span><span class="token comment">/* 使用短路方式判断是否需要渲染 */</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#123;</span>isLoggedIn <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LoginButton</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#123;</span><span class="token comment">/* 使用三目运算符判断渲染组件 */</span><span class="token punctuation">&#125;</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token punctuation">&#123;</span>isLoggedIn <span class="token operator">?</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LogoutButton</span></span> <span class="token punctuation">/></span></span> <span class="token operator">:</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">LoginButton</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">&#125;</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+<span class="token punctuation">&#123;</span><span class="token comment">/* 复杂条件时，编写判断函数 */</span><span class="token punctuation">&#125;</span>
+<span class="token keyword">const</span> <span class="token function-variable function">canShowSecretData</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> dataIsReady<span class="token punctuation">,</span> isAdmin<span class="token punctuation">,</span> userHasPermissions <span class="token punctuation">&#125;</span> <span class="token operator">=</span> props
+  <span class="token keyword">return</span> dataIsReady <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>isAdmin <span class="token operator">|</span> <span class="token operator">|</span> userHasPermissions<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> <span class="token punctuation">(</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token punctuation">&#123;</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">canShowSecretData</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SecretData</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">&#125;</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还有一些其他进行条件判断的方式，需要引入外部依赖，这里仅作详细介绍，不做理解和解释：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install --save render-if  # 安装外部依赖<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token punctuation">&#123;</span> dataIsReady<span class="token punctuation">,</span> isAdmin<span class="token punctuation">,</span> userHasPermissions <span class="token punctuation">&#125;</span> <span class="token operator">=</span> props <span class="token comment">// 获取必要参数</span>
+<span class="token comment">// 使用renderIf创造一个组件，名为canShowSecretData</span>
+<span class="token keyword">const</span> canShowSecretData <span class="token operator">=</span> <span class="token function">renderIf</span><span class="token punctuation">(</span>
+	dataIsReady <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>isAdmin <span class="token operator">|</span> <span class="token operator">|</span> userHasPermissions<span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token punctuation">;</span>
+<span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token punctuation">&#123;</span><span class="token comment">/* 满足条件时会渲染 */</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token punctuation">&#123;</span><span class="token function">canShowSecretData</span><span class="token punctuation">(</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SecretData</span></span> <span class="token punctuation">/></span></span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span> <span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还有一种可以实现类似功能的外部依赖，它使用了高阶组件，即参数为组件，返回一个强化的组件，在后面的章节会详细讲述高阶组件的概念：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install --save react-only-if  # 安装外部依赖<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> onlyIf <span class="token keyword">from</span> <span class="token string">' react-only-if'</span>
+<span class="token keyword">const</span> SecretDataOnlyIf <span class="token operator">=</span> <span class="token function">onlyIf</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">&#123;</span> dataIsReady<span class="token punctuation">,</span> isAdmin<span class="token punctuation">,</span> userHasPermissions <span class="token punctuation">&#125;</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> dataIsReady <span class="token operator">&amp;&amp;</span>
+  <span class="token punctuation">(</span>isAdmin <span class="token operator">|</span> <span class="token operator">|</span> userHasPermissions<span class="token punctuation">)</span>
+<span class="token punctuation">)</span> <span class="token punctuation">(</span>SecretData<span class="token punctuation">)</span>
+<span class="token keyword">const</span> <span class="token function-variable function">MyComponent</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SecretDataOnlyIf</span></span>
+    <span class="token attr-name">dataIsReady</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span>
+    <span class="token attr-name">isAdmin</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span>
+    <span class="token attr-name">userHasPermissions</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span>
+  <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> MyComponent<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这种方式，好像我们在使用一个普通的组件。</p>
+<h2 id="loops"><a class="markdownIt-Anchor" href="#loops"></a> Loops</h2>
+<p>在JSX模板里，当一个函数返回一个数组时，数组里的每一个项都会被编译成一个element</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token comment">// users = [&#123;name=flag&#125;,&#123;name=iris&#125;]</span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token punctuation">&#123;</span>users<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token parameter">user</span> <span class="token operator">=></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>user<span class="token punctuation">.</span>name<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上例中的users.map()返回的数组会被逐一编译成element，顺序排放在ul标签里：</p>
+<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>flag<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>ifis<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="control-statements"><a class="markdownIt-Anchor" href="#control-statements"></a> Control statements</h2>
+<p>如果你不喜欢使用JavaScript的控制语句，JSX 也提供了自己的控制语句，但是需要外部依赖，因此这里仅做记录，不做解释：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install --save jsx-control-statements<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>一旦它被安装，我们必须把它添加到我们的Babel插件列表配置文件.babelrc中:</p>
+<pre class="line-numbers language-babelrc" data-language="babelrc"><code class="language-babelrc">&quot;plugins&quot;: [&quot;jsx-control-statements&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">If</span></span> <span class="token attr-name">condition</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token keyword">this</span><span class="token punctuation">.</span>canShowSecretData<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">SecretData</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">If</span></span><span class="token punctuation">></span></span>
+
+<span class="token comment">// 等价于：&#123;canShowSecretData ? &lt;SecretData /> : null&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Choose</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">When</span></span> <span class="token attr-name">condition</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">if</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">When</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">When</span></span> <span class="token attr-name">condition</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">else if</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">When</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Otherwise</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">else</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Otherwise</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Choose</span></span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">For</span></span> <span class="token attr-name">each</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>user<span class="token punctuation">"</span></span> <span class="token attr-name">of</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span>users<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>user<span class="token punctuation">.</span>name<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+&lt;/For</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="sub-rendering"><a class="markdownIt-Anchor" href="#sub-rendering"></a> Sub-rendering</h2>
+<p>拆解组件为多个部分，以提高其可维护性</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">renderUserMenu</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// JSX for user menu</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">const</span> <span class="token function-variable function">renderAdminMenu</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// JSX for admin menu</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Welcome back! </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token punctuation">&#123;</span>userExists <span class="token operator">&amp;&amp;</span> <span class="token function">renderUserMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token punctuation">&#123;</span>userIsAdmin <span class="token operator">&amp;&amp;</span> <span class="token function">renderAdminMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="styling-code"><a class="markdownIt-Anchor" href="#styling-code"></a> Styling code</h1>
+<p>在本节中，你将学习如何实现EditorConfig和ESLint，通过验证你的代码风格来提高你的代码质量。在你的团队中有一个标准的代码风格，避免使用不同的代码风格是很重要的。</p>
+<h2 id="editorconfig"><a class="markdownIt-Anchor" href="#editorconfig"></a> EditorConfig</h2>
+<p>EditorConfig 可以帮助开发者在不同IDE之间维持代码风格的一致性</p>
+<p>你需要在项目根路径创建一个后缀为.editorconfig的文件，作者的配置如下：</p>
+<pre class="line-numbers language-editorconfig" data-language="editorconfig"><code class="language-editorconfig">root &#x3D; true
+[*]
+indent_style &#x3D; space
+indent_size &#x3D; 2
+end_of_line &#x3D; lf
+charset &#x3D; utf-8
+trim_trailing_whitespace &#x3D; true
+insert_final_newline &#x3D; true
+[*.html]
+indent_size &#x3D; 4
+[*.css]
+indent_size &#x3D; 4
+[*.md]
+trim_trailing_whitespace &#x3D; false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="prettier"><a class="markdownIt-Anchor" href="#prettier"></a> Prettier</h2>
+<p>Prettier是一种有腔调？（opinionated)的代码格式化器，它得到许多语言的支持，可以与大多数编辑器集成。这个插件非常有用，因为你可以在保存代码时格式化代码，而不需要在代码审查时讨论代码风格，这将节省你大量的时间和精力。</p>
+<p>同样，在项目根目录配置.prettierrc文件，作者的配置如下：</p>
+<pre class="line-numbers language-prettierrc" data-language="prettierrc"><code class="language-prettierrc">&#123;
+  &quot;arrowParens&quot;: &quot;avoid&quot;,
+  &quot;bracketSpacing&quot;: true,
+  &quot;jsxSingleQuote&quot;: false,
+  &quot;printWidth&quot;: 100,
+  &quot;quoteProps&quot;: &quot;as-needed&quot;,
+  &quot;semi&quot;: false,
+  &quot;singleQuote&quot;: true,
+  &quot;tabWidth&quot;: 2,
+  &quot;trailingComma&quot;: &quot;none&quot;,
+  &quot;useTabs&quot;: false
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="eslint"><a class="markdownIt-Anchor" href="#eslint"></a> ESLint</h2>
+<p>主要用来避免语法错误</p>
+<p>作者在这里讲了一些ESLint的规则，我仅作记录，不做解释：</p>
+<p>安装：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install -g eslint eslint-config-airbnb eslint-config-prettier eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-prettier eslint-plugin-react<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>配置文件：.eslintrc：</p>
+<pre class="line-numbers language-eslintrc" data-language="eslintrc"><code class="language-eslintrc">&#123;
+  &quot;parser&quot;: &quot;@typescript-eslint&#x2F;parser&quot;,
+  &quot;plugins&quot;: [&quot;@typescript-eslint&quot;, &quot;prettier&quot;] ,
+  &quot;extends&quot;: [
+    &quot;airbnb&quot;,
+    &quot;eslint: recommended&quot;,
+    &quot;plugin: @typescript-eslint&#x2F;eslint-recommended&quot;,
+    &quot;plugin: @typescript-eslint&#x2F;recommended&quot;,
+    &quot;plugin: prettier&#x2F;recommended&quot;
+  ] ,
+  &quot;settings&quot;: &#123;
+  &quot;import&#x2F;extensions&quot;: [&quot;. js&quot;, &quot;. jsx&quot;, &quot;. ts&quot;, &quot;. tsx&quot;] ,
+  &quot;import&#x2F;parsers&quot;: &#123;
+	  &quot;@typescript-eslint&#x2F;parser&quot;: [&quot;. ts&quot;, &quot;. tsx&quot;]
+  &#125;,
+  &quot;import&#x2F;resolver&quot;: &#123;
+  &quot;node&quot;: &#123;
+  	&quot;extensions&quot;: [&quot;. js&quot;, &quot;. jsx&quot;, &quot;. ts&quot;, &quot;. tsx&quot;]
+  &#125;
+  &#125;
+  &#125;,
+  &quot;rules&quot;: &#123;
+    &quot;semi&quot;: [2, &quot;never&quot;] ,
+    &quot;@typescript-eslint&#x2F;class-name-casing&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;interface-name-prefix&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;member-delimiter-style&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;no-var-requires&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;ban-ts-ignore&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;no-use-before-define&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;ban-ts-comment&quot;: &quot;off&quot;,
+    &quot;@typescript-eslint&#x2F;explicit-module-boundary-types&quot;: &quot;off&quot;,
+    &quot;no-restricted-syntax&quot;: &quot;off&quot;,
+    &quot;no-use-before-define&quot;: &quot;off&quot;,
+    &quot;import&#x2F;extensions&quot;: &quot;off&quot;,
+    &quot;import&#x2F;prefer-default-export&quot;: &quot;off&quot;,
+    &quot;max-len&quot;: [
+      &quot;error&quot;,
+      &#123;
+        &quot;code&quot;: 100,
+        &quot;tabWidth&quot;: 2
+      &#125;
+    ] ,
+    &quot;no-param-reassign&quot;: &quot;off&quot;,
+    &quot;no-underscore-dangle&quot;: &quot;off&quot;,
+    &quot;react&#x2F;jsx-filename-extension&quot;: [
+      1,
+      &#123;
+        &quot;extensions&quot;: [&quot;. tsx&quot;]
+      &#125;
+    ] ,
+    &quot;import&#x2F;no-unresolved&quot;: &quot;off&quot;,
+    &quot;consistent-return&quot;: &quot;off&quot;,
+    &quot;jsx-a11y&#x2F;anchor-is-valid&quot;: &quot;off&quot;,
+    &quot;sx-a11y&#x2F;click-events-have-key-events&quot;: &quot;off&quot;,
+    &quot;jsx-a11y&#x2F;no-noninteractive-element-interactions&quot;: &quot;off&quot;,
+    &quot;jsx-a11y&#x2F;click-events-have-key-events&quot;: &quot;off&quot;,
+    &quot;jsx-a11y&#x2F;no-static-element-interactions&quot;: &quot;off&quot;,
+    &quot;react&#x2F;jsx-props-no-spreading&quot;: &quot;off&quot;,
+    &quot;jsx-a11y&#x2F;label-has-associated-control&quot;: &quot;off&quot;,
+    &quot;react&#x2F;jsx-one-expression-per-line&quot;: &quot;off&quot;,
+    &quot;no-prototype-builtins&quot;: &quot;off&quot;,
+    &quot;no-nested-ternary&quot;: &quot;off&quot;,
+    &quot;prettier&#x2F;prettier&quot;: [
+   	 &quot;error&quot;,
+      &#123;
+        &quot;endOfLine&quot;: &quot;auto&quot;
+      &#125;
+    ]
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="functional-programming"><a class="markdownIt-Anchor" href="#functional-programming"></a> Functional programming</h1>
+<p>当我们编写JSX时，除了遵循最佳实践和使用一个linter来加强一致性和更早地发现错误之外，我们还可以做一件事来清理我们的代码:遵循FP（Functional programming）风格。下面简单的介绍一下FP风格的基本概念，随着React的深入学习，你会发现React代码同样遵循这FP的设计风格。</p>
+<h2 id="first-class-function"><a class="markdownIt-Anchor" href="#first-class-function"></a> First-class Function</h2>
+<p>头等函数（First-class Function），它们可以被视为任何其他变量，即可以将一个函数作为参数传递给其他函数，或者它可以由另一个函数返回（详见高阶函数）并作为一个变量的值赋值。</p>
+<p>这允许我们引入高阶函数（Higher-Order Functions，HoFs）的概念。HoFs是接受一个函数作为参数，也可以选择一些其他参数，并返回一个函数的函数。返回的函数通常用一些特殊的行为来增强。例如：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">add</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x<span class="token punctuation">,</span> y</span><span class="token punctuation">)</span> <span class="token operator">=></span> x <span class="token operator">+</span> y
+<span class="token keyword">const</span> <span class="token function-variable function">log</span> <span class="token operator">=</span> <span class="token parameter">fn</span> <span class="token operator">=></span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">.</span> args</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">.</span> args<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">const</span> logAdd <span class="token operator">=</span> <span class="token function">log</span><span class="token punctuation">(</span>add<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>在 React 中，同样有高阶组件的概念</p>
+</blockquote>
+<h2 id="purity"><a class="markdownIt-Anchor" href="#purity"></a> Purity</h2>
+<p>FP的一个重要方面是编写纯函数（Purity）。纯函数，含义是没有任何副作用，即不会改变非函数作用域内的任何东西。</p>
+<pre class="line-numbers language-JavaScript" data-language="JavaScript"><code class="language-JavaScript">const add &#x3D; (x, y) &#x3D;&gt; x + y &#x2F;&#x2F; 纯函数
+const add &#x3D; y &#x3D;&gt; x +&#x3D; y    &#x2F;&#x2F; 非纯函数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>第一个函数不会改变作用域外的x，y的值，而第二个函数会改变其作用域外x的值</p>
+<blockquote>
+<p>在 React 中，我们的组件不希望改变其作用域外的任何东西</p>
+</blockquote>
+<h2 id="immutability"><a class="markdownIt-Anchor" href="#immutability"></a> Immutability</h2>
+<p>我们已经看到了如何编写不改变状态的纯函数，但是如果我们需要改变变量的值呢？在FP中，函数不是改变变量的值，而是创建一个新的变量并返回它。这种处理数据的方式称为不可变性（Immutability）。</p>
+<pre class="line-numbers language-JavaScript" data-language="JavaScript"><code class="language-JavaScript">&#x2F;&#x2F; arr &#x3D; [1, 2]
+const add3 &#x3D; arr &#x3D;&gt; arr. push(3) &#x2F;&#x2F; 不具有不可变性
+&#x2F;&#x2F; 连续执行两次，arr &#x3D; [1, 2, 3, 3]
+const add3 &#x3D; arr &#x3D;&gt; arr. concat(3)  &#x2F;&#x2F; 具有不可变性
+&#x2F;&#x2F; 连续执行两次，arr &#x3D; [1, 2, 3]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样的好处是，当给予相同的输入时，重复执行函数能够得到相同的结果</p>
+<blockquote>
+<p>在 React 中，如状态更新则是返回一个全新的状态，而并非在原有的状态上添加删除</p>
+</blockquote>
+<h2 id="currying"><a class="markdownIt-Anchor" href="#currying"></a> Currying</h2>
+<p>函数柯里化：柯里化(curry)是将接受多个参数的函数转换为一个函数的过程，接受一个参数，然后返回一个函数。让我们看一个例子来澄清这个概念：</p>
+<pre class="line-numbers language-JavaScript" data-language="JavaScript"><code class="language-JavaScript">&#x2F;&#x2F; 普通函数
+const add &#x3D; (x, y) &#x3D;&gt; x + y
+&#x2F;&#x2F; 柯里化
+const add &#x3D; x &#x3D;&gt; y &#x3D;&gt; x + y
+const add1 &#x3D; add(1)
+add1(2) ; &#x2F;&#x2F; 3
+add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>柯里化使得第一个参数的值被存储起来。</p>
+<blockquote>
+<p>我还没学到React对应的实现</p>
+</blockquote>
+<h2 id="composition"><a class="markdownIt-Anchor" href="#composition"></a> Composition</h2>
+<p>最后，FP中一个可以应用于React的重要概念是组合(Composition)。函数(或React 组件)可以组合生成具有更高级特性和属性的新功能。</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> <span class="token function-variable function">add</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x<span class="token punctuation">,</span> y</span><span class="token punctuation">)</span> <span class="token operator">=></span> x <span class="token operator">+</span> y
+<span class="token keyword">const</span> <span class="token function-variable function">square</span> <span class="token operator">=</span> <span class="token parameter">x</span> <span class="token operator">=></span> x <span class="token operator">*</span> x
+<span class="token keyword">const</span> <span class="token function-variable function">addAndSquare</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x<span class="token punctuation">,</span> y</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">square</span><span class="token punctuation">(</span><span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>按照这个范例，我们最终得到了可以组合在一起的小的、简单的、可测试的纯函数。</p>
+<h1 id="summary"><a class="markdownIt-Anchor" href="#summary"></a> Summary</h1>
+<ul>
+<li>学习了大量关于JSX如何工作以及如何在组件中正确使用它的知识。我们从语法的基础开始，创建了一个坚实的知识库，使我们能够掌握JSX及其特性。</li>
+<li>学习了如何配置Prettier，以及ESLint及其插件如何帮助我们更快地发现问题，并在我们的代码库中执行一致的风格指南。</li>
+<li>学习了FP的基础知识，这是理解编写React应用程序时要用到的重要概念。</li>
+</ul>
+<p>我们准备在下一章中更深入地挖掘React并学习如何编写真正可重用的组件。</p>
+]]></content>
+      <categories>
+        <category>React 17 Design Patterns Best Practices</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>01-React 17 Design Patterns Best Practices</title>
     <url>/post/d290.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="what-will-be-learned"><a class="markdownIt-Anchor" href="#what-will-be-learned"></a> What will be learned</h1>
 <ul>
@@ -87,8 +640,8 @@
 <p>有一种流行的观点认为 React 由大量的技术和工具组成，如果你想使用它，你必须与包管理器、转译器、模块绑定器以及无限多的不同库打交道。这个想法在人们中非常广泛，以至于它已经被明确定义，并被命名为JavaScript疲劳（ JavaScript fatigue.）。</p>
 <p>实际上 React 仅由两个包组成：</p>
 <ul>
-<li>react: 实现了库的核心功能</li>
-<li>react-dom: 包含所有与浏览器相关的特性</li>
+<li>react: 实现了库的核心功能，如创建React element</li>
+<li>react-dom: 包含所有与浏览器相关的特性，如把React创建出来的element，通过DOM API， 创建出真实 DOM 元素。</li>
 </ul>
 <p>如果仅使用上述两个包，我们就不能使用 jsx 语法，因为这不是一个被浏览器支持的标准语言，但是我们能迅速使用最低程度的React功能。在初期，我们仅仅是使用了<code>createElement</code>这一功能，你可以随着需求逐渐引入其他功能。通过包含转译器来使用jsx/tsx语法。</p>
 <p>React 的开发者 Facebook非常关心开发者体验，因此它们发布了 CLI 工具（Command Line Interface，命令行界面），供开发者快速构建和运行一个真正的React应用，它使用npm就可以安装：</p>
