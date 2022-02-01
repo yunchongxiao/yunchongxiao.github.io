@@ -3127,8 +3127,8 @@ publicclassMyController02 &#123;
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>Spring</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -3637,8 +3637,8 @@ Student&#123;sid&#x3D;9, sname&#x3D;&#39;Alice&#39;, age&#x3D;&#39;20&#39;, cour
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>Spring</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -4528,8 +4528,8 @@ Message&#123;
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>Spring</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -5327,8 +5327,8 @@ Process finished with exit code -1
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>Spring</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -5714,8 +5714,8 @@ Teacher对象创建了
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>Spring</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -5997,8 +5997,8 @@ Student&#123;sid&#x3D;4, sname&#x3D;&#39;IrisNoir&#39;, age&#x3D;&#39;21&#39;, c
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -6658,8 +6658,8 @@ public void insertStudent() throws IOException &#123;
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -7457,8 +7457,8 @@ TeachInfo&#123;tid&#x3D;2, tname&#x3D;&#39;LiSi&#39;, age&#x3D;&#39;33&#39;, cou
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -8033,8 +8033,8 @@ select * from mybatis.student where sid = #&#123;sid&#125;;<br>
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
   <entry>
@@ -8509,8 +8509,8 @@ public class MyTest &#123;
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>MyBatis</tag>
         <tag>Java开发</tag>
+        <tag>MyBatis</tag>
       </tags>
   </entry>
 </search>
