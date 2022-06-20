@@ -7,9 +7,697 @@
 ]]></content>
   </entry>
   <entry>
+    <title>绪论</title>
+    <url>/post/f3af.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+      <categories>
+        <category>数据结构（C语言版）</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>数组</title>
+    <url>/post/7ffe.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="数组"><a class="markdownIt-Anchor" href="#数组"></a> 数组</h1>
+<ul>
+<li>以行为主序</li>
+<li>以列为主序</li>
+<li>存储地址计算</li>
+</ul>
+<h1 id="矩阵"><a class="markdownIt-Anchor" href="#矩阵"></a> 矩阵</h1>
+<ul>
+<li>特殊矩阵
+<ul>
+<li>上三角</li>
+<li>下三角</li>
+<li>对角</li>
+</ul>
+</li>
+<li>稀疏矩阵</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>串</title>
+    <url>/post/42b2.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="串"><a class="markdownIt-Anchor" href="#串"></a> 串</h1>
+<h2 id="定义"><a class="markdownIt-Anchor" href="#定义"></a> 定义</h2>
+<p>由零个或多个字符组成的有限序列，记作S = <code>a1a2...an</code></p>
+<ul>
+<li>空格串</li>
+<li>子串</li>
+</ul>
+<h2 id="串的比较"><a class="markdownIt-Anchor" href="#串的比较"></a> 串的比较</h2>
+<p>串与线性表的区别：线性表以单个元素作为操作对象，串以整体作为操作对象</p>
+<p>串的存储格式</p>
+<ul>
+<li>顺序</li>
+<li>堆</li>
+<li>块链</li>
+</ul>
+<h2 id="串的模式匹配"><a class="markdownIt-Anchor" href="#串的模式匹配"></a> 串的模式匹配</h2>
+<p>模式串：子串、匹配串</p>
+<h3 id="bf算法brute-force"><a class="markdownIt-Anchor" href="#bf算法brute-force"></a> BF算法（Brute Force）</h3>
+<p>暴力穷举法</p>
+<h3 id="kmp算法knuth-morris-pratt"><a class="markdownIt-Anchor" href="#kmp算法knuth-morris-pratt"></a> KMP算法（Knuth Morris Pratt）</h3>
+]]></content>
+  </entry>
+  <entry>
+    <title>链式队列</title>
+    <url>/post/53a6.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="链式队列"><a class="markdownIt-Anchor" href="#链式队列"></a> 链式队列</h1>
+<h2 id="结构体定义"><a class="markdownIt-Anchor" href="#结构体定义"></a> 结构体定义</h2>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">QNode</span>
+<span class="token punctuation">&#123;</span>
+  <span class="token keyword">int</span> data<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">QNode</span> <span class="token operator">*</span>next<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> QNode<span class="token punctuation">,</span> <span class="token operator">*</span>QNodePtr<span class="token punctuation">;</span>
+
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span>  <span class="token punctuation">&#123;</span>
+	QNodePtr front<span class="token punctuation">;</span>
+  QNodePtr rear<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> LinkQueue<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><code>QNode, QNodePtr</code>：分别为队列节点和对应的指针</li>
+<li><code>front</code>：队头指针，<mark>始终</mark>指向队列的头结点，<mark>不发生改变</mark>，其下一个节点==<code>Q.front-&gt;next</code>==为队列首元素</li>
+<li><code>rear</code>：队尾指针，指向队列的最后一个节点，入队元素在==<code>Q.rear-&gt;next</code>==插入，<mark>插入后队尾指针需要后移</mark></li>
+</ul>
+<blockquote>
+<p>初始化时队头指针<code>front</code>和队尾指针<code>rear</code>均指向头结点</p>
+<p>队列为空的条件为<code>front == rear</code></p>
+<p>由于队头指针front永远指向头结点，不发生改变，而队尾指针会随着入队元素而向后移动，因此当队尾指针向右移动后，队尾指针就<mark>不可能再指向头结点</mark>，由于队尾指针指向队列的最后一个元素，因此当最后一个节点被出队时，则队尾指针会指向<code>nullptr</code>，因此在<mark>出队时</mark>需要额外步骤:<mark>如果出队的元素是最后一个元素：<code>if (Q.rear Q.front-&gt;next)</code></mark>，将尾结点指向头指针，<mark>即<code>Q.rear = Q.front</code></mark></p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>顺序队列</title>
+    <url>/post/1493.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="顺序队列"><a class="markdownIt-Anchor" href="#顺序队列"></a> 顺序队列</h1>
+<p>结构体定义</p>
+<pre class="line-numbers language-Cpp" data-language="Cpp"><code class="language-Cpp">typedef struct &#123;
+  &#x2F;&#x2F; 队列数组，或理解为队列数组首元素指针
+  int *base;
+  &#x2F;&#x2F; 队尾下标，表示下一个元素插入的数组下标
+  int rear;
+  &#x2F;&#x2F; 队头下标，表示队头元素的下标
+  int front;
+  &#x2F;&#x2F; 队列最大长度
+  int maxSize;
+&#125; SqQueue;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><code>int *base</code>，队列的固定数组，<code>int *base</code>和<code>base[]</code>是等价的数据类型，都是指针，只是理解的角度不同，<code>int *base</code>理解为指针，<code>int base[]</code>理解为数组首元素指针。</li>
+<li><code>int rear</code>，队尾下标，表示下一个元素进入队列的数组下标</li>
+<li><code>int front</code>，队头下标，表示队头元素的数组下标</li>
+<li><code>int maxSize</code>，队列最大长度，为了区分队空与队满，队尾元素必须与队头元素至少间隔一个单位，因此队列最大长度为固定数组长度 - 1</li>
+</ul>
+<blockquote>
+<p>由于rear与front在不断自增，因此为了使其值能够正确的表示<mark>数组下标（而非队列元素位置）</mark>，需要将其值对<mark>固定数组长度</mark>取模</p>
+<p>由于队满的条件是队尾元素间隔一个位置则到达队头元素，因此队满判断为（rear<mark>下一个元素插入位置</mark> + 1<mark>的下一个位置</mark> == <mark>到达队头元素位置</mark>front）</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>数据结构</category>
+      </categories>
+      <tags>
+        <tag>队列</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/post/0.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+  </entry>
+  <entry>
+    <title>Spring IoC 容器</title>
+    <url>/post/aac5.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="ioc容器揭秘"><a class="markdownIt-Anchor" href="#ioc容器揭秘"></a> IoC容器揭秘</h1>
+<h2 id="ioc的概念"><a class="markdownIt-Anchor" href="#ioc的概念"></a> IoC的概念</h2>
+<p>IoC 是 Inversion of Control 的简写，即控制反转，是一种设计思想。</p>
+<ul>
+<li>传统的Java开发方式，在使用所需对象时，需要手动创建各种对象，如<code>new Student()</code></li>
+<li>IoC 的设计思想，意味着将设计好的对象交给容器管理，使用时从容器获取，如<code>getBean(Student.class)</code></li>
+</ul>
+<h2 id="依赖注入"><a class="markdownIt-Anchor" href="#依赖注入"></a> 依赖注入</h2>
+<p>例如，定义一个人及使用自行车的对象：</p>
+<p>由于出行工具多种多样，因此创建一个抽象类Movable：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 定义出行接口</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Movable</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 定义抽象出行方法</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">go</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下面通过实现Movable，创建Bike类：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 实现出行抽象类，创建自行车类</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Bike</span> <span class="token keyword">implements</span> <span class="token class-name">Movable</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">go</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"骑自行车出门"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，创建人类，其拥有一个属性Movable，表示其出行工具：</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">public class Person &#123;
+  
+  &#x2F;&#x2F; 类属性：Movable
+  &#x2F;&#x2F; 出行工具多种多样，不应依赖某个具体实例，而应该选择抽象的Movable作为代替
+  private Movable movable;
+
+  &#x2F;&#x2F; 构造器
+  public Person () &#123;
+    &#x2F;&#x2F; 手动创建自行车作为其出行工具
+    movable &#x3D; new Bike();
+  &#125;
+  
+  &#x2F;&#x2F; 出行方法
+  public void go () &#123;
+    &#x2F;&#x2F; 自行车类具有go方法
+    movable.go();
+  &#125;
+&#125;
+
+&#x2F;&#x2F; 这里仅创建自行车一个交通工具类，可以创建其他工具，如Bus、Car，供movable属性使用
+public class Bike &#123;
+  &#x2F;&#x2F; 仅定义出行方法
+  public void go() &#123;
+    System.out.println(&quot;骑自行车出行&quot;);
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在本例中，即使将Person交给容器处理，但在其构造器中，我们仍手动创建了Bike对象，并没有彻底的将控制权交给容器，此时就需要依赖注入：</p>
+<p>在Bike类上方添加注解<code>@Service</code>，表示将 Bike 交给IoC容器管理，容器中会存放一个符合单例模式的Bike对象</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">@Service(&quot;bike&quot;)
+public class Bike implements Movable &#123;
+  public void go () &#123;
+    System.out.println(&quot;骑自行车出行&quot;);
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时在Person构造器中使用注解<code>@Resource(name=&quot;bike&quot;)</code>，则IoC容器在创建Person时，会自动将Bike注入其中：</p>
+<pre class="line-numbers language-Java" data-language="Java"><code class="language-Java">@Component
+public class Person &#123;
+
+    @Resource(name&#x3D;&quot;bike&quot;)
+    private Movable movable;
+
+    public Person() &#123;
+        movable &#x3D; new Bike();
+    &#125;
+
+    public void go() &#123;
+        movable.go();
+    &#125;
+
+    public static void main(String[] args) &#123;
+        Person person &#x3D; new Person();
+        person.go();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="spring-ioc-的实现方式"><a class="markdownIt-Anchor" href="#spring-ioc-的实现方式"></a> Spring IoC 的实现方式</h1>
+<p>对于一个对象的创建，通常分为无参构造和有参构造两种，IoC 容器也是基于这两种创建方式管理Bean，</p>
+]]></content>
+      <tags>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>环境搭建</title>
+    <url>/post/5307.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="spring技术"><a class="markdownIt-Anchor" href="#spring技术"></a> Spring技术</h1>
+<h2 id="core-container"><a class="markdownIt-Anchor" href="#core-container"></a> Core Container</h2>
+<p>Spring的核心容器由Beans、Core、Context、SpEL等模块组成，所有Spring的其他模块都是建立在Core Container 基础模块上。</p>
+<p>Core Container 规定了创建和维护Bean的方式，提供了控制反转IoC和依赖注入DI等特性</p>
+<h2 id="data-accessintegration"><a class="markdownIt-Anchor" href="#data-accessintegration"></a> Data Access/Integration</h2>
+<p>数据访问/集成模块提供了对JDBC、ORM、OXM、JMS和Transaction 等模块的继承。使主流的ORM框架、持久层框架和消息中间件可以很方便的集成到Spring中，减低开发难度。</p>
+<h2 id="web模块"><a class="markdownIt-Anchor" href="#web模块"></a> Web模块</h2>
+<p>Web模块提供了对Web开发的相关技术的集成，对MVC架构的项目提供便利</p>
+<h2 id="aop模块"><a class="markdownIt-Anchor" href="#aop模块"></a> AOP模块</h2>
+<p>AOP模块提供了AOP联盟倡导的面向切面编程的实现环境，AOP将代码按功能进行分离了，降低了模块间代码的耦合度</p>
+<h2 id="test模块"><a class="markdownIt-Anchor" href="#test模块"></a> Test模块</h2>
+<p>Test模块支持JUnit和TestNG等单元测试模块的集成，还提供了mock对象，使开发人员可以更加独立的测试代码</p>
+<h1 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h1>
+<h2 id="安装jdk"><a class="markdownIt-Anchor" href="#安装jdk"></a> 安装JDK</h2>
+<p>JDK，Java SE Development Kit，建议使用1.8及以上的版本。</p>
+<h2 id="安装idea选"><a class="markdownIt-Anchor" href="#安装idea选"></a> 安装IDEA（选）</h2>
+<p>如果你是学生，笔者推荐使用IDEA版本，通过学生认证可以使用专业版。</p>
+<h2 id="apache-maven"><a class="markdownIt-Anchor" href="#apache-maven"></a> Apache Maven</h2>
+<p>Apache Maven是目前流行的项目管理和构建自动化工具，使用最新版即可。</p>
+<p>Apache Tomcat</p>
+<p>Apache Tomcat 是目前主流的Web容器，同样下载最新版即可。</p>
+]]></content>
+      <categories>
+        <category>Spring 5 企业级开发实战</category>
+      </categories>
+      <tags>
+        <tag>Spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>04-React 17 Design Patterns Best Practices</title>
+    <url>/post/3ac1.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="探索主流构建模式"><a class="markdownIt-Anchor" href="#探索主流构建模式"></a> 探索主流构建模式</h1>
+<ol>
+<li>组件之间如何通过props、children进行数据交流</li>
+<li>学习如何使我们的代码具有更好的可维护性</li>
+<li>高阶组件的定义以及如何使用它们组织我们应用的结构</li>
+<li>子组件的功能以及这种模式带来的好处</li>
+</ol>
+<p>本章的代码可以在如下网址中找到： <a href="https://github.com/PacktPublishing/React-17-Design-Patterns-and-Best-Practices-Third-Edition/tree/main/Chapter04">https://github.com/PacktPublishing/React-17-Design-Patterns-and-Best-Practices-Third-Edition/tree/main/Chapter04</a></p>
+<p>组件通信</p>
+]]></content>
+      <categories>
+        <category>React 17 Design Patterns Best Practices</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>03-React 17 Design Patterns Best Practices</title>
+    <url>/post/c9d1.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="introducing-react-hooks"><a class="markdownIt-Anchor" href="#introducing-react-hooks"></a> Introducing React Hooks</h1>
+<p>自从React 16.8以来， React Hooks被提出，这可以显著提升我们的编码速度和应用的执行效率，React 可以仅使用函数组件来完成所有功能（这并不代表类组件被弃用了），React Hooks是向后兼容的。</p>
+<p>本章，我们主要讨论：</p>
+<ul>
+<li>React Hooks，并且知道如何使用它们</li>
+<li>Hooks的规则</li>
+<li>如何将类组件迁移到Hooks</li>
+<li>根据Hooks和effects理解组件的生命周期</li>
+<li>如何从 Hooks获取数据</li>
+<li>如何记忆 components, values, and functions with memo , useMemo , and useCallback</li>
+<li>如何实现 useReducer</li>
+</ul>
+<p>本章会学习一些最常见的React钩子，比如useState, useEffect, useMemo, useCallback和memo。源码可以在<a href="https://github.com/PacktPublishing/React-17-Design-Patterns-and-Best-Practices-Third-Edition/tree/main/Chapter03">这里</a>获取：</p>
+<h1 id="no-breaking-changes"><a class="markdownIt-Anchor" href="#no-breaking-changes"></a> No breaking changes</h1>
+<p>虽然提出了新的React Hooks，但目前还没有从React中移除类组件的计划。React Hooks只是为React的概念提供了更直接的API，比如props, state, contexts, ref, life cycle等等已知知识。</p>
+<h1 id="using-the-state-hook"><a class="markdownIt-Anchor" href="#using-the-state-hook"></a> Using the State Hook</h1>
+<p>在类组件中，我们使用<code>this.state</code>来使用状态，现在，你可以使用<code>useState</code>钩子</p>
+<p>首先，你需要从React中提取useState钩子：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> useState <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后你需要定义这个状态的state和setter：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">Counter</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// counter为state，setCounter为setter</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>counter<span class="token punctuation">,</span> setCounter<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>number</span><span class="token punctuation">></span></span><span class="token plain-text">(0)
+&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们用setCounter作为setter，指定我们只接受number类型，并且将初始值设为0。</p>
+<p>为了测试我们的状态，我们需要创建一个由onClick事件触发的方法handleCounter:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">Counter</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">//  在这里使用 useState Hook</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>counter<span class="token punctuation">,</span> setCounter<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>number</span><span class="token punctuation">></span></span><span class="token plain-text">(0)
+  const handleCounter = (operation: string) => </span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      operation <span class="token operator">===</span> <span class="token string">' add'</span>
+      <span class="token operator">?</span> <span class="token function">setCounter</span><span class="token punctuation">(</span>counter <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment">// 使用 setter 修改状态</span>
+      <span class="token operator">:</span> <span class="token function">setCounter</span><span class="token punctuation">(</span>counter <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>   <span class="token comment">// 使用 setter 修改状态</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token plain-text">
+&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+    Counter: </span><span class="token punctuation">&#123;</span>counter<span class="token punctuation">&#125;</span><span class="token plain-text"> </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">handleCounter</span><span class="token punctuation">(</span><span class="token string">' add'</span> <span class="token punctuation">)</span> <span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">+ Add</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">handleCounter</span><span class="token punctuation">(</span><span class="token string">' subtract'</span> <span class="token punctuation">)</span> <span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">- Subtract</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/Counter.png" alt="Counter" style="zoom:150%;">
+<h1 id="rules-of-hooks"><a class="markdownIt-Anchor" href="#rules-of-hooks"></a> Rules of Hooks</h1>
+<p>React Hooks基本上是JavaScript函数，但你需要遵循两条规则才能使用它们。React提供了一个linter插件来执行这些规则，你可以通过运行下面的命令来安装:</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install --save-dev eslint-plugin-react-hooks<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>让我们看看这两条规则。</p>
+<h2 id="rule-1-only-call-hooks-at-the-top-level"><a class="markdownIt-Anchor" href="#rule-1-only-call-hooks-at-the-top-level"></a> Rule 1: Only call Hooks at the top level</h2>
+<p>不要在循环、条件或嵌套函数中调用Hooks。相反,总是使用挂钩在React函数的顶层。这可以确保每次组件被渲染时，钩子都会以相同的顺序被调用。这可以使得React正确保存多个useState和useEffect调用之间的Hooks状态。</p>
+<h2 id="rule-2-only-call-hooks-from-react-functions"><a class="markdownIt-Anchor" href="#rule-2-only-call-hooks-from-react-functions"></a> Rule 2: Only call Hooks from React Functions</h2>
+<p>不要从常规的JavaScript函数中调用hook。相反：</p>
+<ul>
+<li>从React函数组件中调用钩子</li>
+<li>从自定义hook调用hook</li>
+</ul>
+<h1 id="migrating-a-class-component-to-react-hooks"><a class="markdownIt-Anchor" href="#migrating-a-class-component-to-react-hooks"></a> Migrating a class component to React Hooks</h1>
+<p>让我们对比一下类组件和使用Hooks的函数组件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+<span class="token comment">// TypeScript 定义 Types</span>
+<span class="token keyword">type</span> Issue <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">number</span><span class="token operator">:</span> <span class="token builtin">number</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+  state<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 类参数</span>
+<span class="token keyword">type</span> Props <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token comment">// 类状态</span>
+<span class="token keyword">type</span> State <span class="token operator">=</span> <span class="token punctuation">&#123;</span> issues<span class="token operator">:</span> Issue<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token keyword">class</span> <span class="token class-name">Issues</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span><span class="token operator">&lt;</span>Props<span class="token punctuation">,</span> State<span class="token operator">></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 类构造函数</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> Props</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 父类构造函数</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span>
+    <span class="token comment">// 初始化类状态</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+      issues<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 生命周期函数</span>
+  <span class="token function">componentDidMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    axios
+      <span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'https://api.github.com/repos/ContentPI/ContentPI/issues'</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response<span class="token operator">:</span> <span class="token builtin">any</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+          issues<span class="token operator">:</span> response<span class="token punctuation">.</span>data
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token comment">// 渲染函数</span>
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> issues <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">ContentPI Issues</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token punctuation">&#123;</span>issues<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">issue<span class="token operator">:</span> Issue</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">#</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+            &lt;a href=
+              </span><span class="token punctuation">&#123;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://github.com/ContentPI/ContentPI/issues/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">&#125;</span><span class="token plain-text">
+              target="_blank"></span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+            </span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>state<span class="token punctuation">&#125;</span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> Issues
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/类组件运行结果展示.png" alt="类组件运行结果展示" style="zoom:150%;">
+<p>现在，让我们慢慢把他改为函数组件：</p>
+<p>首先我们需要引入一些函数组件所需依赖：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// Dependencies</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useState<span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">' react'</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">' axios'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>因为函数组件没有props和state，因此在TypeScript中只留下Issue的定义即可：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// Types</span>
+<span class="token keyword">type</span> Issue <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">number</span><span class="token operator">:</span> <span class="token builtin">number</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+  state<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后，我们将类组件的定义改为函数组件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> Issues<span class="token operator">:</span> <span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span><span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>FC类型用于使用 TypeScript 定义一个函数组件。如果你需要传递props给组件，你可以像这样传递它们:</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">type</span> Props <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  propX<span class="token operator">:</span> <span class="token builtin">string</span>
+  propY<span class="token operator">:</span> <span class="token builtin">number</span>
+  propZ<span class="token operator">:</span> <span class="token builtin">boolean</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">const</span> Issues<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = () => </span><span class="token punctuation">&#123;</span><span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接下来要做的是使用useState钩子替换构造函数和状态定义:</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// The useState hook replace the this. setState method</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>issues<span class="token punctuation">,</span> setIssues<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token operator">&lt;</span>Issue<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中 issues 为状态，setIssues为设置器，接受 Issue 数组，且初始化为空数组</p>
+<p>我们之前使用componentDidMount生命周期方法，该方法在组件被挂载时执行，并且只运行一次。在 React Hook中，我们使用useEffect 通过不同的语法处理所有的生命周期方法。让我们看看如何使用 useEffect获得与componentDidMount相同的效果:</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  axios
+    <span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'https://api.github.com/repos/ContentPI/ContentPI/issues'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response<span class="token operator">:</span> <span class="token builtin">any</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// Here we update directly our issue state</span>
+      <span class="token function">setIssues</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，我们返回渲染的代码即可：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">ContentPI Issues</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">&#123;</span>issues<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">issue<span class="token operator">:</span> Issue</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">#</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    &lt;a href=
+      </span><span class="token punctuation">&#123;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://github.com/ContentPI/ContentPI/issues/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">&#125;</span><span class="token plain-text">
+      target="_blank"></span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>state<span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此，我们就彻底实现了从类组件到函数组件的改变，总览代码如下所示：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 引入所需依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useState<span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+
+<span class="token comment">// 使用 TypeScript 定义 Issue</span>
+<span class="token keyword">type</span> Issue <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">number</span><span class="token operator">:</span> <span class="token builtin">number</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+  state<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 创建函数组件</span>
+<span class="token keyword">const</span> Issues<span class="token operator">:</span> <span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 使用 useState 创建状态和设置器</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>issues<span class="token punctuation">,</span> setIssues<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token operator">&lt;</span>Issue<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+  <span class="token comment">// 使用 useEffect 管理生命周期函数</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      axios
+        <span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'https://api.github.com/repos/ContentPI/ContentPI/issues'</span><span class="token punctuation">)</span>
+        <span class="token comment">// 调用 状态设置器 setIssues 更新状态</span>
+        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response<span class="token operator">:</span> <span class="token builtin">any</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+          <span class="token function">setIssues</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token punctuation">)</span>
+
+<span class="token comment">// 返回渲染结果</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">ContentPI Issues</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">&#123;</span>issues<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">issue<span class="token operator">:</span> Issue</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">#</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> 
+            <span class="token attr-name">href</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://github.com/ContentPI/ContentPI/issues/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>issue<span class="token punctuation">.</span>number<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">&#125;</span></span>
+            <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+          </span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>state<span class="token punctuation">&#125;</span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> Issues<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="understanding-react-effects"><a class="markdownIt-Anchor" href="#understanding-react-effects"></a> Understanding React effects</h1>
+<p>在本节中，我们将学习我们在类组件上使用的组件生命周期方法与新的React effects 之间的区别。你可能在其他地方了解到它们是一样的，只是语法不同而已，然而这是不正确的。</p>
+<h1 id="understanding-useeffect"><a class="markdownIt-Anchor" href="#understanding-useeffect"></a> Understanding useEffect</h1>
+<p>当你使用useEffect时，你需要think in effects。如果你想使用useEffect执行componentDidMount的等效方法，你可以这样做:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+<span class="token comment">// Here you perform your side effect</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>第一个参数是想要执行的回调函数，第二个参数是依赖项数组。如果你给依赖项传递一个空数组([])，state和props使用初始值。如果你传递了一个依赖数组，useEffect钩子只会在其中一个依赖改变时运行。</p>
+<p>useEffect与componentDidMount、componentDidUpdate不同的是，我们传递给useEffect的函数在布局(layout)和绘制(print)之后，在延迟事件期间触发。在一些需要同步触发的特殊形况下（如修改文档对象模型(DOM)，因为异步触发会出现闪烁），会产生期望之外的效果。</p>
+<p>React提供了一个名为uselayouteeffect的钩子，它的工作方式与useEffect完全相同，但是可以与layout、print同步触发。</p>
+<h1 id="understanding-usecallback-usememo-and-memo"><a class="markdownIt-Anchor" href="#understanding-usecallback-usememo-and-memo"></a> Understanding useCallback, useMemo, and memo</h1>
+<p>为了理解useCallback、usemmo和memo之间的区别，我们将做一个待办事项列表的例子。你可以使用create-react-app和typescript作为模板来创建一个基本的应用程序:</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">create-react-app todo --template typescript<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在那之后，你可以删除src目录下所有额外的文件( App.css , App.test.ts , index.css , logo.svg , reportWebVitals.ts , setupTests.ts等等)，只需要保留App. tsx文件，并将其中的代码修改为：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 所需依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> useState<span class="token punctuation">,</span> useEffect<span class="token punctuation">,</span> useMemo<span class="token punctuation">,</span> useCallback <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token comment">// 所需组件</span>
+<span class="token keyword">import</span> List<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> Todo <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./List'</span>
+
+<span class="token comment">// 初始化待办列表</span>
+<span class="token keyword">const</span> initialTodos <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span> id<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span> task<span class="token operator">:</span><span class="token string">'Go shopping'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span> id<span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> task<span class="token operator">:</span><span class="token string">'Pay the electricity bill'</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span>
+
+<span class="token comment">// todolist的整体组件</span>
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 通过useState 设置 todeList 状态和其设置器，todoList为所有的待办</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>todoList<span class="token punctuation">,</span> setTodoList<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span>initialTodos<span class="token punctuation">)</span>
+  <span class="token comment">// 通过useState 设置 task 状态和其设置器，task为需要新增的待办</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>task<span class="token punctuation">,</span> setTask<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token comment">// 使用 useEffect 在其方法实行是输出提示</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Rendering &lt;App />'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token comment">// 新增待办的方法</span>
+  <span class="token keyword">const</span> <span class="token function-variable function">handleCreate</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> newTodo <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+      id<span class="token operator">:</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      task
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 在这里将原列表展开，与新待办一起作为更新值</span>
+    <span class="token function">setTodoList</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>todoList<span class="token punctuation">,</span> newTodo<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token comment">// 清空 task</span>
+    <span class="token function">setTask</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      &lt;input
+        type="text"
+        value=</span><span class="token punctuation">&#123;</span>task<span class="token punctuation">&#125;</span><span class="token plain-text">
+        // 当输入框变化时，更新task的值
+        onChange=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setTask</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+      />
+      // 点击按钮时，新增待办
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>handleCreate<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">Create</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">todoList</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todoList<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> App
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在返回的渲染函数中，我们使用的List组件，现在我们就来同级目录下创建一个List.tsx文件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 引入所需依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token comment">// 引入所需组件</span>
+<span class="token keyword">import</span> Task <span class="token keyword">from</span> <span class="token string">'./Task'</span>
+<span class="token comment">// 定义单个待办的类型</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> Todo <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span>
+  task<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 定义函数属性的类型</span>
+<span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  todoList<span class="token operator">:</span> Todo<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 定义 List 函数组件，其中接受Props作为参数，这里的 &#123;todoList&#125;表示从Props中提取key为todoList的值（即Todo[]）</span>
+<span class="token keyword">const</span> List<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = (&#123; todoList &#125;) => </span><span class="token punctuation">&#123;</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 每一次新渲染都会输出提示</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Rendering &lt;List />'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+      // 遍历 Todo[]，将其以下述形式展示
+      </span><span class="token punctuation">&#123;</span>todoList<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Task</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">id</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">task</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>task<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">
+export default List
+</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上述渲染中，我们使用了Task组件，同样在同级目录下创建一个Task.tsx的文件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 引入依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token comment">// 定义函数组件属性接口</span>
+<span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span>
+  task<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 创建函数组件</span>
+<span class="token keyword">const</span> Task<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = (&#123; task &#125;) => </span><span class="token punctuation">&#123;</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 每次渲染时都会调用</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Rendering &lt;Task />'</span><span class="token punctuation">,</span> task<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>task<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">
+export default Task
+</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，创建一个index.tsx文件，作为启动的入口：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> ReactDOM <span class="token keyword">from</span> <span class="token string">'react-dom'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App'</span>
+ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">React.StrictMode</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">React.StrictMode</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
+  document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'root'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>启动项目，打开控制看，看看组件的渲染是如何进行的：</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/todo-list初始化结果.png" alt="todo-list初始化结果" style="zoom:150%;">
+<p>如图所示：当我们渲染待办事项列表时，默认情况下，我们正在执行Task组件的两次渲染，list的渲染一次，App组件的渲染一次。</p>
+<p>当我们在输入框中输入文本，组件会如何更新渲染呢？</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/输入Go.png" alt="输入Go" style="zoom:150%;">
+<p>我们发现，当输入G, o时，我们又重复了两次上面的渲染方式，但实际上，在没有真正添加新待办时，List组件和已经存在的两个Task组件应该不用重新渲染，我们可以使用 memo 来改善这个不足。</p>
+<h1 id="memoizing-a-component-with-memo"><a class="markdownIt-Anchor" href="#memoizing-a-component-with-memo"></a> Memoizing a component with memo</h1>
+<p>memo 是一种高阶组件，有点类似类组件中的纯组件（PureComponent），memo 会在首次渲染时维持prop信息，并在每次重新渲染前将prop进行浅比较（shallow comparison），只有在prop改变时，才会重新渲染组件。</p>
+<p>我们只需要引入 memo，并在对存在上述问题的组件（List、Task）进行增强即可</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/memo增强.png" alt="memo增强" style="zoom:150%;">
+<p>可以看到，当仅改变输入框内容时，只有App被重新渲染了，这是合理的，因为输入框内容是App的一部分。</p>
+<p>那为什么React 不将这种条件渲染设为默认呢，其实，浅比较的代价往往比重新渲染要高，因此作者给出了一个自己的建议: <strong>just don’t use it</strong>，除非每次渲染都需要重新请求API，或者重新渲染部分的数据量相当大（通常是体量相当大的列表项）</p>
+<h1 id="memoizing-a-value-with-usememo"><a class="markdownIt-Anchor" href="#memoizing-a-value-with-usememo"></a> Memoizing a value with useMemo</h1>
+<p>现在，让我们为待办列表添加一个搜索功能，我们首先需要向App 中添加一个状态：term</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token punctuation">[</span>term<span class="token punctuation">,</span> setTerm<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>再添加一个用来处理搜索的函数handleSearch：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">handleSearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token function">setTerm</span><span class="token punctuation">(</span>task<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>接着，我们新建一个变量filteredTodoList，用来来保存我们过滤后的列表项：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> filteredTodoList <span class="token operator">=</span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Filtering...'</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> todo<span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>term<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，将我们展示的列表换成筛选后的列表：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">todoList</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>filteredTodoList<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>现在，我们尝试在输入框里输入信息，你会发现：<br>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/每次输入会渲染两次.png" alt="每次输入会渲染两次" style="zoom:150%;"></p>
+<p>每输入一个字符，Filter都会被调用两次（但我不明白为什么会调用两次），为了优化这一行为，可以使用 useMemo</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> filteredTodoList <span class="token operator">=</span> <span class="token function">useMemo</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Filtering...'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> todo<span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>term<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>term<span class="token punctuation">,</span> todoList<span class="token punctuation">]</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意这里我们向第二个数组中传入了term, todoList，其中term是指当term发生变化时（即点击search按钮）或者todoList变化时（即点击create按钮），才触发回调函数的执行</p>
+<p>现在，我们再次输入框中写入一些内容，可以看到filter不会像以前那样一直执行，同时添加和搜索都可以正确执行。</p>
+<p>和memo类似。useMemo也是<strong>just don’t use it</strong></p>
+<h1 id="memoizing-a-function-definition-with-usecallback"><a class="markdownIt-Anchor" href="#memoizing-a-function-definition-with-usecallback"></a> Memoizing a function definition with useCallback</h1>
+<p>现在，为我们的待办列表添加一个删除的功能来学习useCallback。首先，添加一个删除函数：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> <span class="token function-variable function">handleDelete</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> newTodoList <span class="token operator">=</span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> todo<span class="token punctuation">.</span>id <span class="token operator">!==</span> taskId<span class="token punctuation">)</span>
+  <span class="token function">setTodoList</span><span class="token punctuation">(</span>newTodoList<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着，我们需要从App中将该函数传递给List：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">todoList</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>filteredTodoList<span class="token punctuation">&#125;</span></span> <span class="token attr-name">handleDelete</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>handleDelete<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>由于在List里使用TypeScript定义过Prop的类型，因此这里需要把我们新添加的类型补上：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  todoList<span class="token operator">:</span> Todo<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">handleDelete</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由于List在使用Prop时使用的是解构赋值，因此这里需要将新添加的handleDelete解构出来：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> List<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = (&#123; todoList, handleDelete &#125;) => </span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>不仅如此，我们的List还需要将该函数再向下传递给Task：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token punctuation">&#123;</span>todoList<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Task</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">id</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">task</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>task<span class="token punctuation">&#125;</span></span> <span class="token attr-name">handleDelete</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>handleDelete<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同样，由于Task里也通过TypeScript 定义了Prop的类型，因此也需要修改：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span>
+  task<span class="token operator">:</span> <span class="token builtin">string</span>
+  <span class="token function-variable function">handleDelete</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span><span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>到此，删除函数就从App传递给Task了，我们在Task渲染的单项中添加一个删除按钮即可：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>task<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">handleDelete</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">x</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>现在，删除功能就实现了，我们可以把Go shopping 给删除：</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/成功删除Go Shopping.png" alt="成功删除Go Shopping" style="zoom:150%;">
+<p>目前为止，似乎一切都很顺利，但是让我们在输入框中输入一些文字，观察控制台：</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/每输入一个字符，所有组件都在重新渲染.png" alt="每输入一个字符，所有组件都在重新渲染.png" style="zoom:150%;">
+<p>我们发现每次输入都会重新渲染所有组件，文中说是因为函数被传递到多个组件中，</p>
+<p>（At this point, you are probably thinking about, what is going on if we have already implemented the memo HOC to memorize the components? But the problem now is that our handleDelete function is being passed in two components, from App to List and to Task , and the issue is that this function is regenerated every time we have a new re-render, in this case, every time we write something. So how do we fix this problem?）</p>
+<p>在这种情况下，可以使用 useCallback 钩子，它在语法上与useMemo非常相似，但主要的区别是，它不是像useMemo那样记住函数的结果值，而是记住函数的定义:</p>
+<p>我们的handleDelete应该改成这样：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> handleDelete <span class="token operator">=</span> <span class="token function">useCallback</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> newTodoList <span class="token operator">=</span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> todo<span class="token punctuation">.</span>id<span class="token operator">!</span> <span class="token operator">==</span> taskId<span class="token punctuation">)</span>
+  <span class="token function">setTodoList</span><span class="token punctuation">(</span>newTodoList<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>todoList<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/使用useCallback.png" alt="使用useCallback" style="zoom:150%;">
+<h1 id="memoizing-function-passed-as-an-argument-in-effect"><a class="markdownIt-Anchor" href="#memoizing-function-passed-as-an-argument-in-effect"></a> Memoizing function passed as an argument in effect</h1>
+<p>还有一种特殊情况需要使用useCallback：</p>
+]]></content>
+      <categories>
+        <category>React 17 Design Patterns Best Practices</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>02-React 17 Design Patterns Best Practices</title>
     <url>/post/2290.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="what-you-can-learn"><a class="markdownIt-Anchor" href="#what-you-can-learn"></a> What you can learn</h1>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="学习内容"><a class="markdownIt-Anchor" href="#学习内容"></a> 学习内容</h1>
 <p>在这一节，我们主要讨论如下话题：</p>
 <ul>
 <li>什么是JSX，我们为什么推荐使用它</li>
@@ -68,7 +756,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">babel source.js -o output.js<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>Babel的强大之处在于，他是高度可配置的，虽然我们可以手动配置，但更方便的选择是使用一些预设好的配置：</p>
 <pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install -g @babel&#x2F;preset-env @babel&#x2F;preset-react<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h1 id="creating-our-first-element"><a class="markdownIt-Anchor" href="#creating-our-first-element"></a> Creating our first element</h1>
+<h1 id="创建第一个元素"><a class="markdownIt-Anchor" href="#创建第一个元素"></a> 创建第一个元素</h1>
 <p>现在，我们的编程环境已经可以支持 JSX，让我们从一个创建一个<code>div</code>element 开始学习，在JavaScript中，我们可以通过<code>_jsx</code>函数来创建一个<code>div</code>element：</p>
 <pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">_jsx</span><span class="token punctuation">(</span>
   <span class="token comment">// props</span>
@@ -79,7 +767,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
 <p>用 JSX 语法糖实现则是如下所示：</p>
 <pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这像是一个HTML语法，但存在于 .js 文件中。需要注意的是，JSX只是一种语法糖，他在交给浏览器执行前是会被转化成 JavaScript代码的，即当我们运行Babel时，<code>&lt;div /&gt;</code>JSX代码会被转换成<code>_jsx('div', &#123;&#125;)</code>JavaScript代码，这是我们在编写模板时应该始终牢记的一点。</p>
-<h1 id="dom-elements-and-react-components"><a class="markdownIt-Anchor" href="#dom-elements-and-react-components"></a> DOM elements and React components</h1>
+<h1 id="dom-元素与-react组件"><a class="markdownIt-Anchor" href="#dom-元素与-react组件"></a> DOM 元素与 React组件</h1>
 <p>通过 JSX， 我们可以创建 HTML 元素和 React 组件，二者的唯一区别在于首字母是否大写。</p>
 <ul>
 <li>渲染HTML按钮，我们使用<code>&lt;button /&gt;</code>，Babel为我们编译的js代码为：<code>_jsx('button', &#123;&#125;)</code></li>
@@ -143,7 +831,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
   </span><span class="token punctuation">&#123;</span><span class="token comment">/* 大括号内的 () => console.log("Function") 是JS表达式，本句注释也是JS表达式 */</span><span class="token punctuation">&#125;</span><span class="token plain-text">
   I' m a &#123;() => console.log(' Function' )&#125;.
 </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="differences-with-html"><a class="markdownIt-Anchor" href="#differences-with-html"></a> Differences with HTML</h1>
+<h1 id="与-html-的区别"><a class="markdownIt-Anchor" href="#与-html-的区别"></a> 与 HTML 的区别</h1>
 <p>到目前为止，我们已经看到了JSX和HTML之间的相似之处。现在让我们看看它们之间的细微差别以及它们存在的原因。</p>
 <h2 id="attributes"><a class="markdownIt-Anchor" href="#attributes"></a> Attributes</h2>
 <p>我们必须始终牢记，JSX不是标准语言，它会被转换成JavaScript。因此，有些属性不能使用。</p>
@@ -222,7 +910,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
 <span class="token punctuation">&#123;</span><span class="token comment">/* _jsx("button", &#123; disabled: false &#125;) */</span><span class="token punctuation">&#125;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>因此，为了避免困惑，最好每次都显式声明。</p>
-<h1 id="spread-attributes"><a class="markdownIt-Anchor" href="#spread-attributes"></a> Spread attributes</h1>
+<h1 id="展开属性"><a class="markdownIt-Anchor" href="#展开属性"></a> 展开属性</h1>
 <p>这里有一个非常好用的特性，就是使用展开属性运算符<code>...</code>，它来自ECMAScrip 提案中的 展开/剩余属性（rest/spread）。当你希望将一个对象中的所有属性传递给 element 时非常好用。</p>
 <pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> attrs <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
   id<span class="token operator">:</span> <span class="token string">'myId'</span> <span class="token punctuation">,</span>
@@ -236,7 +924,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
   className<span class="token operator">:</span> <span class="token string">'myClass'</span>
 <span class="token punctuation">&#125;</span>
 <span class="token keyword">return</span> <span class="token function">_jsx</span><span class="token punctuation">(</span><span class="token string">'div'</span> <span class="token punctuation">,</span> attrs<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="template-literals"><a class="markdownIt-Anchor" href="#template-literals"></a> Template literals</h1>
+<h1 id="模板字面量"><a class="markdownIt-Anchor" href="#模板字面量"></a> 模板字面量</h1>
 <p>模板字面量（Template literals）是一种允许内嵌表达式的字符串字面量，你可以在里面使用多行字符串和字符串的插值特性。</p>
 <p>模板字面量使用反引号<code>` `</code>包裹，通过<code>$&#123;表达式&#125;</code>使用预设值：</p>
 <pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> name <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Carlos</span><span class="token template-punctuation string">`</span></span>
@@ -244,7 +932,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
 This is a multiline string
 &lt;/p></span><span class="token template-punctuation string">`</span></span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Hi, my name is </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>name<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span> <span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="common-patterns"><a class="markdownIt-Anchor" href="#common-patterns"></a> Common patterns</h1>
+<h1 id="常见的设计模式"><a class="markdownIt-Anchor" href="#常见的设计模式"></a> 常见的设计模式</h1>
 <p>现在我们已经了解了JSX的工作方式，接下来我们将了解如何按照一些有用的约定和技术以正确的方式使用它。</p>
 <h2 id="multiline"><a class="markdownIt-Anchor" href="#multiline"></a> Multiline</h2>
 <ul>
@@ -383,7 +1071,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
     </span><span class="token punctuation">&#123;</span>userIsAdmin <span class="token operator">&amp;&amp;</span> <span class="token function">renderAdminMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span><span class="token plain-text">
   </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 <span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="styling-code"><a class="markdownIt-Anchor" href="#styling-code"></a> Styling code</h1>
+<h1 id="代码风格"><a class="markdownIt-Anchor" href="#代码风格"></a> 代码风格</h1>
 <p>在本节中，你将学习如何实现EditorConfig和ESLint，通过验证你的代码风格来提高你的代码质量。在你的团队中有一个标准的代码风格，避免使用不同的代码风格是很重要的。</p>
 <h2 id="editorconfig"><a class="markdownIt-Anchor" href="#editorconfig"></a> EditorConfig</h2>
 <p>EditorConfig 可以帮助开发者在不同IDE之间维持代码风格的一致性</p>
@@ -493,7 +1181,7 @@ trim_trailing_whitespace &#x3D; false<span aria-hidden="true" class="line-number
     ]
   &#125;
 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h1 id="functional-programming"><a class="markdownIt-Anchor" href="#functional-programming"></a> Functional programming</h1>
+<h1 id="函数式编程"><a class="markdownIt-Anchor" href="#函数式编程"></a> 函数式编程</h1>
 <p>当我们编写JSX时，除了遵循最佳实践和使用一个linter来加强一致性和更早地发现错误之外，我们还可以做一件事来清理我们的代码:遵循FP（Functional programming）风格。下面简单的介绍一下FP风格的基本概念，随着React的深入学习，你会发现React代码同样遵循这FP的设计风格。</p>
 <h2 id="first-class-function"><a class="markdownIt-Anchor" href="#first-class-function"></a> First-class Function</h2>
 <p>头等函数（First-class Function），它们可以被视为任何其他变量，即可以将一个函数作为参数传递给其他函数，或者它可以由另一个函数返回（详见高阶函数）并作为一个变量的值赋值。</p>
@@ -544,7 +1232,7 @@ add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span
 <span class="token keyword">const</span> <span class="token function-variable function">square</span> <span class="token operator">=</span> <span class="token parameter">x</span> <span class="token operator">=></span> x <span class="token operator">*</span> x
 <span class="token keyword">const</span> <span class="token function-variable function">addAndSquare</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">x<span class="token punctuation">,</span> y</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">square</span><span class="token punctuation">(</span><span class="token function">add</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>按照这个范例，我们最终得到了可以组合在一起的小的、简单的、可测试的纯函数。</p>
-<h1 id="summary"><a class="markdownIt-Anchor" href="#summary"></a> Summary</h1>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
 <ul>
 <li>学习了大量关于JSX如何工作以及如何在组件中正确使用它的知识。我们从语法的基础开始，创建了一个坚实的知识库，使我们能够掌握JSX及其特性。</li>
 <li>学习了如何配置Prettier，以及ESLint及其插件如何帮助我们更快地发现问题，并在我们的代码库中执行一致的风格指南。</li>
@@ -562,7 +1250,7 @@ add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span
   <entry>
     <title>01-React 17 Design Patterns Best Practices</title>
     <url>/post/d290.html</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="what-will-be-learned"><a class="markdownIt-Anchor" href="#what-will-be-learned"></a> What will be learned</h1>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="学习内容"><a class="markdownIt-Anchor" href="#学习内容"></a> 学习内容</h1>
 <ul>
 <li>命令式（imperative）编程和声明式（declarative）编程的区别</li>
 <li>React 组件和实例，React 如何通过组件控制 UI 流</li>
@@ -570,7 +1258,7 @@ add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span
 <li>为什么人们对 JavaScript 很疲倦，并且了解我们如何在开发中通过使用 React 来避免常见的 JavaScript 错误</li>
 <li>TypeScript 如何改变这场闹剧</li>
 </ul>
-<h1 id="differentiating-between-declarative-and-imperative-programming"><a class="markdownIt-Anchor" href="#differentiating-between-declarative-and-imperative-programming"></a> Differentiating between declarative and imperative programming</h1>
+<h1 id="命令式编程与声明式编程"><a class="markdownIt-Anchor" href="#命令式编程与声明式编程"></a> 命令式编程与声明式编程</h1>
 <ul>
 <li>命令式编程：描述工作步骤（how things work）</li>
 <li>声明式编程：描述你想达到的结果（whatyou want to achieve）</li>
@@ -593,7 +1281,7 @@ add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Toggle</span></span> <span class="token attr-name">off</span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们只需要编写我们希望达到的状态，on或者off，即可实现上述的功能。</p>
 <p>如此简洁优雅的代码必然会使我们遇到更少的bug，并且有更高的可维护性。</p>
-<h1 id="how-react-elements-work"><a class="markdownIt-Anchor" href="#how-react-elements-work"></a> How React elements work</h1>
+<h1 id="element-工作原理"><a class="markdownIt-Anchor" href="#element-工作原理"></a> element 工作原理</h1>
 <p>虽然大多数读者应该对 React Components 耳熟能详，但如果想要更有效的使用 React，我们需要了解一个一个更基础的知识——React Element</p>
 <p>为了控制 UI 流，React 使用了一个特定类型的对象，即 React Element，它描述了应该显示在屏幕上的内容是什么。Element 比 Component 更为简单，Element 是不可变的（immutable），它仅包含需要显示在屏幕上的直接内容。</p>
 <p>一个常见的 element 实例:</p>
@@ -620,7 +1308,7 @@ add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span
   <span class="token punctuation">&#125;</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>React通过以下规则解析该渲染树：当type是一个函数时，React调用该函数，传入 props 以获得低一级的元素（children），由于存在嵌套的可能，因此 React 会递归的重复上述执行模式，直到React获得的元素为可以直接渲染在屏幕的DOM元素，这种过程被称作和解（reconciliation）</p>
-<h1 id="unlearning-everything"><a class="markdownIt-Anchor" href="#unlearning-everything"></a> Unlearning everything</h1>
+<h1 id="忘掉过去的理念"><a class="markdownIt-Anchor" href="#忘掉过去的理念"></a> 忘掉过去的理念</h1>
 <p>在过去的二十年，我们的web设计遵循了关注点分离（separation of concerns）的原则，关注点分离，就是说将一个整体拆分（分离）成不同部分，并对于每一个部分进行研究（关注点），对于web 设计来说，即将一个web网页拆分成<code>template</code>, <code>javascript</code>, <code>css</code>三个部分，分别进行编写，如下面一个最常见的模板语言：</p>
 <pre class="line-numbers language-html" data-language="html"><code class="language-html">&#123;&#123;#items&#125;&#125;
   &#123;&#123;#first&#125;&#125;
@@ -636,7 +1324,7 @@ add1(3) ; &#x2F;&#x2F; 4<span aria-hidden="true" class="line-numbers-rows"><span
 <li>同样，样式也很有可能依赖从逻辑层接收到的模型来显示。</li>
 </ul>
 <p>这说明，虽然我们可以将web页面分为html, css, js，但实际上它们之间是相互耦合（coupling）的，这虽然不是一件坏事，但缺没有真正的做到关注点分离。</p>
-<h1 id="understanding-javascript-fatigue"><a class="markdownIt-Anchor" href="#understanding-javascript-fatigue"></a> Understanding JavaScript fatigue</h1>
+<h1 id="理解javascript特性"><a class="markdownIt-Anchor" href="#理解javascript特性"></a> 理解JavaScript特性</h1>
 <p>有一种流行的观点认为 React 由大量的技术和工具组成，如果你想使用它，你必须与包管理器、转译器、模块绑定器以及无限多的不同库打交道。这个想法在人们中非常广泛，以至于它已经被明确定义，并被命名为JavaScript疲劳（ JavaScript fatigue.）。</p>
 <p>实际上 React 仅由两个包组成：</p>
 <ul>
@@ -652,9 +1340,9 @@ npm start<span aria-hidden="true" class="line-numbers-rows"><span></span><span><
 <p>在你期望的路径打开cmd窗口并实行该命令，你就拥有一个具备了使用最先进的技术构建的完整React应用程序所需的所有特性。</p>
 <p>covers/React 17 Design Patterns Best Practices</p>
 <img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/具有完整技术构建的React应用.png" alt="具有完整技术构建的React应用">
-<h1 id="introducing-typescript"><a class="markdownIt-Anchor" href="#introducing-typescript"></a> Introducing TypeScript</h1>
+<h1 id="介绍-typescript"><a class="markdownIt-Anchor" href="#介绍-typescript"></a> 介绍 TypeScript</h1>
 <p>TypeScript是JavaScript的类型化超集，它最终被编译成JavaScript，这意味着TypeScript是带有一些附加特性的JavaScript。我们将介绍一些TypeScript的重要特点。</p>
-<h2 id="typescript-features"><a class="markdownIt-Anchor" href="#typescript-features"></a> TypeScript features</h2>
+<h2 id="typescript-特性"><a class="markdownIt-Anchor" href="#typescript-特性"></a> TypeScript 特性</h2>
 <ul>
 <li>TypeScript is JavaScript: 我们编写的任何JavaScript代码都可以在TypeScript中执行，因此当你懂得JavaScript语法时，基本上你就可以开始使用TypeScript，你只需要如何向代码中添加类型约束。所有的TypeScript代码最后都会转换成JavaScript。</li>
 <li>JavaScript is TypeScript: 这意味着你可以将所有的.js文件重命名为.ts文件，它仍然会正常工作。</li>
@@ -662,7 +1350,7 @@ npm start<span aria-hidden="true" class="line-numbers-rows"><span></span><span><
 <li>Strong typing: 默认情况下，JavaScript并不是强类型的，当你使用TypeScript时，你就可以对变量和函数添加类型，你甚至可以指定返回值的类型。</li>
 <li>Object-oriented programming supported: TypeScript支持类，继承，接口等面向对象的概念。</li>
 </ul>
-<h2 id="converting-javascript-code-into-typescript"><a class="markdownIt-Anchor" href="#converting-javascript-code-into-typescript"></a> Converting JavaScript code into TypeScript</h2>
+<h2 id="将-js-变成-ts"><a class="markdownIt-Anchor" href="#将-js-变成-ts"></a> 将 JS 变成 TS</h2>
 <p>假设我们需要编写一个函数来判断一个单词是否回文，JavaScript代码应该如下所示：</p>
 <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">function</span> <span class="token function">isPalindrome</span><span class="token punctuation">(</span><span class="token parameter">word</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
   <span class="token keyword">const</span> lowerCaseWord <span class="token operator">=</span> word<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
@@ -815,7 +1503,7 @@ npm start<span aria-hidden="true" class="line-numbers-rows"><span></span><span><
 <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>当你需要扩展你的interface时，你只需要重定义即可，新的属性会被合并到之前的定义中，这是十分有用的。</p>
-<h1 id="summary"><a class="markdownIt-Anchor" href="#summary"></a> Summary</h1>
+<h1 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h1>
 <p>在第一章中，我们学习了一些基本的概念：</p>
 <ul>
 <li>我们知道了如何编写声明性代码，也清楚地了解了我们创建的组件和React用来在屏幕上显示实例的元素之间的区别。</li>
@@ -5997,8 +6685,8 @@ Student&#123;sid&#x3D;4, sname&#x3D;&#39;IrisNoir&#39;, age&#x3D;&#39;21&#39;, c
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>MyBatis</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -6658,8 +7346,8 @@ public void insertStudent() throws IOException &#123;
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>MyBatis</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -7457,8 +8145,8 @@ TeachInfo&#123;tid&#x3D;2, tname&#x3D;&#39;LiSi&#39;, age&#x3D;&#39;33&#39;, cou
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>MyBatis</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -8033,8 +8721,8 @@ select * from mybatis.student where sid = #&#123;sid&#125;;<br>
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>MyBatis</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
   <entry>
@@ -8509,8 +9197,8 @@ public class MyTest &#123;
         <category>JavaEE（ssm）企业应用实战</category>
       </categories>
       <tags>
-        <tag>Java开发</tag>
         <tag>MyBatis</tag>
+        <tag>Java开发</tag>
       </tags>
   </entry>
 </search>

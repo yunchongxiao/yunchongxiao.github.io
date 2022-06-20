@@ -1,0 +1,697 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>03-React 17 Design Patterns Best Practices | 冲酱の杂物间</title><meta name="keywords" content="react"><meta name="author" content="冲酱"><meta name="copyright" content="冲酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="React Hooks">
+<meta property="og:type" content="article">
+<meta property="og:title" content="03-React 17 Design Patterns Best Practices">
+<meta property="og:url" content="http://yunchongxiao.gitee.io/post/c9d1.html">
+<meta property="og:site_name" content="冲酱の杂物间">
+<meta property="og:description" content="React Hooks">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png">
+<meta property="article:published_time" content="2022-02-02T11:16:55.000Z">
+<meta property="article:modified_time" content="2022-02-03T04:19:22.841Z">
+<meta property="article:author" content="冲酱">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png"><link rel="shortcut icon" href="/imgs/favicon.jpg"><link rel="canonical" href="http://yunchongxiao.gitee.io/post/c9d1"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#00c4b6","bgDark":"#2d3035","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '03-React 17 Design Patterns Best Practices',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-03 12:19:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/custom/font/index.css"><link rel="stylesheet" href="/custom/highlight/prism.css"><link rel="stylesheet" href="/custom/universe/index.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://unpkg.zhimg.com/hexo-butterfly-clock/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.0.0"><link rel="alternate" href="/atom.xml" title="冲酱の杂物间" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/imgs/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">冲酱の杂物间</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-comment-dots"></i><span> 留言</span></a></div><div class="menus_item"><a class="site-page" href="/artitalk/"><i class="fa-fw fas fa-heart"></i><span> 碎碎念</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">03-React 17 Design Patterns Best Practices</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-02T11:16:55.000Z" title="发表于 2022-02-02 19:16:55">2022-02-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-02-03T04:19:22.841Z" title="更新于 2022-02-03 12:19:22">2022-02-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/React-17-Design-Patterns-Best-Practices/">React 17 Design Patterns Best Practices</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="03-React 17 Design Patterns Best Practices"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/c9d1.html#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/post/c9d1.html" itemprop="commentCount"></span></a></span></div></div></div><article class="post-content" id="article-container"><h1 id="introducing-react-hooks"><a class="markdownIt-Anchor" href="#introducing-react-hooks"></a> Introducing React Hooks</h1>
+<p>自从React 16.8以来， React Hooks被提出，这可以显著提升我们的编码速度和应用的执行效率，React 可以仅使用函数组件来完成所有功能（这并不代表类组件被弃用了），React Hooks是向后兼容的。</p>
+<p>本章，我们主要讨论：</p>
+<ul>
+<li>React Hooks，并且知道如何使用它们</li>
+<li>Hooks的规则</li>
+<li>如何将类组件迁移到Hooks</li>
+<li>根据Hooks和effects理解组件的生命周期</li>
+<li>如何从 Hooks获取数据</li>
+<li>如何记忆 components, values, and functions with memo , useMemo , and useCallback</li>
+<li>如何实现 useReducer</li>
+</ul>
+<p>本章会学习一些最常见的React钩子，比如useState, useEffect, useMemo, useCallback和memo。源码可以在<a target="_blank" rel="noopener" href="https://github.com/PacktPublishing/React-17-Design-Patterns-and-Best-Practices-Third-Edition/tree/main/Chapter03">这里</a>获取：</p>
+<h1 id="no-breaking-changes"><a class="markdownIt-Anchor" href="#no-breaking-changes"></a> No breaking changes</h1>
+<p>虽然提出了新的React Hooks，但目前还没有从React中移除类组件的计划。React Hooks只是为React的概念提供了更直接的API，比如props, state, contexts, ref, life cycle等等已知知识。</p>
+<h1 id="using-the-state-hook"><a class="markdownIt-Anchor" href="#using-the-state-hook"></a> Using the State Hook</h1>
+<p>在类组件中，我们使用<code>this.state</code>来使用状态，现在，你可以使用<code>useState</code>钩子</p>
+<p>首先，你需要从React中提取useState钩子：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> useState <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后你需要定义这个状态的state和setter：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">Counter</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// counter为state，setCounter为setter</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>counter<span class="token punctuation">,</span> setCounter<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>number</span><span class="token punctuation">></span></span><span class="token plain-text">(0)
+&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们用setCounter作为setter，指定我们只接受number类型，并且将初始值设为0。</p>
+<p>为了测试我们的状态，我们需要创建一个由onClick事件触发的方法handleCounter:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">Counter</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">//  在这里使用 useState Hook</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>counter<span class="token punctuation">,</span> setCounter<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>number</span><span class="token punctuation">></span></span><span class="token plain-text">(0)
+  const handleCounter = (operation: string) => </span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      operation <span class="token operator">===</span> <span class="token string">' add'</span>
+      <span class="token operator">?</span> <span class="token function">setCounter</span><span class="token punctuation">(</span>counter <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span>  <span class="token comment">// 使用 setter 修改状态</span>
+      <span class="token operator">:</span> <span class="token function">setCounter</span><span class="token punctuation">(</span>counter <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>   <span class="token comment">// 使用 setter 修改状态</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token plain-text">
+&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+    Counter: </span><span class="token punctuation">&#123;</span>counter<span class="token punctuation">&#125;</span><span class="token plain-text"> </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">handleCounter</span><span class="token punctuation">(</span><span class="token string">' add'</span> <span class="token punctuation">)</span> <span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">+ Add</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">handleCounter</span><span class="token punctuation">(</span><span class="token string">' subtract'</span> <span class="token punctuation">)</span> <span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">- Subtract</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/Counter.png" alt="Counter" style="zoom:150%;">
+<h1 id="rules-of-hooks"><a class="markdownIt-Anchor" href="#rules-of-hooks"></a> Rules of Hooks</h1>
+<p>React Hooks基本上是JavaScript函数，但你需要遵循两条规则才能使用它们。React提供了一个linter插件来执行这些规则，你可以通过运行下面的命令来安装:</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">npm install --save-dev eslint-plugin-react-hooks<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>让我们看看这两条规则。</p>
+<h2 id="rule-1-only-call-hooks-at-the-top-level"><a class="markdownIt-Anchor" href="#rule-1-only-call-hooks-at-the-top-level"></a> Rule 1: Only call Hooks at the top level</h2>
+<p>不要在循环、条件或嵌套函数中调用Hooks。相反,总是使用挂钩在React函数的顶层。这可以确保每次组件被渲染时，钩子都会以相同的顺序被调用。这可以使得React正确保存多个useState和useEffect调用之间的Hooks状态。</p>
+<h2 id="rule-2-only-call-hooks-from-react-functions"><a class="markdownIt-Anchor" href="#rule-2-only-call-hooks-from-react-functions"></a> Rule 2: Only call Hooks from React Functions</h2>
+<p>不要从常规的JavaScript函数中调用hook。相反：</p>
+<ul>
+<li>从React函数组件中调用钩子</li>
+<li>从自定义hook调用hook</li>
+</ul>
+<h1 id="migrating-a-class-component-to-react-hooks"><a class="markdownIt-Anchor" href="#migrating-a-class-component-to-react-hooks"></a> Migrating a class component to React Hooks</h1>
+<p>让我们对比一下类组件和使用Hooks的函数组件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> Component <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+<span class="token comment">// TypeScript 定义 Types</span>
+<span class="token keyword">type</span> Issue <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">number</span><span class="token operator">:</span> <span class="token builtin">number</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+  state<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 类参数</span>
+<span class="token keyword">type</span> Props <span class="token operator">=</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token comment">// 类状态</span>
+<span class="token keyword">type</span> State <span class="token operator">=</span> <span class="token punctuation">&#123;</span> issues<span class="token operator">:</span> Issue<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+<span class="token keyword">class</span> <span class="token class-name">Issues</span> <span class="token keyword">extends</span> <span class="token class-name">Component</span><span class="token operator">&lt;</span>Props<span class="token punctuation">,</span> State<span class="token operator">></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 类构造函数</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token parameter">props<span class="token operator">:</span> Props</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 父类构造函数</span>
+    <span class="token keyword">super</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span>
+    <span class="token comment">// 初始化类状态</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>state <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+      issues<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token comment">// 生命周期函数</span>
+  <span class="token function">componentDidMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    axios
+      <span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'https://api.github.com/repos/ContentPI/ContentPI/issues'</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response<span class="token operator">:</span> <span class="token builtin">any</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+          issues<span class="token operator">:</span> response<span class="token punctuation">.</span>data
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+      <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token comment">// 渲染函数</span>
+  <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> <span class="token punctuation">&#123;</span> issues <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>state
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">ContentPI Issues</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token punctuation">&#123;</span>issues<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">issue<span class="token operator">:</span> Issue</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">#</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+            &lt;a href=
+              </span><span class="token punctuation">&#123;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://github.com/ContentPI/ContentPI/issues/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">&#125;</span><span class="token plain-text">
+              target="_blank"></span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+            </span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>state<span class="token punctuation">&#125;</span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+        <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> Issues
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/类组件运行结果展示.png" alt="类组件运行结果展示" style="zoom:150%;">
+<p>现在，让我们慢慢把他改为函数组件：</p>
+<p>首先我们需要引入一些函数组件所需依赖：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// Dependencies</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useState<span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">' react'</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">' axios'</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>因为函数组件没有props和state，因此在TypeScript中只留下Issue的定义即可：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// Types</span>
+<span class="token keyword">type</span> Issue <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">number</span><span class="token operator">:</span> <span class="token builtin">number</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+  state<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后，我们将类组件的定义改为函数组件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> Issues<span class="token operator">:</span> <span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span><span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>FC类型用于使用 TypeScript 定义一个函数组件。如果你需要传递props给组件，你可以像这样传递它们:</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">type</span> Props <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  propX<span class="token operator">:</span> <span class="token builtin">string</span>
+  propY<span class="token operator">:</span> <span class="token builtin">number</span>
+  propZ<span class="token operator">:</span> <span class="token builtin">boolean</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">const</span> Issues<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = () => </span><span class="token punctuation">&#123;</span><span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">.</span> <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接下来要做的是使用useState钩子替换构造函数和状态定义:</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// The useState hook replace the this. setState method</span>
+<span class="token keyword">const</span> <span class="token punctuation">[</span>issues<span class="token punctuation">,</span> setIssues<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token operator">&lt;</span>Issue<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中 issues 为状态，setIssues为设置器，接受 Issue 数组，且初始化为空数组</p>
+<p>我们之前使用componentDidMount生命周期方法，该方法在组件被挂载时执行，并且只运行一次。在 React Hook中，我们使用useEffect 通过不同的语法处理所有的生命周期方法。让我们看看如何使用 useEffect获得与componentDidMount相同的效果:</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  axios
+    <span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'https://api.github.com/repos/ContentPI/ContentPI/issues'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response<span class="token operator">:</span> <span class="token builtin">any</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// Here we update directly our issue state</span>
+      <span class="token function">setIssues</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，我们返回渲染的代码即可：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">return</span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">ContentPI Issues</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+  </span><span class="token punctuation">&#123;</span>issues<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">issue<span class="token operator">:</span> Issue</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">#</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    &lt;a href=
+      </span><span class="token punctuation">&#123;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://github.com/ContentPI/ContentPI/issues/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">&#125;</span><span class="token plain-text">
+      target="_blank"></span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>state<span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>至此，我们就彻底实现了从类组件到函数组件的改变，总览代码如下所示：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 引入所需依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useState<span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+
+<span class="token comment">// 使用 TypeScript 定义 Issue</span>
+<span class="token keyword">type</span> Issue <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token builtin">number</span><span class="token operator">:</span> <span class="token builtin">number</span>
+  title<span class="token operator">:</span> <span class="token builtin">string</span>
+  state<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 创建函数组件</span>
+<span class="token keyword">const</span> Issues<span class="token operator">:</span> <span class="token function-variable function">FC</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 使用 useState 创建状态和设置器</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>issues<span class="token punctuation">,</span> setIssues<span class="token punctuation">]</span> <span class="token operator">=</span> useState<span class="token operator">&lt;</span>Issue<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+  <span class="token comment">// 使用 useEffect 管理生命周期函数</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+      axios
+        <span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span><span class="token string">'https://api.github.com/repos/ContentPI/ContentPI/issues'</span><span class="token punctuation">)</span>
+        <span class="token comment">// 调用 状态设置器 setIssues 更新状态</span>
+        <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">response<span class="token operator">:</span> <span class="token builtin">any</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+          <span class="token function">setIssues</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+  <span class="token punctuation">)</span>
+
+<span class="token comment">// 返回渲染结果</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">ContentPI Issues</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token punctuation">&#123;</span>issues<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">issue<span class="token operator">:</span> Issue</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text">#</span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span><span class="token builtin">number</span><span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>strong</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+          </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> 
+            <span class="token attr-name">href</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">https://github.com/ContentPI/ContentPI/issues/</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>issue<span class="token punctuation">.</span>number<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">&#125;</span></span>
+            <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>title<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text"> </span><span class="token punctuation">&#123;</span><span class="token string">' '</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+          </span><span class="token punctuation">&#123;</span>issue<span class="token punctuation">.</span>state<span class="token punctuation">&#125;</span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> Issues<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="understanding-react-effects"><a class="markdownIt-Anchor" href="#understanding-react-effects"></a> Understanding React effects</h1>
+<p>在本节中，我们将学习我们在类组件上使用的组件生命周期方法与新的React effects 之间的区别。你可能在其他地方了解到它们是一样的，只是语法不同而已，然而这是不正确的。</p>
+<h1 id="understanding-useeffect"><a class="markdownIt-Anchor" href="#understanding-useeffect"></a> Understanding useEffect</h1>
+<p>当你使用useEffect时，你需要think in effects。如果你想使用useEffect执行componentDidMount的等效方法，你可以这样做:</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+<span class="token comment">// Here you perform your side effect</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>第一个参数是想要执行的回调函数，第二个参数是依赖项数组。如果你给依赖项传递一个空数组([])，state和props使用初始值。如果你传递了一个依赖数组，useEffect钩子只会在其中一个依赖改变时运行。</p>
+<p>useEffect与componentDidMount、componentDidUpdate不同的是，我们传递给useEffect的函数在布局(layout)和绘制(print)之后，在延迟事件期间触发。在一些需要同步触发的特殊形况下（如修改文档对象模型(DOM)，因为异步触发会出现闪烁），会产生期望之外的效果。</p>
+<p>React提供了一个名为uselayouteeffect的钩子，它的工作方式与useEffect完全相同，但是可以与layout、print同步触发。</p>
+<h1 id="understanding-usecallback-usememo-and-memo"><a class="markdownIt-Anchor" href="#understanding-usecallback-usememo-and-memo"></a> Understanding useCallback, useMemo, and memo</h1>
+<p>为了理解useCallback、usemmo和memo之间的区别，我们将做一个待办事项列表的例子。你可以使用create-react-app和typescript作为模板来创建一个基本的应用程序:</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">create-react-app todo --template typescript<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在那之后，你可以删除src目录下所有额外的文件( App.css , App.test.ts , index.css , logo.svg , reportWebVitals.ts , setupTests.ts等等)，只需要保留App. tsx文件，并将其中的代码修改为：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 所需依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> useState<span class="token punctuation">,</span> useEffect<span class="token punctuation">,</span> useMemo<span class="token punctuation">,</span> useCallback <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token comment">// 所需组件</span>
+<span class="token keyword">import</span> List<span class="token punctuation">,</span> <span class="token punctuation">&#123;</span> Todo <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./List'</span>
+
+<span class="token comment">// 初始化待办列表</span>
+<span class="token keyword">const</span> initialTodos <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">&#123;</span> id<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span> task<span class="token operator">:</span><span class="token string">'Go shopping'</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span> id<span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> task<span class="token operator">:</span><span class="token string">'Pay the electricity bill'</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span>
+
+<span class="token comment">// todolist的整体组件</span>
+<span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 通过useState 设置 todeList 状态和其设置器，todoList为所有的待办</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>todoList<span class="token punctuation">,</span> setTodoList<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span>initialTodos<span class="token punctuation">)</span>
+  <span class="token comment">// 通过useState 设置 task 状态和其设置器，task为需要新增的待办</span>
+  <span class="token keyword">const</span> <span class="token punctuation">[</span>task<span class="token punctuation">,</span> setTask<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token comment">// 使用 useEffect 在其方法实行是输出提示</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Rendering &lt;App />'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token comment">// 新增待办的方法</span>
+  <span class="token keyword">const</span> <span class="token function-variable function">handleCreate</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">const</span> newTodo <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+      id<span class="token operator">:</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      task
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 在这里将原列表展开，与新待办一起作为更新值</span>
+    <span class="token function">setTodoList</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token operator">...</span>todoList<span class="token punctuation">,</span> newTodo<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token comment">// 清空 task</span>
+    <span class="token function">setTask</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      &lt;input
+        type="text"
+        value=</span><span class="token punctuation">&#123;</span>task<span class="token punctuation">&#125;</span><span class="token plain-text">
+        // 当输入框变化时，更新task的值
+        onChange=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">setTask</span><span class="token punctuation">(</span>e<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+      />
+      // 点击按钮时，新增待办
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>handleCreate<span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">Create</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">todoList</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todoList<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> App
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在返回的渲染函数中，我们使用的List组件，现在我们就来同级目录下创建一个List.tsx文件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 引入所需依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+<span class="token comment">// 引入所需组件</span>
+<span class="token keyword">import</span> Task <span class="token keyword">from</span> <span class="token string">'./Task'</span>
+<span class="token comment">// 定义单个待办的类型</span>
+<span class="token keyword">export</span> <span class="token keyword">type</span> Todo <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span>
+  task<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 定义函数属性的类型</span>
+<span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  todoList<span class="token operator">:</span> Todo<span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 定义 List 函数组件，其中接受Props作为参数，这里的 &#123;todoList&#125;表示从Props中提取key为todoList的值（即Todo[]）</span>
+<span class="token keyword">const</span> List<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = (&#123; todoList &#125;) => </span><span class="token punctuation">&#123;</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 每一次新渲染都会输出提示</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Rendering &lt;List />'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+      // 遍历 Todo[]，将其以下述形式展示
+      </span><span class="token punctuation">&#123;</span>todoList<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Task</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">id</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">task</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>task<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span>
+      <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">
+export default List
+</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上述渲染中，我们使用了Task组件，同样在同级目录下创建一个Task.tsx的文件：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token comment">// 引入依赖</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> <span class="token constant">FC</span><span class="token punctuation">,</span> useEffect <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'react'</span>
+
+<span class="token comment">// 定义函数组件属性接口</span>
+<span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span>
+  task<span class="token operator">:</span> <span class="token builtin">string</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 创建函数组件</span>
+<span class="token keyword">const</span> Task<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = (&#123; task &#125;) => </span><span class="token punctuation">&#123;</span>
+  <span class="token function">useEffect</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 每次渲染时都会调用</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Rendering &lt;Task />'</span><span class="token punctuation">,</span> task<span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>task<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token plain-text">
+export default Task
+</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，创建一个index.tsx文件，作为启动的入口：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">import</span> React <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> ReactDOM <span class="token keyword">from</span> <span class="token string">'react-dom'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> App <span class="token keyword">from</span> <span class="token string">'./App'</span>
+ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">React.StrictMode</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">App</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+  </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">React.StrictMode</span></span><span class="token punctuation">></span></span><span class="token punctuation">,</span>
+  document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">'root'</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>启动项目，打开控制看，看看组件的渲染是如何进行的：</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/todo-list初始化结果.png" alt="todo-list初始化结果" style="zoom:150%;">
+<p>如图所示：当我们渲染待办事项列表时，默认情况下，我们正在执行Task组件的两次渲染，list的渲染一次，App组件的渲染一次。</p>
+<p>当我们在输入框中输入文本，组件会如何更新渲染呢？</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/输入Go.png" alt="输入Go" style="zoom:150%;">
+<p>我们发现，当输入G, o时，我们又重复了两次上面的渲染方式，但实际上，在没有真正添加新待办时，List组件和已经存在的两个Task组件应该不用重新渲染，我们可以使用 memo 来改善这个不足。</p>
+<h1 id="memoizing-a-component-with-memo"><a class="markdownIt-Anchor" href="#memoizing-a-component-with-memo"></a> Memoizing a component with memo</h1>
+<p>memo 是一种高阶组件，有点类似类组件中的纯组件（PureComponent），memo 会在首次渲染时维持prop信息，并在每次重新渲染前将prop进行浅比较（shallow comparison），只有在prop改变时，才会重新渲染组件。</p>
+<p>我们只需要引入 memo，并在对存在上述问题的组件（List、Task）进行增强即可</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/memo增强.png" alt="memo增强" style="zoom:150%;">
+<p>可以看到，当仅改变输入框内容时，只有App被重新渲染了，这是合理的，因为输入框内容是App的一部分。</p>
+<p>那为什么React 不将这种条件渲染设为默认呢，其实，浅比较的代价往往比重新渲染要高，因此作者给出了一个自己的建议: <strong>just don’t use it</strong>，除非每次渲染都需要重新请求API，或者重新渲染部分的数据量相当大（通常是体量相当大的列表项）</p>
+<h1 id="memoizing-a-value-with-usememo"><a class="markdownIt-Anchor" href="#memoizing-a-value-with-usememo"></a> Memoizing a value with useMemo</h1>
+<p>现在，让我们为待办列表添加一个搜索功能，我们首先需要向App 中添加一个状态：term</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token punctuation">[</span>term<span class="token punctuation">,</span> setTerm<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">useState</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>再添加一个用来处理搜索的函数handleSearch：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> <span class="token function-variable function">handleSearch</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token function">setTerm</span><span class="token punctuation">(</span>task<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>接着，我们新建一个变量filteredTodoList，用来来保存我们过滤后的列表项：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token keyword">const</span> filteredTodoList <span class="token operator">=</span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Filtering...'</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> todo<span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>term<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最后，将我们展示的列表换成筛选后的列表：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">todoList</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>filteredTodoList<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>现在，我们尝试在输入框里输入信息，你会发现：<br>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/每次输入会渲染两次.png" alt="每次输入会渲染两次" style="zoom:150%;"></p>
+<p>每输入一个字符，Filter都会被调用两次（但我不明白为什么会调用两次），为了优化这一行为，可以使用 useMemo</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> filteredTodoList <span class="token operator">=</span> <span class="token function">useMemo</span><span class="token punctuation">(</span>
+  <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Filtering...'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> todo<span class="token punctuation">.</span>task<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span>term<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">[</span>term<span class="token punctuation">,</span> todoList<span class="token punctuation">]</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意这里我们向第二个数组中传入了term, todoList，其中term是指当term发生变化时（即点击search按钮）或者todoList变化时（即点击create按钮），才触发回调函数的执行</p>
+<p>现在，我们再次输入框中写入一些内容，可以看到filter不会像以前那样一直执行，同时添加和搜索都可以正确执行。</p>
+<p>和memo类似。useMemo也是<strong>just don’t use it</strong></p>
+<h1 id="memoizing-a-function-definition-with-usecallback"><a class="markdownIt-Anchor" href="#memoizing-a-function-definition-with-usecallback"></a> Memoizing a function definition with useCallback</h1>
+<p>现在，为我们的待办列表添加一个删除的功能来学习useCallback。首先，添加一个删除函数：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> <span class="token function-variable function">handleDelete</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> newTodoList <span class="token operator">=</span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> todo<span class="token punctuation">.</span>id <span class="token operator">!==</span> taskId<span class="token punctuation">)</span>
+  <span class="token function">setTodoList</span><span class="token punctuation">(</span>newTodoList<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着，我们需要从App中将该函数传递给List：</p>
+<pre class="line-numbers language-jsx" data-language="jsx"><code class="language-jsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">List</span></span> <span class="token attr-name">todoList</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>filteredTodoList<span class="token punctuation">&#125;</span></span> <span class="token attr-name">handleDelete</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>handleDelete<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>由于在List里使用TypeScript定义过Prop的类型，因此这里需要把我们新添加的类型补上：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  todoList<span class="token operator">:</span> Todo<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">handleDelete</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由于List在使用Prop时使用的是解构赋值，因此这里需要将新添加的handleDelete解构出来：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> List<span class="token operator">:</span> <span class="token constant">FC</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Props</span></span><span class="token punctuation">></span></span><span class="token plain-text"> = (&#123; todoList, handleDelete &#125;) => </span><span class="token punctuation">&#123;</span><span class="token operator">...</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>不仅如此，我们的List还需要将该函数再向下传递给Task：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token punctuation">&#123;</span>todoList<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">(</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Task</span></span> <span class="token attr-name">key</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">id</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>id<span class="token punctuation">&#125;</span></span> <span class="token attr-name">task</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>todo<span class="token punctuation">.</span>task<span class="token punctuation">&#125;</span></span> <span class="token attr-name">handleDelete</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span>handleDelete<span class="token punctuation">&#125;</span></span> <span class="token punctuation">/></span></span>
+<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>同样，由于Task里也通过TypeScript 定义了Prop的类型，因此也需要修改：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">interface</span> <span class="token class-name">Props</span> <span class="token punctuation">&#123;</span>
+  id<span class="token operator">:</span> <span class="token builtin">number</span>
+  task<span class="token operator">:</span> <span class="token builtin">string</span>
+  <span class="token function-variable function">handleDelete</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span><span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>到此，删除函数就从App传递给Task了，我们在Task渲染的单项中添加一个删除按钮即可：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token punctuation">&#123;</span>task<span class="token punctuation">&#125;</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">onClick</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">&#123;</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token function">handleDelete</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token punctuation">></span></span><span class="token plain-text">x</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>现在，删除功能就实现了，我们可以把Go shopping 给删除：</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/成功删除Go Shopping.png" alt="成功删除Go Shopping" style="zoom:150%;">
+<p>目前为止，似乎一切都很顺利，但是让我们在输入框中输入一些文字，观察控制台：</p>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/每输入一个字符，所有组件都在重新渲染.png" alt="每输入一个字符，所有组件都在重新渲染.png" style="zoom:150%;">
+<p>我们发现每次输入都会重新渲染所有组件，文中说是因为函数被传递到多个组件中，</p>
+<p>（At this point, you are probably thinking about, what is going on if we have already implemented the memo HOC to memorize the components? But the problem now is that our handleDelete function is being passed in two components, from App to List and to Task , and the issue is that this function is regenerated every time we have a new re-render, in this case, every time we write something. So how do we fix this problem?）</p>
+<p>在这种情况下，可以使用 useCallback 钩子，它在语法上与useMemo非常相似，但主要的区别是，它不是像useMemo那样记住函数的结果值，而是记住函数的定义:</p>
+<p>我们的handleDelete应该改成这样：</p>
+<pre class="line-numbers language-tsx" data-language="tsx"><code class="language-tsx"><span class="token keyword">const</span> handleDelete <span class="token operator">=</span> <span class="token function">useCallback</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">taskId<span class="token operator">:</span> <span class="token builtin">number</span></span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">const</span> newTodoList <span class="token operator">=</span> todoList<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">todo<span class="token operator">:</span> Todo</span><span class="token punctuation">)</span> <span class="token operator">=></span> todo<span class="token punctuation">.</span>id<span class="token operator">!</span> <span class="token operator">==</span> taskId<span class="token punctuation">)</span>
+  <span class="token function">setTodoList</span><span class="token punctuation">(</span>newTodoList<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>todoList<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="https://gitee.com/yunchongxiao/images/raw/master/posts/React 17 Design Patterns Best Practices/使用useCallback.png" alt="使用useCallback" style="zoom:150%;">
+<h1 id="memoizing-function-passed-as-an-argument-in-effect"><a class="markdownIt-Anchor" href="#memoizing-function-passed-as-an-argument-in-effect"></a> Memoizing function passed as an argument in effect</h1>
+<p>还有一种特殊情况需要使用useCallback：</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">冲酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://yunchongxiao.gitee.io/post/c9d1.html">http://yunchongxiao.gitee.io/post/c9d1.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://yunchongxiao.gitee.io" target="_blank">冲酱の杂物间</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/react/">react</a></div><div class="post_share"><div class="social-share" data-image="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/imgs/reward/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/imgs/reward/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/imgs/reward/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/imgs/reward/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/post/3ac1.html"><img class="prev-cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">04-React 17 Design Patterns Best Practices</div></div></a></div><div class="next-post pull-right"><a href="/post/2290.html"><img class="next-cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png" onerror="onerror=null;src='/imgs/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">02-React 17 Design Patterns Best Practices</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/3ac1.html" title="04-React 17 Design Patterns Best Practices"><img class="cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-05</div><div class="title">04-React 17 Design Patterns Best Practices</div></div></a></div><div><a href="/post/2290.html" title="02-React 17 Design Patterns Best Practices"><img class="cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-31</div><div class="title">02-React 17 Design Patterns Best Practices</div></div></a></div><div><a href="/post/d290.html" title="01-React 17 Design Patterns Best Practices"><img class="cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/React 17 Design Patterns Best Practices.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-30</div><div class="title">01-React 17 Design Patterns Best Practices</div></div></a></div><div><a href="/post/3797.html" title="React main concepts（十）"><img class="cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-10</div><div class="title">React main concepts（十）</div></div></a></div><div><a href="/post/b220.html" title="React main concepts（九）"><img class="cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-09</div><div class="title">React main concepts（九）</div></div></a></div><div><a href="/post/ee7e.html" title="React main concepts（八）"><img class="cover" src="https://gitee.com/yunchongxiao/images/raw/master/covers/react.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-10-08</div><div class="title">React main concepts（八）</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/imgs/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">冲酱</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">34</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gitee.com/yunchongxiao"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/yunchongxiao" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:444049406@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的小破站~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#introducing-react-hooks"><span class="toc-number">1.</span> <span class="toc-text"> Introducing React Hooks</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#no-breaking-changes"><span class="toc-number">2.</span> <span class="toc-text"> No breaking changes</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#using-the-state-hook"><span class="toc-number">3.</span> <span class="toc-text"> Using the State Hook</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#rules-of-hooks"><span class="toc-number">4.</span> <span class="toc-text"> Rules of Hooks</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#rule-1-only-call-hooks-at-the-top-level"><span class="toc-number">4.1.</span> <span class="toc-text"> Rule 1: Only call Hooks at the top level</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rule-2-only-call-hooks-from-react-functions"><span class="toc-number">4.2.</span> <span class="toc-text"> Rule 2: Only call Hooks from React Functions</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#migrating-a-class-component-to-react-hooks"><span class="toc-number">5.</span> <span class="toc-text"> Migrating a class component to React Hooks</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#understanding-react-effects"><span class="toc-number">6.</span> <span class="toc-text"> Understanding React effects</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#understanding-useeffect"><span class="toc-number">7.</span> <span class="toc-text"> Understanding useEffect</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#understanding-usecallback-usememo-and-memo"><span class="toc-number">8.</span> <span class="toc-text"> Understanding useCallback, useMemo, and memo</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#memoizing-a-component-with-memo"><span class="toc-number">9.</span> <span class="toc-text"> Memoizing a component with memo</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#memoizing-a-value-with-usememo"><span class="toc-number">10.</span> <span class="toc-text"> Memoizing a value with useMemo</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#memoizing-a-function-definition-with-usecallback"><span class="toc-number">11.</span> <span class="toc-text"> Memoizing a function definition with useCallback</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#memoizing-function-passed-as-an-argument-in-effect"><span class="toc-number">12.</span> <span class="toc-text"> Memoizing function passed as an argument in effect</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/post/f3af.html" title="绪论"><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202206201559023.png" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="绪论"/></a><div class="content"><a class="title" href="/post/f3af.html" title="绪论">绪论</a><time datetime="2022-06-20T08:00:37.055Z" title="发表于 2022-06-20 16:00:37">2022-06-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/7ffe.html" title="数组"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="数组"/></a><div class="content"><a class="title" href="/post/7ffe.html" title="数组">数组</a><time datetime="2022-06-19T08:47:04.388Z" title="发表于 2022-06-19 16:47:04">2022-06-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/42b2.html" title="串"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="串"/></a><div class="content"><a class="title" href="/post/42b2.html" title="串">串</a><time datetime="2022-06-19T08:04:47.132Z" title="发表于 2022-06-19 16:04:47">2022-06-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/53a6.html" title="链式队列"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="链式队列"/></a><div class="content"><a class="title" href="/post/53a6.html" title="链式队列">链式队列</a><time datetime="2022-06-19T07:01:06.028Z" title="发表于 2022-06-19 15:01:06">2022-06-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/post/1493.html" title="顺序队列"><img src="/imgs/default.jpg" onerror="this.onerror=null;this.src='/imgs/404.jpg'" alt="顺序队列"/></a><div class="content"><a class="title" href="/post/1493.html" title="顺序队列">顺序队列</a><time datetime="2022-06-18T13:22:23.660Z" title="发表于 2022-06-18 21:22:23">2022-06-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 冲酱</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">本地搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const $mermaidWrap = document.querySelectorAll('#article-container .mermaid-wrap')
+  if ($mermaidWrap.length) {
+    window.runMermaid = () => {
+      window.loadMermaid = true
+      const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? '' : ''
+
+      Array.from($mermaidWrap).forEach((item, index) => {
+        const mermaidSrc = item.firstElementChild
+        const mermaidThemeConfig = '%%{init:{ \'theme\':\'' + theme + '\'}}%%\n'
+        const mermaidID = 'mermaid-' + index
+        const mermaidDefinition = mermaidThemeConfig + mermaidSrc.textContent
+        mermaid.mermaidAPI.render(mermaidID, mermaidDefinition, (svgCode) => {
+          mermaidSrc.insertAdjacentHTML('afterend', svgCode)
+        })
+      })
+    }
+
+    const loadMermaid = () => {
+      window.loadMermaid ? runMermaid() : getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js').then(runMermaid)
+    }
+
+    window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'VzaybaUM1tC9Jx76YTBf50nT-MdYXbMMI',
+      appKey: 'JFGs27pMegRQqKCAITeefKgs',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><canvas id="universe"></canvas><script defer src="/custom/universe/index.js"></script><script defer src="/custom/highlight/prism.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="false" data-text="I" data-fontsize="15px" data-random="false" async="async"></script><script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/958a88a8.js","daovoice")
+</script><script>var isChatBtn = true
+daovoice('init', {
+  app_id: '958a88a8',},{
+  launcher: { 
+     disableLauncherIcon: isChatBtn // 悬浮 ICON 是否显示
+  },
+});
+daovoice('update');
+
+if (isChatBtn) {
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      daovoice('show')
+    });
+  }
+  chatBtnFn()
+} else {
+  if (true) {
+    function chatBtnHide () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: true // 悬浮 ICON 是否显示
+        },
+      });
+    }
+    function chatBtnShow () {
+      daovoice('update', {},{
+        launcher: { 
+        disableLauncherIcon: false // 悬浮 ICON 是否显示
+        },
+      });
+    }
+  }
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://unpkg.zhimg.com/hexo-butterfly-clock/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://unpkg.zhimg.com/hexo-butterfly-clock/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
