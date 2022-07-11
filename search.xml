@@ -7,6 +7,1201 @@
 ]]></content>
   </entry>
   <entry>
+    <title>【操作系统】2-进程与线程</title>
+    <url>/post/1450.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="进程"><a class="markdownIt-Anchor" href="#进程"></a> 进程</h1>
+<p>进程是程序的运行过程，是系统进行资源分配和调度的独立单位</p>
+<h2 id="进程特征"><a class="markdownIt-Anchor" href="#进程特征"></a> 进程特征</h2>
+<ol>
+<li>动态性，进程存在创建、活动、暂停、终止等过程，具有生命周期</li>
+<li>并发性，多个进程同存与内存中，可以并发执行</li>
+<li>独立性，进程实体可以独立执行，独立获得资源和调度</li>
+<li>异步性，进程之间是异步的，因此需要同步机制保证正确</li>
+</ol>
+<h2 id="进程的状态"><a class="markdownIt-Anchor" href="#进程的状态"></a> 进程的状态</h2>
+<ol>
+<li>
+<p>运行态：</p>
+<blockquote>
+<p>正在处理机上运行的状态</p>
+<p>从就绪态转向运行态，则分配处理机资源即可<br>
+阻塞态不能直接转向运行态，需要先唤醒为就绪态</p>
+</blockquote>
+</li>
+<li>
+<p>就绪态：</p>
+<blockquote>
+<p>获得处理机外的一切资源，获取处理机资源即可运行</p>
+</blockquote>
+</li>
+<li>
+<p>阻塞态：</p>
+<blockquote>
+<p>缺少资源，即使获得处理机也不可运行<br>
+若从运行态转到阻塞态（因资源不足主动让出处理机）：</p>
+<blockquote>
+<p>调用阻塞原语Block<br>
+找到进程对应PCB<br>
+保存现场信息，并将状态设置为阻塞态<br>
+插入相应的阻塞队列<br>
+转移处理机</p>
+</blockquote>
+</blockquote>
+</li>
+<li>
+<p>创建态：</p>
+<blockquote>
+<p>申请空白PCB（有限，可能失败）<br>
+向空白PCB写入控制和管理进程的信息<br>
+分配进程所需资源<br>
+根据资源是否满足转入就绪队列或阻塞队列</p>
+</blockquote>
+</li>
+<li>
+<p>结束态</p>
+<blockquote>
+<p>将进程状态置为结束态，并结束子孙进程<br>
+资源释放与回收<br>
+删除PCB</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="进程的组织"><a class="markdownIt-Anchor" href="#进程的组织"></a> 进程的组织</h2>
+<h3 id="程序段"><a class="markdownIt-Anchor" href="#程序段"></a> 程序段</h3>
+<p>调度到CPU中执行的<mark>代码段和赋值数据段</mark>，以及<mark>常量</mark>，可被多个进程共享</p>
+<h3 id="数据段"><a class="markdownIt-Anchor" href="#数据段"></a> 数据段</h3>
+<p>包括数据堆段、数据栈段。</p>
+<p>堆：动态分配<br>
+栈：临时变量</p>
+<h3 id="进程控制块pcb"><a class="markdownIt-Anchor" href="#进程控制块pcb"></a> 进程控制块PCB</h3>
+<p>（Process Control Block，PCB）是进程存在的唯一标志，用来描述进程的基本情况和运行状态，常驻内存，随时存取。</p>
+<p>常见内容</p>
+<table>
+<thead>
+<tr>
+<th>进程描述信息</th>
+<th>进程控制管理信息</th>
+<th>资源分配清单</th>
+<th>处理机相关信息</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>进程标识符PID</td>
+<td>进程当前状态</td>
+<td>代码段指针</td>
+<td>通用寄存器值</td>
+</tr>
+<tr>
+<td>用户标识符UID</td>
+<td>进程优先级</td>
+<td>数据段指针</td>
+<td>地址寄存器值</td>
+</tr>
+<tr>
+<td></td>
+<td>代码运行入口地址</td>
+<td>堆栈段指针</td>
+<td>控制寄存器值</td>
+</tr>
+<tr>
+<td></td>
+<td>程序外村地址</td>
+<td>文件描述符</td>
+<td>标志寄存器值</td>
+</tr>
+<tr>
+<td></td>
+<td>进入内存时间</td>
+<td>键盘</td>
+<td>状态字</td>
+</tr>
+<tr>
+<td></td>
+<td>处理机占用时间</td>
+<td>鼠标</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>信号量使用</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="进程通信"><a class="markdownIt-Anchor" href="#进程通信"></a> 进程通信</h2>
+<h3 id="共享存储"><a class="markdownIt-Anchor" href="#共享存储"></a> 共享存储</h3>
+<p>进程间存在可共同访问的共享空间，需要使用同步互斥工具保证正确性</p>
+<h3 id="消息传递"><a class="markdownIt-Anchor" href="#消息传递"></a> 消息传递</h3>
+<p>通过发送消息和接收消息两个原语实现。可直接通信或间接通信</p>
+<h3 id="管道通信"><a class="markdownIt-Anchor" href="#管道通信"></a> 管道通信</h3>
+<p>管道文件pipe，半双工通信，每次只允许读或写</p>
+<h1 id="线程"><a class="markdownIt-Anchor" href="#线程"></a> 线程</h1>
+<p>引入目的：减少并发时空开销，提高性能</p>
+<h2 id="组成"><a class="markdownIt-Anchor" href="#组成"></a> 组成</h2>
+<p>线程ID，程序计数器，寄存器组，堆栈等信息，保存在线程控制块中TCB中</p>
+<h2 id="线程与进程的比较"><a class="markdownIt-Anchor" href="#线程与进程的比较"></a> 线程与进程的比较</h2>
+<ul>
+<li>调度：进程切换需要切换上下文，代价大，线程切换代价小，不需要切换进程</li>
+<li>并发：都可以并发，进一步提高资源利用率与系统吞吐量</li>
+<li>资源：线程无资源，进程有资源</li>
+<li>独立性：进程是系统资源的分配单元，线程是处理机的分配单元</li>
+<li>系统开销：线程开销小，进程开销大</li>
+<li>多处理机：线程可以分配到多个处理机，进程不行。</li>
+</ul>
+<h2 id="实现方式"><a class="markdownIt-Anchor" href="#实现方式"></a> 实现方式</h2>
+<p>用户级线程与内核级线程</p>
+<h3 id="用户级线程ult"><a class="markdownIt-Anchor" href="#用户级线程ult"></a> 用户级线程ULT</h3>
+<p>User-Level Thread，由用户管理线程，内核感受不到线程的存在，因此调度仍以进程为单位，<br>
+缺点：<br>
+若某进程的线程多，则其被分配的处理机时间就会变短<br>
+一个线程阻塞，其余线程也被阻塞</p>
+<p>优点：<br>
+线程切换不需要通知内核，节省开销<br>
+可以自定义调度算法<br>
+实现与操作系统无关</p>
+<p>常用线程库实现</p>
+<h3 id="内核级线程klt"><a class="markdownIt-Anchor" href="#内核级线程klt"></a> 内核级线程KLT</h3>
+<p>Kernel-Level Thread，内核管理线程调度</p>
+<p>优点：<br>
+允许多处理机并行执行线程<br>
+线程阻塞时不影响其余线程</p>
+<p>缺点：<br>
+切换需要进入核心态，开销大</p>
+<h2 id="多线程模型"><a class="markdownIt-Anchor" href="#多线程模型"></a> 多线程模型</h2>
+<p>一对一：一个用户级线程对应一个内核级线程，并发高，开销大</p>
+<p>多对一：多个用户级线程对应一个内核级线程，切换快，开销小，一个阻塞全部阻塞</p>
+<p>多对多：综合上述优缺点</p>
+<h1 id="处理机调度"><a class="markdownIt-Anchor" href="#处理机调度"></a> 处理机调度</h1>
+<h2 id="调度的三级层次"><a class="markdownIt-Anchor" href="#调度的三级层次"></a> 调度的三级层次</h2>
+<p>高级调度（作业调度）：对于作业进行调入调出，每个作业仅调入和调出一次，表示作业的开始和结束。</p>
+<p>中级调度（内存调度）：将进程调至<mark>外存</mark>，称之为<mark>挂起</mark>，调回内存称之为<mark>激活</mark></p>
+<p>低级调度（进程调度）：内存中的进程调度问题，频率很高。</p>
+<h2 id="调度目标"><a class="markdownIt-Anchor" href="#调度目标"></a> 调度目标</h2>
+<h3 id="cpu利用率"><a class="markdownIt-Anchor" href="#cpu利用率"></a> CPU利用率</h3>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi><mi>P</mi><mi>U</mi><mi mathvariant="normal">利</mi><mi mathvariant="normal">用</mi><mi mathvariant="normal">率</mi><mo>=</mo><mfrac><mrow><mi>C</mi><mi>P</mi><mi>U</mi><mi mathvariant="normal">有</mi><mi mathvariant="normal">效</mi><mi mathvariant="normal">工</mi><mi mathvariant="normal">作</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi></mrow><mrow><mi>C</mi><mi>P</mi><mi>U</mi><mi mathvariant="normal">有</mi><mi mathvariant="normal">效</mi><mi mathvariant="normal">工</mi><mi mathvariant="normal">作</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi><mo>+</mo><mi>C</mi><mi>P</mi><mi>U</mi><mi mathvariant="normal">空</mi><mi mathvariant="normal">闲</mi><mi mathvariant="normal">等</mi><mi mathvariant="normal">待</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">CPU利用率 =\frac{CPU有效工作时间 }{CPU有效工作时间 + CPU 空闲等待时间}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord cjk_fallback">利</span><span class="mord cjk_fallback">用</span><span class="mord cjk_fallback">率</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.275662em;vertical-align:-0.403331em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.872331em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">C</span><span class="mord mathdefault mtight" style="margin-right:0.13889em;">P</span><span class="mord mathdefault mtight" style="margin-right:0.10903em;">U</span><span class="mord cjk_fallback mtight">有</span><span class="mord cjk_fallback mtight">效</span><span class="mord cjk_fallback mtight">工</span><span class="mord cjk_fallback mtight">作</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span><span class="mbin mtight">+</span><span class="mord mathdefault mtight" style="margin-right:0.07153em;">C</span><span class="mord mathdefault mtight" style="margin-right:0.13889em;">P</span><span class="mord mathdefault mtight" style="margin-right:0.10903em;">U</span><span class="mord cjk_fallback mtight">空</span><span class="mord cjk_fallback mtight">闲</span><span class="mord cjk_fallback mtight">等</span><span class="mord cjk_fallback mtight">待</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.07153em;">C</span><span class="mord mathdefault mtight" style="margin-right:0.13889em;">P</span><span class="mord mathdefault mtight" style="margin-right:0.10903em;">U</span><span class="mord cjk_fallback mtight">有</span><span class="mord cjk_fallback mtight">效</span><span class="mord cjk_fallback mtight">工</span><span class="mord cjk_fallback mtight">作</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.403331em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<h3 id="系统吞吐量"><a class="markdownIt-Anchor" href="#系统吞吐量"></a> 系统吞吐量</h3>
+<p>单位时间内CPU完成作业的数量，显然<mark>短作业优先</mark>可以提高吞吐量</p>
+<h3 id="周转时间"><a class="markdownIt-Anchor" href="#周转时间"></a> 周转时间</h3>
+<p>周转时间 = 作业完成时间 - 作业提交时间 = 作业等待时间 + 作业执行时间</p>
+<h3 id="平均周转时间"><a class="markdownIt-Anchor" href="#平均周转时间"></a> 平均周转时间</h3>
+<p>每个作业的周转时间总和除以作业数量</p>
+<h3 id="带权周转时间"><a class="markdownIt-Anchor" href="#带权周转时间"></a> 带权周转时间</h3>
+<p><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">带</mi><mi mathvariant="normal">权</mi><mi mathvariant="normal">周</mi><mi mathvariant="normal">转</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi><mo>=</mo><mfrac><mrow><mi mathvariant="normal">周</mi><mi mathvariant="normal">转</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi></mrow><mrow><mi mathvariant="normal">作</mi><mi mathvariant="normal">业</mi><mi mathvariant="normal">实</mi><mi mathvariant="normal">际</mi><mi mathvariant="normal">运</mi><mi mathvariant="normal">行</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">带权周转时间 = \frac{周转时间}{作业实际运行时间}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mord cjk_fallback">带</span><span class="mord cjk_fallback">权</span><span class="mord cjk_fallback">周</span><span class="mord cjk_fallback">转</span><span class="mord cjk_fallback">时</span><span class="mord cjk_fallback">间</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.739em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.394em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">作</span><span class="mord cjk_fallback mtight">业</span><span class="mord cjk_fallback mtight">实</span><span class="mord cjk_fallback mtight">际</span><span class="mord cjk_fallback mtight">运</span><span class="mord cjk_fallback mtight">行</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">周</span><span class="mord cjk_fallback mtight">转</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<h3 id="平均带权周转时间"><a class="markdownIt-Anchor" href="#平均带权周转时间"></a> 平均带权周转时间</h3>
+<p>每个作业的带权周转时间求和除以作业数量</p>
+<h3 id="等待时间"><a class="markdownIt-Anchor" href="#等待时间"></a> 等待时间</h3>
+<p>进程等待处理机的时间</p>
+<h3 id="响应时间"><a class="markdownIt-Anchor" href="#响应时间"></a> 响应时间</h3>
+<p>从提交到首次响应的时间，长用于评估交互式系统</p>
+<h2 id="调度实现"><a class="markdownIt-Anchor" href="#调度实现"></a> 调度实现</h2>
+<h3 id="排队器"><a class="markdownIt-Anchor" href="#排队器"></a> 排队器</h3>
+<p>就绪进程通过排队器插入就绪队列</p>
+<h3 id="分派器"><a class="markdownIt-Anchor" href="#分派器"></a> 分派器</h3>
+<p>CPU通过分派器交给就绪进程</p>
+<h3 id="上下文切换器"><a class="markdownIt-Anchor" href="#上下文切换器"></a> 上下文切换器</h3>
+<p>进程切换时，保存当前进程上下文到PCB中，通过分派器选择新进程，并将其CPU现场信息装入处理机各个寄存器中</p>
+<h2 id="不进行调度的时机"><a class="markdownIt-Anchor" href="#不进行调度的时机"></a> 不进行调度的时机</h2>
+<h3 id="处理中断的过程"><a class="markdownIt-Anchor" href="#处理中断的过程"></a> 处理中断的过程</h3>
+<p>中断过程较为复杂，不应被剥夺处理机资源</p>
+<h3 id="操作系统内核临界区"><a class="markdownIt-Anchor" href="#操作系统内核临界区"></a> 操作系统内核临界区</h3>
+<p>进入临界区后不应被打断，应该通过加锁的方式保护临界区</p>
+<h3 id="原子操作"><a class="markdownIt-Anchor" href="#原子操作"></a> 原子操作</h3>
+<p>原子性，不可打断。</p>
+<h2 id="调度方式"><a class="markdownIt-Anchor" href="#调度方式"></a> 调度方式</h2>
+<p>抢占式调度：分时、实时系统</p>
+<p>非抢占式调度：批处理系统，开销小</p>
+<h2 id="闲逛进程"><a class="markdownIt-Anchor" href="#闲逛进程"></a> 闲逛进程</h2>
+<p>CPU没有任务时执行的进程，优先级最低</p>
+<h2 id="经典调度算法"><a class="markdownIt-Anchor" href="#经典调度算法"></a> 经典调度算法</h2>
+<h3 id="先来先服务fcfs"><a class="markdownIt-Anchor" href="#先来先服务fcfs"></a> 先来先服务FCFS</h3>
+<p>先来先服务，顺序执行，不剥夺，长作业友好，短作业不友好，CPU繁忙友好，IO繁忙不友好</p>
+<h3 id="短作业优先sjf"><a class="markdownIt-Anchor" href="#短作业优先sjf"></a> 短作业优先SJF</h3>
+<p>平均等待时间最短、平均周转时间最短。</p>
+<p>短作业友好，长作业不友好，可能饥饿，不考虑紧迫程度</p>
+<h3 id="优先级调度算法"><a class="markdownIt-Anchor" href="#优先级调度算法"></a> 优先级调度算法</h3>
+<p>抢占与非抢占</p>
+<p>静态优先级与动态优先级</p>
+<p>优先级设置准则：</p>
+<ul>
+<li>系统进程 &gt; 用户进程</li>
+<li>交互进程 &gt; 非交互进程</li>
+<li>I/O进程 &gt; 计算型进程</li>
+</ul>
+<h3 id="高响应比优先"><a class="markdownIt-Anchor" href="#高响应比优先"></a> 高响应比优先</h3>
+<p>响应比<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">响</mi><mi mathvariant="normal">应</mi><mi mathvariant="normal">比</mi><msub><mi>R</mi><mi>P</mi></msub><mo>=</mo><mfrac><mrow><mi mathvariant="normal">等</mi><mi mathvariant="normal">待</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi><mo>+</mo><mi mathvariant="normal">要</mi><mi mathvariant="normal">求</mi><mi mathvariant="normal">服</mi><mi mathvariant="normal">务</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi></mrow><mrow><mi mathvariant="normal">要</mi><mi mathvariant="normal">求</mi><mi mathvariant="normal">服</mi><mi mathvariant="normal">务</mi><mi mathvariant="normal">时</mi><mi mathvariant="normal">间</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">响应比R_P = \frac{等待时间 + 要求服务时间}{要求服务时间}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord cjk_fallback">响</span><span class="mord cjk_fallback">应</span><span class="mord cjk_fallback">比</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.13889em;">P</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.1473309999999999em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.802331em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">要</span><span class="mord cjk_fallback mtight">求</span><span class="mord cjk_fallback mtight">服</span><span class="mord cjk_fallback mtight">务</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord cjk_fallback mtight">等</span><span class="mord cjk_fallback mtight">待</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span><span class="mbin mtight">+</span><span class="mord cjk_fallback mtight">要</span><span class="mord cjk_fallback mtight">求</span><span class="mord cjk_fallback mtight">服</span><span class="mord cjk_fallback mtight">务</span><span class="mord cjk_fallback mtight">时</span><span class="mord cjk_fallback mtight">间</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<p>短作业响应比高，长作业随着等待时间的增多，响应比也会提高</p>
+<h3 id="时间片轮转调度"><a class="markdownIt-Anchor" href="#时间片轮转调度"></a> 时间片轮转调度</h3>
+<p>按先来先服务排队，每个进程用相等的时间片</p>
+<h3 id="多级队列调度"><a class="markdownIt-Anchor" href="#多级队列调度"></a> 多级队列调度</h3>
+<p>将进行分到不同队列中处理</p>
+<h3 id="多级反馈队列调度"><a class="markdownIt-Anchor" href="#多级反馈队列调度"></a> 多级反馈队列调度</h3>
+<p>时间片轮转 + 多级队列 + FCFS</p>
+<ol>
+<li>从上至下多个就绪队列，优先级逐渐降低</li>
+<li>每个队列的时间片不同，优先级越高，时间片越短</li>
+<li>每个队列都采用FCFS，即先来先服务</li>
+<li>时间片用完时进入下级队列的末尾，被抢占则进入本级队列末尾，最下级的任务进入本级的末尾</li>
+<li>永远按照队列优先级调度，只有上层队列为空时，本层队列才会被调度</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202207112024824.png" alt="image-20220711202435748"></p>
+<h2 id="上下文切换"><a class="markdownIt-Anchor" href="#上下文切换"></a> 上下文切换</h2>
+<p>调度：决策行为，提出理论</p>
+<p>切换：分配行为，进行实践</p>
+<h1 id="错题"><a class="markdownIt-Anchor" href="#错题"></a> 错题</h1>
+<p>下列叙述正确的是：A</p>
+<p>A. 线程包含CPU现场，可以独立执行程序<br>
+B. 每个线程有自己独立的地址空间</p>
+<p>线程被不同进程调用，是同一个线程</p>
+<p>键盘驱动程序只需要一个线程就足够</p>
+<p>HTTP请求可以多线程</p>
+<p>用户登录需要为用户分配管理线程，设备分配不需要线程</p>
+<p>父进程、子进程不能共享虚拟空间，也不能同时使用同一临界资源</p>
+<h1 id="io操作"><a class="markdownIt-Anchor" href="#io操作"></a> IO操作</h1>
+<p>执行IO操作时，为阻塞态，IO结束后，由阻塞变为就绪</p>
+]]></content>
+      <categories>
+        <category>2023年操作系统考研复习指导</category>
+      </categories>
+      <tags>
+        <tag>王道考研</tag>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【操作系统】1 计算机系统概述</title>
+    <url>/post/fe0.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>操作系统是计算机系统中最基本的系统软件</p>
+<h1 id="操作系统四个特征"><a class="markdownIt-Anchor" href="#操作系统四个特征"></a> 操作系统四个特征</h1>
+<ol>
+<li>
+<p><mark>并发</mark></p>
+<blockquote>
+<p>并发：同一段时间间隔（通过分时实现）<br>
+并行：同一时刻（通过多处理机实现）</p>
+</blockquote>
+</li>
+<li>
+<p><mark>共享</mark></p>
+<blockquote>
+<p>资源供多个并发程序共同使用</p>
+<ol>
+<li>互斥共享：独占资源，如打印机</li>
+<li>同时访问：允许并发访问，分时共享，如磁盘设备</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>虚拟</p>
+<blockquote>
+<p>虚拟：将一个物理实体变为多个逻辑上的虚拟体</p>
+<ul>
+<li>虚拟处理器（时分复用）</li>
+<li>虚拟存储器（空分复用）</li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>异步</p>
+<blockquote>
+<p>异步：程序并发执行中，由于资源有限，程序断断续续执行，以<mark>不可预知</mark>的速度向前推进<br>
+需要保证重复运行进行能得到相同的结果</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="操作系统的功能"><a class="markdownIt-Anchor" href="#操作系统的功能"></a> 操作系统的功能</h1>
+<h2 id="资源管理者"><a class="markdownIt-Anchor" href="#资源管理者"></a> 资源管理者</h2>
+<ol>
+<li>
+<p>处理机管理</p>
+<blockquote>
+<p>处理机的分配和运行以进程、线程为基本单位，因此处理机管理可归结为进程管理</p>
+<ol>
+<li>进程创建</li>
+<li>进程撤销</li>
+<li>进程调度</li>
+<li>资源共享</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>存储器管理</p>
+<blockquote>
+<ol>
+<li>内存分配与回收</li>
+<li>地址映射</li>
+<li>内存保护与共享</li>
+<li>内存扩充</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>文件管理</p>
+<blockquote>
+<p>计算机的信息都已文件形式存在</p>
+<ol>
+<li>文件存储空间管理</li>
+<li>目录管理</li>
+<li>文件读写与保护</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>设备管理</p>
+<blockquote>
+<p>主要任务是完成I/O请求</p>
+<ol>
+<li>缓冲管理</li>
+<li>设备分配</li>
+<li>设备处理</li>
+<li>虚拟设备</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+<h2 id="用户与计算机硬件系统的接口"><a class="markdownIt-Anchor" href="#用户与计算机硬件系统的接口"></a> 用户与计算机硬件系统的接口</h2>
+<ol>
+<li>
+<p>命令接口</p>
+<blockquote>
+<p>命令接口分为联机命令接口和脱机命令接口</p>
+<ol>
+<li>联机命令接口：交互式命令接口（分时、实时系统）</li>
+<li>脱机命令接口：批处理命令接口</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>程序接口==（系统调用组成）==</p>
+<blockquote>
+<p><mark>程序接口由系统调用（广义指令）组成</mark>，用户通过系统调用来获取服务</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="操作系统发展历程"><a class="markdownIt-Anchor" href="#操作系统发展历程"></a> 操作系统发展历程</h1>
+<ol>
+<li>
+<p>手工操作阶段</p>
+<blockquote>
+<p>无操作系统，存在两个重大缺点</p>
+<blockquote>
+<ol>
+<li>用户独占主机</li>
+<li>CPU等待手工操作，利用不充分</li>
+</ol>
+</blockquote>
+</blockquote>
+</li>
+<li>
+<p>批处理阶段</p>
+<blockquote>
+<p>存在操作系统，无法进行人机交互</p>
+<ol>
+<li>单道批处理系统：程序运行中CPU需要等待低速I/O完成，利用率不高</li>
+<li>多道批处理系统：资源利用率高，但没有人机交互</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>分时操作系统</p>
+<blockquote>
+<p>将处理器的实践分成很短的时间片，将时间片轮流交给各作业使用</p>
+<p>缺点：不能保证规定时间完成</p>
+</blockquote>
+</li>
+<li>
+<p>实时操作系统</p>
+<blockquote>
+<ol>
+<li>硬实时：必须在规定时间完成，如导弹拦截</li>
+<li>软实时：允许偶尔超时，如抢票系统</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>网络操作系统</p>
+<blockquote>
+<p>将多台电脑结合，实现各台电脑的数据传送，强调资源共享</p>
+</blockquote>
+</li>
+<li>
+<p>分布式计算机系统</p>
+<blockquote>
+<p>若干计算机协同完成同一任务，无主从计算机之分</p>
+</blockquote>
+</li>
+<li>
+<p>个人操作系统</p>
+<blockquote>
+<p>目前最广泛：Windows, Linux</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="操作系统运行环境处理器模式"><a class="markdownIt-Anchor" href="#操作系统运行环境处理器模式"></a> 操作系统运行环境（处理器模式）</h1>
+<p>特权指令与核心态</p>
+<blockquote>
+<p>核心态：管太、内核态，可以执行特权指令<br>
+特权指令：I/O指令、置中断指令、存取用于内存保护的寄存器、送程序状态字到程序状态字寄存器等指令</p>
+</blockquote>
+<p>非特权指令和用户态</p>
+<blockquote>
+<p>用户态：目态、只能执行非特权指令</p>
+</blockquote>
+<h2 id="内核功能"><a class="markdownIt-Anchor" href="#内核功能"></a> 内核功能</h2>
+<ol>
+<li>
+<p>时钟管理</p>
+<blockquote>
+<p>计时，显示正确的系统时间<br>
+计量，例如管理时间片，度量作业运行程度</p>
+</blockquote>
+</li>
+<li>
+<p>中断机制</p>
+<blockquote>
+<p>仅有一小部分功能属于内核：</p>
+<ul>
+<li>保护中断现场信息</li>
+<li>恢复中断现场信息</li>
+<li>转移控制权</li>
+</ul>
+</blockquote>
+</li>
+<li>
+<p>原语</p>
+<blockquote>
+<ol>
+<li>可公用的通用程序</li>
+<li>最接近硬件，处于操作系统最底层</li>
+<li>具有原子性，可以通过运行前关中断实现</li>
+<li>运行时间短，调用频繁</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>管理系统控制的数据结构</p>
+<blockquote>
+<ul>
+<li>进程管理</li>
+<li>存储器管理</li>
+<li>设备管理</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<h2 id="中断与异常的概念"><a class="markdownIt-Anchor" href="#中断与异常的概念"></a> 中断与异常的概念</h2>
+<ul>
+<li>
+<p>中断：来自CPU执行指令之外的命令</p>
+<blockquote>
+<p>I/O结束中断<br>
+时钟中断</p>
+</blockquote>
+</li>
+<li>
+<p>异常：来自于CPU当前指令</p>
+<blockquote>
+<p>程序非法操作码<br>
+地址越界<br>
+运算溢出<br>
+虚存系统缺页<br>
+<mark>陷入指令（用来进入和心态，发起系统调用）</mark></p>
+</blockquote>
+</li>
+</ul>
+<div class="mermaid-wrap"><pre class="mermaid-src" hidden>
+  
+graph LR
+中断--&gt;内部异常
+中断--&gt;外部异常
+内部异常--&gt;1[&quot;故障（Fault） 软件中断&quot;]
+内部异常--&gt;2[&quot;自陷（Trap）软件中断&quot;]
+内部异常--&gt;3[&quot;终止（Abort）硬件中断&quot;]
+外部异常--&gt;4[&quot;可屏蔽中断（INTR）硬件中断&quot;]
+外部异常--&gt;5[&quot;不可屏蔽中断（NMI）硬件中断&quot;]
+
+  </pre></div>
+<h2 id="系统调用"><a class="markdownIt-Anchor" href="#系统调用"></a> 系统调用</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202207101421586.png" alt="image-20220710142112517"></p>
+<h1 id="操作系统结构"><a class="markdownIt-Anchor" href="#操作系统结构"></a> 操作系统结构</h1>
+<h2 id="分层法"><a class="markdownIt-Anchor" href="#分层法"></a> 分层法</h2>
+<p>自下而上划分，最底层0层为硬件，最高层n层为用户接口</p>
+<blockquote>
+<p>优点</p>
+<blockquote>
+<p>便于调试和验证<br>
+容易扩充和维护</p>
+</blockquote>
+<p>缺点</p>
+<blockquote>
+<p>分层后不够灵活，难以确定每层的合理分界<br>
+效率差，需要自上到下穿越多层</p>
+</blockquote>
+</blockquote>
+<h2 id="模块化"><a class="markdownIt-Anchor" href="#模块化"></a> 模块化</h2>
+<p>将操作系统划分为独立的模块</p>
+<blockquote>
+<p>优点</p>
+</blockquote>
+<h1 id="操作系统内核"><a class="markdownIt-Anchor" href="#操作系统内核"></a> 操作系统内核</h1>
+<h2 id="宏内核"><a class="markdownIt-Anchor" href="#宏内核"></a> 宏内核</h2>
+<p>将系统的主要功能模块作为一个紧密联系的整体运行在和心态</p>
+<p>优点：性能优越<br>
+缺点：设计难度大</p>
+<p>Windows, Linux, macOS等主流操作系统都是宏内核</p>
+<h2 id="微内核"><a class="markdownIt-Anchor" href="#微内核"></a> 微内核</h2>
+<p>将内核中最基本的功能保留在内核中，其余功能移动到用户态执行</p>
+<h3 id="特点"><a class="markdownIt-Anchor" href="#特点"></a> 特点</h3>
+<ol>
+<li>足够小的内核</li>
+<li>基于客户/服务器模式</li>
+<li>采用机制与策略分离</li>
+<li>采用面向对象技术</li>
+</ol>
+<p>优点：降低内核的设计复杂性，易扩展，可移植，安全性和可靠性==（用户态服务崩溃不会导致核心态也崩溃）==，可分布式计算</p>
+<p>缺点：需要频繁在用户态和核心态频繁切换，性能不高</p>
+<p>设计模式</p>
+<blockquote>
+<p>微内核架构 = 微内核 + 多个服务器<br>
+微内核：精心设计的，能够实现操作系统最基本功能的小型内核，包括：</p>
+<blockquote>
+<p>与硬件处理紧密相关的部分<br>
+一些基础功能，如：</p>
+<blockquote>
+<p>进程线程管理，如调度、切换、同步等<br>
+低级存储器管理，如依赖硬件的地址变换，<br>
+中断和陷入处理<br>
+客户和服务器之间的通信</p>
+</blockquote>
+<p>多个服务器：操作系统的绝大数其余功能都放在一组运行在<mark>用户态</mark>的服务器（进程）中，如对用户进程进行分类、虚拟存储器置换算法</p>
+</blockquote>
+</blockquote>
+<h2 id="外核"><a class="markdownIt-Anchor" href="#外核"></a> 外核</h2>
+<p>不理解</p>
+<h1 id="操作系统引导"><a class="markdownIt-Anchor" href="#操作系统引导"></a> 操作系统引导</h1>
+<ol>
+<li>
+<p>激活CPU</p>
+<blockquote>
+<p>激活的CPU读取ROM中的boot程序<br>
+将BIOS的第一条指令放入指令寄存器开始执行</p>
+</blockquote>
+</li>
+<li>
+<p>硬件自检</p>
+<blockquote>
+<p>硬件自检故障，则发出嗡鸣声，终止启动</p>
+</blockquote>
+</li>
+<li>
+<p>加载带有操作系统的硬盘</p>
+<blockquote>
+<p>将带有操作系统的硬盘数据加载到内存中</p>
+</blockquote>
+</li>
+<li>
+<p>加载主引导记录MBR</p>
+<blockquote>
+<p>引导CPU找到操作系统所在的主分区</p>
+</blockquote>
+</li>
+<li>
+<p>扫描硬件分区表</p>
+<blockquote>
+<p>扫描分区，寻找操作系统</p>
+</blockquote>
+</li>
+<li>
+<p>加载分区引导记录PBR</p>
+<blockquote>
+<p>从分区中找到操作系统</p>
+</blockquote>
+</li>
+<li>
+<p>加载启动管理器</p>
+<blockquote>
+<p>找到操作系统的启动管理器</p>
+</blockquote>
+</li>
+<li>
+<p>加载操作系统</p>
+</li>
+</ol>
+<h1 id="虚拟机"><a class="markdownIt-Anchor" href="#虚拟机"></a> 虚拟机</h1>
+<p>第一类虚拟机：可以提供多个虚拟机</p>
+<p>第二类虚拟机：单纯的进程，如VMWare</p>
+<h1 id="错题整理"><a class="markdownIt-Anchor" href="#错题整理"></a> 错题整理</h1>
+<h2 id="缓存管理由操作系统自动实现不对用户开放"><a class="markdownIt-Anchor" href="#缓存管理由操作系统自动实现不对用户开放"></a> 缓存管理由操作系统自动实现，不对用户开放</h2>
+<p>操作系统与用户通信接口通常不包括（D）</p>
+<p>A:shell	B：命令解释器	C:广义指令	D:缓存管理指令</p>
+<blockquote>
+<p>缓存管理由操作系统自行完成，因此不提供给用户<br>
+A：shell，命令解析器，属于命令接口<br>
+B：命令解释器：属于命令接口<br>
+C：广义指令：属于系统调用</p>
+</blockquote>
+<h2 id="处理机-通道的知识点"><a class="markdownIt-Anchor" href="#处理机-通道的知识点"></a> 处理机、通道的知识点</h2>
+<p>单处理机系统中,可并行的是（BCD）</p>
+<p>A：进程与进程	B：处理机与设备	C：处理机与通道	D：设备与设备</p>
+<h2 id="操作系统提供系统调用库函数使用系统调用属于用户程序"><a class="markdownIt-Anchor" href="#操作系统提供系统调用库函数使用系统调用属于用户程序"></a> 操作系统提供系统调用，库函数使用系统调用，属于用户程序</h2>
+<h2 id="开机后操作系统被加载到ram"><a class="markdownIt-Anchor" href="#开机后操作系统被加载到ram"></a> 开机后，操作系统被加载到RAM</h2>
+<h2 id="操作系统-单用户多用户如何划分"><a class="markdownIt-Anchor" href="#操作系统-单用户多用户如何划分"></a> 操作系统 单用户多用户如何划分</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202207101140667.png" alt="image-20220710114026570"></p>
+<h2 id="有点绕"><a class="markdownIt-Anchor" href="#有点绕"></a> 有点绕</h2>
+<p>【2016统考真题】下列关于批处理系统的叙述中，正确的是（BC）</p>
+<p>A. 批处理系统允许多个用户与计算机直接交互<br>
+B. 批处理系统分为单道批处理系统和多道批处理系统<br>
+C. 中断技术使得多道批处理系统的I/O设备可与CPU<mark>并行</mark>工作</p>
+<blockquote>
+<p>虽然中断技术不能体现并行，但是当CPU处理I/O请求时，若不存在中断技术，则CPU需要等待I/O完成，而中断后，CPU可以在I/O执行时转去运行另一道程序，这就体现了并行工作。</p>
+</blockquote>
+<h2 id="不理解"><a class="markdownIt-Anchor" href="#不理解"></a> 不理解</h2>
+<p>分时系统一个重要性能是系统的响应时间，对操作系统的（C）因素进行改进有利于改善系统的响应时间。</p>
+<p>A. 加大时间片	B. 采用静态页式管理	C. 优先级+非抢占式调度算法	D. 代码可重入</p>
+<h2 id="甘特图求解多道任务并发"><a class="markdownIt-Anchor" href="#甘特图求解多道任务并发"></a> 甘特图求解多道任务并发</h2>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202207101311080.png" alt="image-20220710131119010"></p>
+<h2 id="通用操作系统为时间片轮转调度"><a class="markdownIt-Anchor" href="#通用操作系统为时间片轮转调度"></a> 通用操作系统为时间片轮转调度</h2>
+<h2 id="用户程序使用系统调用命令经过编译后会形成陷入指令用来进行中断"><a class="markdownIt-Anchor" href="#用户程序使用系统调用命令经过编译后会形成陷入指令用来进行中断"></a> 用户程序使用系统调用命令，经过编译后会形成陷入指令，用来进行中断</h2>
+<p>下列操作系统功能，不需要硬件支持的是（）</p>
+<p>A. 进程调度	B. 时钟管理	C.地址映射	D.中断系统</p>
+<blockquote>
+<p>时钟管理需要硬件计数器保持时钟的运行<br>
+进程调度由调度算法决定，不需要硬件支持<br>
+地址映射愮基地址即偏移地址等硬件支持</p>
+</blockquote>
+<h2 id="用户态到和心态由硬件完成"><a class="markdownIt-Anchor" href="#用户态到和心态由硬件完成"></a> 用户态到和心态由硬件完成</h2>
+<h2 id="广义指令又叫系统调用"><a class="markdownIt-Anchor" href="#广义指令又叫系统调用"></a> 广义指令又叫系统调用</h2>
+<h2 id="执行系统调用的主要步骤"><a class="markdownIt-Anchor" href="#执行系统调用的主要步骤"></a> 执行系统调用的主要步骤</h2>
+<ol>
+<li>传递系统调用参数</li>
+<li>执行陷入指令</li>
+<li>执行相应的服务程序</li>
+<li>返回用户态</li>
+</ol>
+<h2 id="不同操作系统提供的程序调用接口不同"><a class="markdownIt-Anchor" href="#不同操作系统提供的程序调用接口不同"></a> 不同操作系统提供的程序调用接口不同</h2>
+<h1 id="不懂"><a class="markdownIt-Anchor" href="#不懂"></a> 不懂</h1>
+<p>不可能发生在用户态的事件（C）</p>
+<p>A. 系统调用	B. 外部中断	C. 进程切换	D. 缺页</p>
+<p>中断处理中需要保存PC（程序计数器，<mark>通过中断隐指令保存</mark>）和PSWR（进程状态字寄存器，<mark>通过操作系统保存</mark>）</p>
+<p>定时器产生时钟中断后，由时钟中断服务程序更新的部分内容是（）</p>
+<p>A. 内核中时钟变量的值<br>
+B. 当前进程占用CPU的事件<br>
+C. 当前进程在时间片内的剩余执行时间</p>
+<p>下列与中断相关的操作中，由操作系统完成的是（）</p>
+<p>A. 保存被中断程序的中断点	B. 提供中断服务	C. 初始化中断向量表	D. 保存中断屏蔽字</p>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202207111633311.png" alt="image-20220711163347243"></p>
+]]></content>
+      <categories>
+        <category>2023年操作系统考研复习指导</category>
+      </categories>
+      <tags>
+        <tag>王道考研</tag>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>【语法基础课】1.1 变量、输入输出、表达式和顺序语句</title>
+    <url>/post/a184.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+      <categories>
+        <category>语法基础课</category>
+      </categories>
+      <tags>
+        <tag>acwing</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>（网课）操作系统基础</title>
+    <url>/post/2a86.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="操作系统类别"><a class="markdownIt-Anchor" href="#操作系统类别"></a> 操作系统类别</h1>
+<blockquote>
+<p>多道批处理系统<br>
+分时系统<br>
+实时系统</p>
+</blockquote>
+<h1 id="操作系统基本特征"><a class="markdownIt-Anchor" href="#操作系统基本特征"></a> 操作系统基本特征</h1>
+<ul>
+<li>
+<p>并发</p>
+<blockquote>
+<p>并发：发生，时间间隔<br>
+并行：进行，时刻</p>
+</blockquote>
+</li>
+<li>
+<p>共享</p>
+<blockquote>
+<p>互斥共享：打印机，不允许并行或并发，一段时间内只允许一个进程使用</p>
+<p>同时访问：磁盘设备，允许并发</p>
+</blockquote>
+</li>
+<li>
+<p>虚拟</p>
+<blockquote>
+<p>时分复用<br>
+空分复用<br>
+虚拟处理机<br>
+虚拟设备<br>
+虚拟磁盘<br>
+虚拟主存</p>
+</blockquote>
+</li>
+<li>
+<p>异步</p>
+<blockquote>
+<p>资源有限，需要等待</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="操作系统主要功能"><a class="markdownIt-Anchor" href="#操作系统主要功能"></a> 操作系统主要功能</h1>
+<ul>
+<li>
+<p>处理机功能</p>
+<blockquote>
+<p>进程控制<br>
+进程同步<br>
+进程通信<br>
+作业调度<br>
+进程调度</p>
+</blockquote>
+</li>
+<li>
+<p>内存管理</p>
+<blockquote>
+<p>内存分配<br>
+内存保护<br>
+地址映射<br>
+内存扩充</p>
+</blockquote>
+</li>
+<li>
+<p>设备管理</p>
+<blockquote>
+<p>完成I/O请求<br>
+分配I/O设备<br>
+提高CPU、I/O设备利用率<br>
+缓冲管理<br>
+设备分配<br>
+设备处理</p>
+</blockquote>
+</li>
+<li>
+<p>文件管理功能</p>
+<blockquote>
+<p>文件存储空间管理<br>
+目录管理<br>
+文件的读写管理<br>
+文件的保护</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/post/0.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>硬件和软件是逻辑等效的</p>
+<h1 id="冯诺依曼"><a class="markdownIt-Anchor" href="#冯诺依曼"></a> 冯·诺依曼</h1>
+<ol>
+<li>存储程序</li>
+<li>硬件包括运算器、存储器、输入、输出、控制器</li>
+<li>指令和数据均为二进制</li>
+<li>指令和数据地位相同，仅在指令的不同周期阶段才能区分</li>
+</ol>
+<h1 id="输入"><a class="markdownIt-Anchor" href="#输入"></a> 输入</h1>
+<p>扫描仪、摄像头</p>
+<h1 id="输出"><a class="markdownIt-Anchor" href="#输出"></a> 输出</h1>
+<p>显示器、打印机</p>
+<h1 id="存储器"><a class="markdownIt-Anchor" href="#存储器"></a> 存储器</h1>
+<p>主存储器（内存，<mark>CPU可直接访问</mark>）+辅存储器（外存，<mark>CPU不可直接访问，需要将外存数据送入内存</mark>）</p>
+<h1 id="主存储器"><a class="markdownIt-Anchor" href="#主存储器"></a> 主存储器</h1>
+<p>地址寄存器（MAR） + 数据寄存器（MDR） + 存储器</p>
+<h1 id="地址寄存器"><a class="markdownIt-Anchor" href="#地址寄存器"></a> 地址寄存器</h1>
+<p>寻址用，因此可循地址为2^n位</p>
+<h1 id="数据寄存器"><a class="markdownIt-Anchor" href="#数据寄存器"></a> 数据寄存器</h1>
+<p>存数据用，因此数据最大值-2^-n —— 2<sup>n-1</sup>-1</p>
+<h1 id="运算器"><a class="markdownIt-Anchor" href="#运算器"></a> 运算器</h1>
+<p>核心是ALU算术逻辑单元</p>
+<ul>
+<li>ACC</li>
+<li>MQ</li>
+<li>X</li>
+<li>IX</li>
+<li>BR</li>
+<li>PSW</li>
+</ul>
+<h1 id="控制器"><a class="markdownIt-Anchor" href="#控制器"></a> 控制器</h1>
+<ul>
+<li>PC</li>
+<li>IR</li>
+<li>CU</li>
+</ul>
+<h1 id="cpu"><a class="markdownIt-Anchor" href="#cpu"></a> CPU</h1>
+<p>运算器 + 控制器</p>
+<p>只有机器语言才能直接执行，汇编语言也不行</p>
+<p>高级语言和低级语言不能相互转换</p>
+<p>解释型语言：高级语言-（解释器）》机器语言</p>
+<p>编译型语言：高级语言-（编译器）》中间代码-（链接器）》机器语言</p>
+<ul>
+<li>取指令</li>
+<li>指令译码</li>
+<li>访问取书</li>
+<li>执行指令</li>
+<li>写回操作</li>
+</ul>
+<p>冯诺依曼</p>
+<ul>
+<li>以运算器为中心</li>
+<li>数据和指令同等地位</li>
+<li>按地址寻址</li>
+<li>存储程序</li>
+</ul>
+<h1 id="计算机性能指标"><a class="markdownIt-Anchor" href="#计算机性能指标"></a> 计算机性能指标</h1>
+<ul>
+<li>主频R<sub>c</sub>：一秒钟的时钟周期的个数</li>
+<li>始终周期：T<sub>c</sub>：一个时钟周期的时间</li>
+<li>CPI：执行一条指令所需要的时钟周期的数量</li>
+<li>T<sub>CPU</sub>：CPU执行时间
+<ol>
+<li>I<sub>n</sub>*CPI*T<sub>c</sub>（秒）</li>
+<li>In*CPI（时钟）</li>
+</ol>
+</li>
+<li>MIPS：每秒钟能执行多少百万条指令1 / CPI* <sub>Tc</sub>*10<sup>6</sup></li>
+<li>指令字长：指令的长度</li>
+<li>机器字长：机器能处理的长度</li>
+<li>存储字长：存储单元的长度</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title>顺序表</title>
+    <url>/post/cb6e.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="概念不清"><a class="markdownIt-Anchor" href="#概念不清"></a> 概念不清</h1>
+<p>存取VS存储</p>
+<ul>
+<li>存取：保存与读取，只有随机存取、顺序存取两种</li>
+<li>存储：物理存储结构，如顺序存储、散列存储、索引存储、链式存储</li>
+</ul>
+<p>顺序表的交换效率比链表高，但顺序输出效率一致。</p>
+<h1 id="插入"><a class="markdownIt-Anchor" href="#插入"></a> 插入</h1>
+<ol>
+<li>忘记增加长度</li>
+<li>忘记传顺序表的引用</li>
+<li>忘记判断表是否已满</li>
+</ol>
+<h1 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h1>
+<ol>
+<li>忘记减少长度</li>
+<li>忘记传顺序表引用</li>
+<li>忘记判断表是否为空</li>
+</ol>
+<h1 id="妙手"><a class="markdownIt-Anchor" href="#妙手"></a> 妙手</h1>
+<p>已知在一维数组A[m+n]中依次存放两个线性表（a<sub>1</sub>, a<sub>2</sub>, …, a<sub>m</sub>）和（b<sub>1</sub>, b<sub>2</sub>, …, b<sub>n</sub>）。编写一个函数，将数组中两个顺序表的位置互换，即将（b<sub>1</sub>, b<sub>2</sub>, …, b<sub>n</sub>）放在（a<sub>1</sub>, a<sub>2</sub>, …, a<sub>m</sub>）前面，要求空间复杂度为O（1）。</p>
+<p>类似于矩阵求逆[A|B]<sup>-1</sup> = B<sup>-1</sup>|A<sup>-1</sup>，因此[A<sup>-1</sup>|B<sup>-1</sup>]<sup>-1</sup> = B|A，实现上述要求，也就是先将A<sub>m</sub>、B<sub>n</sub>逆置，再将整体逆置。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>算法评估</title>
+    <url>/post/f740.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="模糊概念"><a class="markdownIt-Anchor" href="#模糊概念"></a> 模糊概念</h1>
+<p>在相同规模n下，复杂度较低的算法在时间上总是优于复杂度较高的算法（据说是书中原话）</p>
+<h1 id="顺序表是物理结构"><a class="markdownIt-Anchor" href="#顺序表是物理结构"></a> 顺序表是物理结构</h1>
+<p>顺序表是线性表的顺序存储实现。</p>
+<h1 id="超简单但不会做"><a class="markdownIt-Anchor" href="#超简单但不会做"></a> 超简单但不会做</h1>
+<p>已知两个长度分别为m和n的升序链表，若将他们合并为长度为m+n的一个降序链表，则最坏情况下的时间复杂度是：<mark>（O(mn)），咱不理解</mark></p>
+<h1 id="递推公式求时间复杂度"><a class="markdownIt-Anchor" href="#递推公式求时间复杂度"></a> 递推公式求时间复杂度</h1>
+<p>一个算法的所需时间如下述递归方程表示，试求出该算法的时间复杂度</p>
+\begin{align*}
+\begin{split}
+T_{n}= \left \{
+\begin{array}{lr}
+1,                    & n=1\\
+2T(\frac{n}{2})+n     & n \gt 2\\
+\end{array}
+\right.
+\end{split}
+\end{align*}
+
+<blockquote>
+<p>设n=2<sup>k</sup>，根据定义，有T(2<sup>k</sup>)=2T(2<sup>k-1</sup>)+2<sup>k</sup> = 2<sup>2</sup>T(2<sup>k-2</sup>)+2<sup>k</sup>+2<sup>k</sup> = … = 2<sup>k</sup>T(2<sup>0</sup>)+k2<sup>k</sup> = (1+k)2<sup>k</sup>;<br>
+将k=log<sub>2</sub><sup>n</sup>代入，得到T(n)=n(1+log<sub>2</sub><sup>n</sup>)=O(nlog<sub>2</sub><sup>n</sup>)</p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>算法题易错点</title>
+    <url>/post/4ec.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="不观察数据的取值范围"><a class="markdownIt-Anchor" href="#不观察数据的取值范围"></a> 不观察数据的取值范围</h1>
+<blockquote>
+<p>如取值范围是1 &lt;= {a, b} &lt; 2<sup>62</sup>，却使用int 而非long声明变量</p>
+<p>注意了解<code>int</code> <code>long</code> <code>long long</code>的取值范围</p>
+</blockquote>
+<p>numerator 被除数<br>
+denominator 除数<br>
+quotient 商<br>
+remainder 余数</p>
+<h1 id="动态申请时不初始"><a class="markdownIt-Anchor" href="#动态申请时不初始"></a> 动态申请时不初始</h1>
+<p>使用<code>new</code>关键字申请数组时，一定要初始化</p>
+<blockquote>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">int</span> tempArr <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span><span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">;</span>
+</code></pre></blockquote>
+<p><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> tempArr<span class="token punctuation">[</span>n<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span>:hexoPostRenderEscape–&gt;</p>
+<blockquote></blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>图</title>
+    <url>/post/b7fa.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/post/0.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/post/0.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>多元函数</p>
+<p>y=kx</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>树</title>
+    <url>/post/5b58.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="灵感总结"><a class="markdownIt-Anchor" href="#灵感总结"></a> 灵感总结</h1>
+<p>使用结点的度作为<mark>数值</mark>计算时，计算的该结点的孩子结点个数，因此需要考虑根结点，因为根节点不可能是孩子结点。</p>
+<p>使用度的结点作为<mark>分类</mark>时，不需要考虑根节点，因为根节点也会被分到对应度的结点中。</p>
+<h1 id="超简单但不会做"><a class="markdownIt-Anchor" href="#超简单但不会做"></a> 超简单但不会做</h1>
+<p>一棵完全二叉树上有1000个结点，求叶子结点的个数</p>
+<blockquote>
+<p>我们可以通过完全二叉树的性质简单的计算出结果：</p>
+<blockquote>
+<ol>
+<li>N = n<sub>0</sub>+n<sub>1</sub>+n<sub>2</sub>（N是结点总数）</li>
+<li>n<sub>0</sub>=n<sub>2</sub>+1</li>
+<li>n<sub>1</sub>=1或0（度为1的点仅有0个或1个）</li>
+</ol>
+</blockquote>
+<p>联立上述三式：</p>
+<blockquote>
+<p>1000 = 2n<sub>2</sub> +n<sub>1</sub> +1</p>
+</blockquote>
+<p>进而得到n<sub>0</sub>=500</p>
+</blockquote>
+<p>另一种更简单的方法</p>
+<blockquote>
+<p>由于完全二叉树有1000个结点，因此最后一个结点的编号为1000，其父节点编号为1000/2=500，因此编号为500之后的结点都是叶子结点，一共有1000-500=500个结点</p>
+</blockquote>
+<h1 id="术语"><a class="markdownIt-Anchor" href="#术语"></a> 术语</h1>
+<ul>
+<li>结点：一个数据元素</li>
+<li>结点的度：该结点的分支（子树）个数</li>
+<li>叶子结点：终端结点，度为0的结点</li>
+<li>层次路径：从根节点开始，到指定结点的路径（唯一）</li>
+<li>深度：结点的最大层次值，根节点的层为1</li>
+<li>有序树：子树具有次序</li>
+<li>森林：多棵树</li>
+</ul>
+<h1 id="计算性质"><a class="markdownIt-Anchor" href="#计算性质"></a> 计算性质</h1>
+<ol>
+<li>
+<p>结点个数 = 所有结点的度之和加一</p>
+<blockquote>
+<p>树中任意结点（除根节点）都有一个分支指向他</p>
+</blockquote>
+</li>
+<li>
+<p>对于度为m的树，定义叶子结点的个数为n<sub>0</sub>，度为1的结点个数为n<sub>1</sub>，……度为m的结点个数为n<sub>m</sub>，则有：<br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><msub><mi>n</mi><mn>2</mn></msub><mo>+</mo><mn>2</mn><msub><mi>n</mi><mn>3</mn></msub><mo>+</mo><mn>3</mn><msub><mi>n</mi><mn>4</mn></msub><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><msub><mi>n</mi><mi>m</mi></msub><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_0 = n_2 + 2n_3 + 3n_4 + ... + (m-1)n_m + 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">2</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">3</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">m</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></p>
+<blockquote>
+<p>从结点本身考虑：树的总结点数为：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>+</mo><msub><mi>n</mi><mn>1</mn></msub><mo>+</mo><msub><mi>n</mi><mn>2</mn></msub><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><msub><mi>n</mi><mi>m</mi></msub></mrow><annotation encoding="application/x-tex">n_0+n_1+n_2+...+n_m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><br>
+从节点的度（子树）考虑，树的总结点数为：<br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>0</mn><msub><mi>n</mi><mn>0</mn></msub><mo>+</mo><mn>1</mn><msub><mi>n</mi><mn>1</mn></msub><mo>+</mo><mn>2</mn><msub><mi>n</mi><mn>2</mn></msub><mo>+</mo><mn>3</mn><msub><mi>n</mi><mn>3</mn></msub><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><mi>m</mi><msub><mi>n</mi><mi>m</mi></msub><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0n_0+1n_1+2n_2+3n_3+...+mn_m+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">0</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">1</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">2</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">3</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord mathdefault">m</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span><br>
+联立可得：<br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mi>n</mi><mn>0</mn></msub><mo>=</mo><msub><mi>n</mi><mn>2</mn></msub><mo>+</mo><mn>2</mn><msub><mi>n</mi><mn>3</mn></msub><mo>+</mo><mn>3</mn><msub><mi>n</mi><mn>4</mn></msub><mo>+</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo>+</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><msub><mi>n</mi><mi>m</mi></msub><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n_0 = n_2 + 2n_3 + 3n_4 + ... + (m-1)n_m + 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.73333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">2</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.79444em;vertical-align:-0.15em;"></span><span class="mord">3</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.66666em;vertical-align:-0.08333em;"></span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathdefault">m</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span></span></span></span></p>
+</blockquote>
+</li>
+<li>
+<p>度为m的树中，第i层最多有m<sup>i-1</sup>个结点</p>
+<blockquote>
+<p>第一层最多1个，第二层最多m个，第三层最多m<sup>2</sup>，…，第i层最多m<sup>i-1</sup></p>
+</blockquote>
+</li>
+<li>
+<p>度为m，高为h的树中，最多有<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><msup><mi>m</mi><mi>h</mi></msup><mo>−</mo><mn>1</mn></mrow><mrow><mi>m</mi><mo>−</mo><mn>1</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{m^h-1}{m-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.4462509999999997em;vertical-align:-0.403331em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0429199999999998em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathdefault mtight">m</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9270285714285713em;"><span style="top:-2.931em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathdefault mtight">h</span></span></span></span></span></span></span></span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.403331em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>个节点</p>
+<blockquote>
+<p>使用性质3，将每一层的最大结点树加和，即一个等比数列求和</p>
+</blockquote>
+</li>
+<li>
+<p>具有n个结点的m度树的最小高度是：<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msubsup><mo><mi>log</mi><mo>⁡</mo></mo><mi>m</mi><mrow><mi>n</mi><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\log_m^{n(m-1)+1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2193399999999999em;vertical-align:-0.247em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9723399999999999em;"><span style="top:-2.4530000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span><span style="top:-3.14734em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">n</span><span class="mopen mtight">(</span><span class="mord mathdefault mtight">m</span><span class="mbin mtight">−</span><span class="mord mtight">1</span><span class="mclose mtight">)</span><span class="mbin mtight">+</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span></span></span></span></p>
+<blockquote>
+<p>使用性质4，逆推即可得到h</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="树的存储"><a class="markdownIt-Anchor" href="#树的存储"></a> 树的存储</h1>
+<p>双亲表示法</p>
+<h1 id="二叉树"><a class="markdownIt-Anchor" href="#二叉树"></a> 二叉树</h1>
+<ul>
+<li>满二叉树</li>
+<li>完全二叉树</li>
+</ul>
+<h1 id="完全二叉树的性质"><a class="markdownIt-Anchor" href="#完全二叉树的性质"></a> 完全二叉树的性质</h1>
+<ol>
+<li>n<sub>0</sub>=n<sub>2</sub>+1</li>
+<li>结点总数=所有结点度之和+1</li>
+<li>第i层，最多2<sup>i-1</sup>个结点</li>
+<li>前i层，最多有2<sup>i</sup>-1个结点</li>
+<li>深度为k的结点总数为n，满足2<sup>k</sup>≤n≤2<sup>k</sup>-1</li>
+<li>高度为k的完全二叉树，叶子结点仅出现在最后两层（k，k-1层）</li>
+<li>n个结点的完全二叉树深度为log<sub>2</sub><sup>n</sup> + 1</li>
+<li>对于任意结点，右子树的最大层次为l，则左子树的最大层次为l或l+1</li>
+<li>任意编号为i的结点，左孩子为2i，右孩子为2i+1</li>
+<li>度为1的结点个数，只能是1或是0</li>
+</ol>
+<h2 id="二叉树逻辑存储"><a class="markdownIt-Anchor" href="#二叉树逻辑存储"></a> 二叉树逻辑存储</h2>
+<h3 id="顺序存储结构"><a class="markdownIt-Anchor" href="#顺序存储结构"></a> 顺序存储结构</h3>
+<p>将二叉树按照完全二叉树进行编号，</p>
+<h3 id="链式存储结构"><a class="markdownIt-Anchor" href="#链式存储结构"></a> 链式存储结构</h3>
+<p>每个结点包括数据域、左孩子指针，右孩子指针</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">BTNode</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">int</span> data<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">BTNode</span> <span class="token operator">*</span>Lchild<span class="token punctuation">,</span> <span class="token operator">*</span>Rchild<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> BTNode<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="三叉链结构"><a class="markdownIt-Anchor" href="#三叉链结构"></a> 三叉链结构</h3>
+<p>比链式存储结构多了一个指向父节点的指针</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">BTNode_3</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">int</span> data<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">BTNoode_3</span> <span class="token operator">*</span>Lchild<span class="token punctuation">,</span> <span class="token operator">*</span>Rchild<span class="token punctuation">,</span> <span class="token operator">*</span>parent<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> BTNode_3<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="二叉树的遍历"><a class="markdownIt-Anchor" href="#二叉树的遍历"></a> 二叉树的遍历</h1>
+<p>先序遍历</p>
+<p>中序遍历</p>
+<p>后序遍历</p>
+<p>层次遍历</p>
+<h2 id="线索二叉树"><a class="markdownIt-Anchor" href="#线索二叉树"></a> 线索二叉树</h2>
+<p>线索二叉树是将树的线性结构进行表示的结构，因此线索二叉树的构造依赖树的遍历方式</p>
+<h1 id="普通树与二叉树"><a class="markdownIt-Anchor" href="#普通树与二叉树"></a> 普通树与二叉树</h1>
+<ul>
+<li>普通树的先序遍历 -》二叉树的先序遍历</li>
+<li>普通树的后序遍历 -》二叉树的中序遍历</li>
+</ul>
+<h2 id="哈夫曼树"><a class="markdownIt-Anchor" href="#哈夫曼树"></a> 哈夫曼树</h2>
+<p>哈夫曼树是最优二叉树，其相关概念如下：</p>
+<ol>
+<li>结点路径：树的一个节点到另一个结点之间的路径</li>
+<li>路径长度：结点路径的边数</li>
+<li>权值：叶子结点的权值</li>
+<li>结点的带权路径长度：叶子结点的权值×路径长度</li>
+<li>数的带权路径长度：所有叶子结点的带权路径长度的总和</li>
+</ol>
+<p><mark>哈夫曼树只有度为0和度为2的结点</mark></p>
+<h1 id="并查集"><a class="markdownIt-Anchor" href="#并查集"></a> 并查集</h1>
+<p>用树表示集合</p>
+<p>makeSet，新建集合</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>行列式</title>
+    <url>/post/b5d2.html</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="性质"><a class="markdownIt-Anchor" href="#性质"></a> 性质</h1>
+<ol>
+<li>
+<p>行列式的本质是一个数值，</p>
+</li>
+<li>
+<p>行列式转置后其值不变</p>
+</li>
+<li>
+<p>行列式两列<mark>互换位置</mark>，行列式的值要变号</p>
+<blockquote>
+<p>必须是互换位置，而不能是单纯移动一行，对于单纯的移动一行，要通过多次互换位置实现</p>
+</blockquote>
+</li>
+<li>
+<p>某行元素拥有公因子k，可以将其提出到行列式外</p>
+<blockquote>
+<p>一次只能提出一行或一列，如果行列式每行都有公因子k，则每行都要提出来，最终会提出k<sup>n</sup></p>
+</blockquote>
+</li>
+<li>
+<p>可以将行列式的某行中的每个元素都拆成两个值的和，最终源行列式可以拆成两个行列式的和</p>
+<blockquote>
+<p>此处应有图片/latex公式</p>
+</blockquote>
+</li>
+<li>
+<p>某行倍乘后加到另一行，行列式的值不变</p>
+<blockquote>
+<p>做行列式变换时，首先要选择进行倍乘的行，该行不能发生变化，而要通过该行改变改变其他行</p>
+</blockquote>
+</li>
+</ol>
+<h1 id="超简单但不会做"><a class="markdownIt-Anchor" href="#超简单但不会做"></a> 超简单但不会做</h1>
+<blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202206291607120.png" alt="image-20220629160703044"></p>
+<p>可以看到行列式中的每一列都是两个元素相加的形式，全部拆开的话，共有<code>2*2*2=8</code>和行列式，其中有6个行列式=0，其中两个的和就是结果，自己算一哈。</p>
+</blockquote>
+<h1 id="余子式m与代数余子式a"><a class="markdownIt-Anchor" href="#余子式m与代数余子式a"></a> 余子式M与代数余子式A</h1>
+<ul>
+<li>
+<p>余子式仅与位置(i, j)有关，而与该位置的元素a<sub>ij</sub>无关</p>
+</li>
+<li>
+<p>余子式记作M，不添加符号，代数余子式记作A，需要添加(-1)<sup>(i+j)</sup></p>
+</li>
+<li>
+<p>行列式的计算可以通过某行的元素一次乘以其代数余子式的和计算：</p>
+<pre class="line-numbers language-CPP" data-language="CPP"><code class="language-CPP">def determinant(INDEX, type) &#123;
+  sum &#x3D; 0;
+&#x2F;&#x2F; 按行展开计算
+if (type &#x3D;&#x3D; &quot;i&quot;) &#123; 
+  	for (int j &#x3D; 0; j &lt; n; j++) &#123;
+  	&#x2F;&#x2F; 该位置的值乘以该位置代数余子式值
+    sum +&#x3D; a[INDEX][j] * A[INDEX][j];
+  &#125;
+&#125;
+&#x2F;&#x2F; 按列展开计算
+else if (type &#x3D;&#x3D; &quot;j&quot;) &#123;
+  for (int i &#x3D; 0; i &lt; n; i++) &#123;
+    &#x2F;&#x2F; 该位置的值乘以该位置代数余子式值
+    sum +&#x3D; a[i][INDEX] * A[i][INDEX];
+  &#125;
+  return sum;
+&#125;
+return sum;
+
+</code></pre></li>
+</ul>
+<p>&#125;<br>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>:hexoPostRenderEscape–&gt;</p>
+<ul>
+<li>
+<p>写这个是强调行列式是一整行的位置元素和位置代数余子式乘积的和</p>
+</li>
+<li>
+<p>因此，我们可以通过更换一整行的位置元素得到新的行列式</p>
+</li>
+</ul>
+<h1 id="副对角线行列式要有-1supnn-12sup"><a class="markdownIt-Anchor" href="#副对角线行列式要有-1supnn-12sup"></a> 副对角线行列式要有(-1)<sup>n(n-1)/2</sup></h1>
+<blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202206291623662.png" alt="image-20220629162314530"></p>
+</blockquote>
+<h1 id="拉普拉斯展开式如果有副对角线也要注意-1supmnsup"><a class="markdownIt-Anchor" href="#拉普拉斯展开式如果有副对角线也要注意-1supmnsup"></a> 拉普拉斯展开式如果有副对角线也要注意(-1)<sup>mn</sup></h1>
+<blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202206291624772.png" alt="image-20220629162414726"></p>
+</blockquote>
+<h1 id="范德蒙行列式要有全是1的行"><a class="markdownIt-Anchor" href="#范德蒙行列式要有全是1的行"></a> 范德蒙行列式要有全是1的行</h1>
+<blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/yunchongxiao/PicGo/202206291625585.png" alt="image-20220629162511536"></p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
     <title>导数与微分</title>
     <url>/post/7b33.html</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="灵感总结"><a class="markdownIt-Anchor" href="#灵感总结"></a> 灵感总结</h1>
