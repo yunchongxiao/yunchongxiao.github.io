@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'modern';
+  font-display: swap;
+  src: url('/custom/fonts/modern.ttf') format("truetype");
+}
+@font-face {
+  font-family: 'agave';
+  font-display: swap;
+  src: url('/custom/fonts/agave.ttf') format("truetype");
+}
