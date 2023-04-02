@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>Installation</title>
+      <link href="/post/5aca.html"/>
+      <url>/post/5aca.html</url>
+      
+        <content type="html"><![CDATA[<h1>安装 Anaconda</h1><p><a href="https://www.anaconda.com/products/distribution#Downloads">Anaconda 官网下载地址</a></p><ol><li><p>安装完毕后打开 <code>Anaconda Powershell Prompt</code></p><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-anaconda-powershell.jpg" alt="image-20230402114045931"></p></li><li><p>创建python运行环境并激活</p><pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">conda create <span class="token operator">--</span>name d2l python=3<span class="token punctuation">.</span>9 <span class="token operator">-</span>yconda activate d2l<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-create-and-activate.jpg" alt="image-20230402114324450"></p></li><li><p>安装 pytorch和tensorflow</p><pre class="line-numbers language-none"><code class="language-none">pip install torch&#x3D;&#x3D;1.12.0pip install torchvision&#x3D;&#x3D;0.13.0pip install tensorflow&#x3D;&#x3D;2.8.0pip install tensorflow-probability&#x3D;&#x3D;0.16.0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre></li><li><p>安装本书的 d2l 包，以方便调取本书中经常使用的函数和类：</p><pre class="line-numbers language-none"><code class="language-none">pip install d2l&#x3D;&#x3D;0.17.6<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre></li></ol><blockquote><p>引入 <code>tensorflow</code> 时报错，可能是没有安装 cuda，</p><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-error.jpg" alt="image-20230402121606335"></p><p>打开NVIDIA Control Panel 查看显卡版本</p><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-NVIDIA.jpg" alt=""></p><p>在上方的帮助中知道系统信息，查看显卡版本</p><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-%E6%98%BE%E5%8D%A1%E7%89%88%E6%9C%AC.jpg" alt="image-20230402121459888"></p><p>在<a href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html">官网</a>对照，找到对应的 CUDA 版本</p><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-cuda-version.jpg" alt="image-20230402121835970"></p><p><a href="https://developer.nvidia.cn/cuda-toolkit-archive">下载</a>对应的 CUDA</p><p><img src="https://cdn.staticaly.com/gh/yunchongxiao/PicGo@main/d2l-cuda.jpg" alt="image-20230402122046466"></p><p>根据自己的操作系统选择合适的版本</p><p><img src="C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/image-20230402122121179.png" alt="image-20230402122121179"></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> Dive into Deep Learning </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Deep Learning - Data Manipulation</title>
+      <link href="/post/ccff.html"/>
+      <url>/post/ccff.html</url>
+      
+        <content type="html"><![CDATA[<p>基础知识：</p><ul><li>张量（tensor）：n 维向量</li></ul><div class="tabs" id="test"><ul class="nav-tabs"><li class="tab active"><button type="button" data-href="#test-1">pytorch</button></li><li class="tab"><button type="button" data-href="#test-2">tensorflow</button></li></ul><div class="tab-contents"><div class="tab-item-content active" id="test-1"><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token comment"># import</span><span class="token keyword">import</span> torch<span class="token comment"># create a tensor</span>x <span class="token operator">=</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><button type="button" class="tab-to-top" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div><div class="tab-item-content" id="test-2"><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> tensorflow <span class="token keyword">as</span> tf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><button type="button" class="tab-to-top" aria-label="scroll to top"><i class="fas fa-arrow-up"></i></button></div></div></div>]]></content>
+      
+      
+      <categories>
+          
+          <category> Dive into Deep Learning </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>10. Regular Expression Matching</title>
       <link href="/post/3a4.html"/>
       <url>/post/3a4.html</url>
@@ -76,9 +114,9 @@
       
         <tags>
             
-            <tag> middle </tag>
-            
             <tag> Dynamic Programming </tag>
+            
+            <tag> middle </tag>
             
         </tags>
       
@@ -130,9 +168,9 @@
       
         <tags>
             
-            <tag> middle </tag>
-            
             <tag> Dynamic Programming </tag>
+            
+            <tag> middle </tag>
             
         </tags>
       
