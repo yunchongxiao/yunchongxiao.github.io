@@ -9,7 +9,7 @@
 # Basic Site Settings
 locale                   : "en-US"
 site_theme               : "default"
-title                    : "Yunchong Xiao / 肖云冲"
+title                    : "Homepage"
 title_separator          : "-"
 name                     : &name "Yunchong Xiao"
 description              : &description "Master Student @ CS in Shanghai Jiao Tong University"
