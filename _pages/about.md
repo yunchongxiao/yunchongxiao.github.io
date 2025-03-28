@@ -8,7 +8,6 @@ redirect_from:
 ---
 Nice to meet you😊!  
 
-# About Me  
 Hi! I’m Yunchong Xiao, a Master’s student in Electronic Information at Shanghai Jiao Tong University, working under the supervision of Prof. Xie Chen in the Cross-Media (X-) Language Intelligence Lab (X-LANCE) Lab. My research focuses on bridging industrial data practices with academic research needs.
 What I care about:
 
