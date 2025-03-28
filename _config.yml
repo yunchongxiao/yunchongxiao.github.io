@@ -22,7 +22,7 @@ repository               : "yunchongxiao/yunchongxiao.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "/images/avatar.jpg.png"
+  avatar           : "avatar.jpg"
   name             : "Yunchong Xiao"
   pronouns         : # example: "she/her"  
   bio              : "Master Student @ CS in Shanghai Jiao Tong University"
